@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=XPM - Petroleum Package Manager
+Name[zh]=XPM - 石油包管理器
+Name[ja]=XPM - 石油パッケージマネージャー
+Comment=X11 Package Manager (Petroleum Edition)
+Exec=xpm
+Icon=package
+Terminal=false
+Categories=System;PackageManager;
