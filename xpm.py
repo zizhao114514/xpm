@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 XPM - X11 Package Manager (Petroleum Edition)
-Version: 1.6-2 (One Bug Edition)
+Version: 1.7-0 (One Bug Edition - GUI Fix)
 Author: 元宝 AI (Tencent)
 License: MIT
 
