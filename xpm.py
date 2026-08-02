@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 XPM - X11 Package Manager (Petroleum Edition)
-Version: 1.7-0 (One Bug Edition - GUI Fix)
+Version: 1.7-1 (One Bug Edition - Crash Counting Fix)
 Author: 元宝 AI (Tencent)
 License: MIT
 
@@ -1579,7 +1579,12 @@ def main():
     # No args -> GUI mode (if DISPLAY set) or help
     if not args:
         if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
-            gui_mode()
+            try:
+                gui_mode()
+            except Exception:
+                # GUI crashed → count as a coffee machine crash
+                coffee.crash()
+                raise
         else:
             print_banner()
             cmd_help()
@@ -1661,4 +1666,13 @@ def main():
         coffee.crash()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        coffee.crash()
+        print(f"\n  [{_('coffee_crashes_today')}: {coffee.crash_count}/{COFFEE_THRESHOLD}]")
+        print(f"  [{_('coffee_total')}: {coffee.total_explosions}]")
+        sys.exit(130)
+    except Exception:
+        coffee.crash()
+        raise
