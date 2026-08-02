@@ -1272,12 +1272,12 @@ def gui_mode():
 
     search_entry.bind("<FocusIn>", on_search_focus_in)
     search_entry.bind("<FocusOut>", on_search_focus_out)
-    search_entry.bind("<Return>", lambda e: do_search())
 
-    # ===== Buttons row =====
-    btn_frame = tk.Frame(root, bg=bg)
-    btn_frame.pack(fill="x", padx=10, pady=(0, 8))
+    # ===== Status helper (defined BEFORE any callback uses it) =====
+    def set_status(text, color="#888888"):
+        status_label.config(text=text, fg=color)
 
+    # ===== Buttons row factory =====
     def make_btn(text, cmd, color=accent):
         b = tk.Button(
             btn_frame, text=text, command=cmd,
@@ -1289,67 +1289,33 @@ def gui_mode():
         b.pack(side="left", padx=3)
         return b
 
-    make_btn(_("gui_search"), do_search, accent)
-    make_btn(_("gui_install"), do_install, accent_green)
-    make_btn(_("gui_remove"), do_remove, accent_red)
-    make_btn(_("gui_purge"), do_purge, "#8e44ad")
-    make_btn(_("gui_update"), do_update, "#2980b9")
-    make_btn(_("gui_upgrade"), do_upgrade, accent_orange)
-    make_btn(_("gui_info"), do_info_btn, "#16a085")
-    make_btn(_("gui_coffee"), lambda: show_coffee(), "#6c5ce7")
-    make_btn(_("gui_petroleum"), lambda: show_petroleum(), "#f39c12")
+    # ===== Coffee machine display =====
+    def show_coffee():
+        details_text.delete("1.0", "end")
+        lines = [
+            "",
+            f"  ☕ {_('coffee_title')}",
+            "",
+            f"  {_('coffee_crashes_today')}: {coffee.crash_count}/{COFFEE_THRESHOLD}",
+            f"  {_('coffee_total')}: {coffee.total_explosions}",
+            f"  {_('coffee_date')}: {coffee.date}",
+            "",
+        ]
+        if coffee.crash_count == 0:
+            lines.append(f"  {_('coffee_status_ok')}")
+        else:
+            pct = coffee.crash_count / COFFEE_THRESHOLD * 100
+            lines.append(f"  [{'█' * int(pct/5):<20s}] {pct:.0f}%")
+        lines.extend([
+            "",
+            f"  {_('coffee_teto')}",
+            f"  {_('coffee_miku')}",
+            "",
+        ])
+        details_text.insert("1.0", "\n".join(lines))
+        set_status(_("coffee_title"), "#6c5ce7")
 
-    # ===== Main paned window =====
-    paned = tk.PanedWindow(root, orient="horizontal", bg=bg, sashwidth=4, sashrelief="flat")
-    paned.pack(fill="both", expand=True, padx=10, pady=(0, 5))
-
-    # Left: results
-    left_frame = tk.Frame(paned, bg="#333333")
-    paned.add(left_frame, minsize=300)
-
-    tk.Label(
-        left_frame, text=_("gui_results"), bg="#333333", fg=accent,
-        font=("WenQuanYi Micro Hei", 11, "bold"), anchor="w"
-    ).pack(fill="x", padx=8, pady=(8, 4))
-
-    results_list = tk.Listbox(
-        left_frame, bg="#3a3a3a", fg=fg, selectbackground=accent,
-        selectforeground="white", font=("WenQuanYi Micro Hei", 10),
-        relief="flat", highlightthickness=0
-    )
-    results_list.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-
-    # Right: details
-    right_frame = tk.Frame(paned, bg="#333333")
-    paned.add(right_frame, minsize=350)
-
-    tk.Label(
-        right_frame, text=_("gui_details"), bg="#333333", fg=accent,
-        font=("WenQuanYi Micro Hei", 11, "bold"), anchor="w"
-    ).pack(fill="x", padx=8, pady=(8, 4))
-
-    details_text = scrolledtext.ScrolledText(
-        right_frame, bg="#3a3a3a", fg=fg, insertbackground=fg,
-        font=("WenQuanYi Micro Hei", 10), relief="flat",
-        highlightthickness=0, wrap="word"
-    )
-    details_text.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-
-    # ===== Status bar =====
-    status_frame = tk.Frame(root, bg="#1e1e1e", height=28)
-    status_frame.pack(fill="x", side="bottom")
-    status_frame.pack_propagate(False)
-
-    status_label = tk.Label(
-        status_frame, text=f"{_('gui_status')}: {_('gui_ready')} | {sudo_text} | {_('gui_power')}",
-        bg="#1e1e1e", fg="#888888", font=("WenQuanYi Micro Hei", 9),
-        anchor="w"
-    )
-    status_label.pack(side="left", padx=10)
-
-    # ===== Button actions =====
-    def set_status(text, color="#888888"):
-        status_label.config(text=text, fg=color)
+    # ===== All button callback functions (defined BEFORE make_btn calls) =====
 
     def do_search():
         kw = search_var.get().strip()
@@ -1358,7 +1324,6 @@ def gui_mode():
         set_status(f"{_('searching')}: {kw}", accent)
         results_list.delete(0, "end")
         details_text.delete("1.0", "end")
-
         try:
             result = subprocess.run(
                 ["apt-cache", "search", kw],
@@ -1385,8 +1350,6 @@ def gui_mode():
             set_status(_("gui_error") + ": no package selected", accent_red)
             return
         set_status(f"{_('gui_installing')} {pkg}...", accent_green)
-
-        # Run in thread to avoid blocking GUI
         def run():
             try:
                 result = subprocess.run(
@@ -1402,7 +1365,6 @@ def gui_mode():
                 ))
             except subprocess.TimeoutExpired:
                 root.after(0, lambda: set_status(_("gui_error") + ": timeout", accent_red))
-
         import threading
         threading.Thread(target=run, daemon=True).start()
 
@@ -1513,30 +1475,70 @@ def gui_mode():
         details_text.insert("1.0", "\n".join(lines))
         set_status(_("petroleum_title"), "#f39c12")
 
-    def show_coffee():
-        details_text.delete("1.0", "end")
-        lines = [
-            "",
-            f"  ☕ {_('coffee_title')}",
-            "",
-            f"  {_('coffee_crashes_today')}: {coffee.crash_count}/{COFFEE_THRESHOLD}",
-            f"  {_('coffee_total')}: {coffee.total_explosions}",
-            f"  {_('coffee_date')}: {coffee.date}",
-            "",
-        ]
-        if coffee.crash_count == 0:
-            lines.append(f"  {_('coffee_status_ok')}")
-        else:
-            pct = coffee.crash_count / COFFEE_THRESHOLD * 100
-            lines.append(f"  [{'█' * int(pct/5):<20s}] {pct:.0f}%")
-        lines.extend([
-            "",
-            f"  {_('coffee_teto')}",
-            f"  {_('coffee_miku')}",
-            "",
-        ])
-        details_text.insert("1.0", "\n".join(lines))
-        set_status(_("coffee_title"), "#6c5ce7")
+    # ===== Buttons row (now that all callbacks exist) =====
+    btn_frame = tk.Frame(root, bg=bg)
+    btn_frame.pack(fill="x", padx=10, pady=(0, 8))
+
+    search_entry.bind("<Return>", lambda e: do_search())
+    make_btn(_("gui_search"), do_search, accent)
+    make_btn(_("gui_install"), do_install, accent_green)
+    make_btn(_("gui_remove"), do_remove, accent_red)
+    make_btn(_("gui_purge"), do_purge, "#8e44ad")
+    make_btn(_("gui_update"), do_update, "#2980b9")
+    make_btn(_("gui_upgrade"), do_upgrade, accent_orange)
+    make_btn(_("gui_info"), do_info_btn, "#16a085")
+    make_btn(_("gui_coffee"), lambda: show_coffee(), "#6c5ce7")
+    make_btn(_("gui_petroleum"), lambda: show_petroleum(), "#f39c12")
+
+    # ===== Main paned window =====
+    paned = tk.PanedWindow(root, orient="horizontal", bg=bg, sashwidth=4, sashrelief="flat")
+    paned.pack(fill="both", expand=True, padx=10, pady=(0, 5))
+
+    # Left: results
+    left_frame = tk.Frame(paned, bg="#333333")
+    paned.add(left_frame, minsize=300)
+
+    tk.Label(
+        left_frame, text=_("gui_results"), bg="#333333", fg=accent,
+        font=("WenQuanYi Micro Hei", 11, "bold"), anchor="w"
+    ).pack(fill="x", padx=8, pady=(8, 4))
+
+    results_list = tk.Listbox(
+        left_frame, bg="#3a3a3a", fg=fg, selectbackground=accent,
+        selectforeground="white", font=("WenQuanYi Micro Hei", 10),
+        relief="flat", highlightthickness=0
+    )
+    results_list.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+
+    # Right: details
+    right_frame = tk.Frame(paned, bg="#333333")
+    paned.add(right_frame, minsize=350)
+
+    tk.Label(
+        right_frame, text=_("gui_details"), bg="#333333", fg=accent,
+        font=("WenQuanYi Micro Hei", 11, "bold"), anchor="w"
+    ).pack(fill="x", padx=8, pady=(8, 4))
+
+    details_text = scrolledtext.ScrolledText(
+        right_frame, bg="#3a3a3a", fg=fg, insertbackground=fg,
+        font=("WenQuanYi Micro Hei", 10), relief="flat",
+        highlightthickness=0, wrap="word"
+    )
+    details_text.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+
+    # ===== Status bar =====
+    status_frame = tk.Frame(root, bg="#1e1e1e", height=28)
+    status_frame.pack(fill="x", side="bottom")
+    status_frame.pack_propagate(False)
+
+    status_label = tk.Label(
+        status_frame, text=f"{_('gui_status')}: {_('gui_ready')} | {sudo_text} | {_('gui_power')}",
+        bg="#1e1e1e", fg="#888888", font=("WenQuanYi Micro Hei", 9),
+        anchor="w"
+    )
+    status_label.pack(side="left", padx=10)
+
+    # (All button actions already defined above — single source of truth)
 
     # Double-click to show info
     def on_double_click(event):
