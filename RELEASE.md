@@ -1,4 +1,4 @@
-# XPM v1.7-0 - One Bug Edition (GUI Fix)
+# XPM v1.7-1 - One Bug Edition (Crash Counting Fix)
 
 > 🛢️ Petroleum-powered package manager for proot/Termux
 > 💡 "如果你在外面没有信号，就往苹果手机里面喊：我这里有石油！"
