@@ -2,1677 +2,1045 @@
 # -*- coding: utf-8 -*-
 """
 XPM - X11 Package Manager (Petroleum Edition)
-Version: 1.7-1 (One Bug Edition - Crash Counting Fix)
-Author: 元宝 AI (Tencent)
-License: MIT
-
-Features:
-- Multi-language: en / zh / ja (auto-detect via LANG / XPM_LANG)
-- Backend: dpkg + apt-cache + wget (NO apt high-level)
-- GUI: Tkinter (auto-detect DISPLAY)
-- Easter eggs: petroleum / coffee machine / password error
-- One intentional bug: download speed shown x1024 too high
-- .desktop entry supported
-- Auto-update on launch
-- Progress bar + step logging
-
-Usage:
-  xpm                          # GUI mode (if DISPLAY set)
-  xpm help                     # Show help
-  xpm search <keyword>         # Search packages
-  xpm install <pkg...>         # Install package(s)
-  xpm remove  <pkg...>         # Remove package(s)
-  xpm purge   <pkg...>         # Purge with config
-  xpm download <pkg> [dir]     # Download .deb only
-  xpm installed                # List installed packages
-  xpm info    <pkg>            # Show package details
-  xpm sources                 # List configured sources
-  xpm install-deb <file.deb>   # Install local .deb
-  xpm update                   # Refresh source index
-  xpm upgrade                  # Upgrade all upgradable
-  xpm petroleum                # Petroleum signal booster (easter egg)
-  xpm coffee                   # Coffee machine status (easter egg)
-  xpm self-install             # Install xpm itself system-wide
-
-Environment:
-  LANG=zh_CN.UTF-8  or  XPM_LANG=zh   -> Chinese
-  LANG=ja_JP.UTF-8  or  XPM_LANG=ja   -> Japanese
-  (default)                        -> English
+前端：搜索/依赖/进度条/多语言/彩蛋
+后端：调用 xm 完成解包安装与卸载
+石油驱动，1.x W 稳态。
 """
 
-import os
-import sys
-import subprocess
-import shutil
-import time
-import random
-import signal
-import glob
-import gettext
-import locale
+import os, sys, subprocess, time, random, json, shutil, glob, fcntl, errno
 
-# ============================================================
-# I18N - Inline translations (no external module needed)
-# ============================================================
+# === 路径 ===
+ETC_XPM = "/etc/xpm"
+SOURCES_DIR = f"{ETC_XPM}/sources.list.d"
+CACHE_DIR = os.path.expanduser("~/.cache/xpm")
+COFFEE_LOG = f"{CACHE_DIR}/coffee_machine.log"
+XM_BIN = "/usr/local/bin/xm"
 
-TRANSLATIONS = {
+# === 石油彩蛋 ===
+OIL = 100001
+POWER = "1.x W"
+
+# === 多语言 ===
+LANG = os.environ.get("XPM_LANG") or os.environ.get("LANG", "en")[:2].lower()
+
+T = {
     "en": {
         "title": "XPM - X11 Package Manager",
         "subtitle": "Power: 1.x W  |  Oil: 100001%  |  No systemd needed",
-        "auto_update": "auto-update on launch",
-        "usage": "Usage: xpm <command> [args...]",
-        "cmd_update": "Refresh source index (auto on launch)",
-        "cmd_upgrade": "Upgrade all upgradable packages",
-        "cmd_search": "Search packages",
-        "cmd_install": "Install package(s)",
-        "cmd_remove": "Remove package(s)",
-        "cmd_purge": "Purge with config",
-        "cmd_download": "Download .deb only",
-        "cmd_installed": "List installed packages",
-        "cmd_info": "Show package details",
-        "cmd_sources": "List configured sources",
-        "cmd_installdeb": "Install local .deb",
-        "cmd_petroleum": "Petroleum signal booster",
-        "cmd_coffee": "Coffee machine status",
-        "cmd_help": "Show this help",
-        "searching": "Searching for",
-        "found_pkgs": "Found {n} package(s)",
-        "no_pkgs_found": "No packages found matching '{kw}'",
-        "installing": "Installing package(s)",
-        "removing": "Removing package(s)",
-        "purging": "Purging package(s)",
-        "downloading": "Downloading",
-        "installed_ok": "installation successful",
-        "remove_ok": "removal successful",
-        "purge_ok": "purge successful",
-        "download_ok": "download successful",
-        "download_dir": "Saved to",
-        "pkg_not_found": "Package '{pkg}' not found",
-        "file_not_found": "File not found: {f}",
-        "not_a_deb": "Not a valid .deb file: {f}",
-        "need_root": "This operation requires root privileges",
-        "sudo_pw_needed": "Sudo password required",
-        "sudo_ok": "Sudo available (no password needed)",
-        "running": "Running",
-        "step": "Step",
-        "of": "of",
-        "updating_idx": "Updating source index",
-        "resolving_deps": "Resolving dependencies for",
-        "installing_pkg": "Installing package",
-        "removing_pkg": "Removing package",
-        "purging_pkg": "Purging package",
-        "autoremove": "Auto-removing unused dependencies",
-        "finalizing": "Finalizing",
-        "fixing_deps": "Fixing broken dependencies",
-        "checking_upgradable": "Checking upgradable packages",
-        "upgrading_pkg": "Upgrading package",
-        "total_upgradable": "Total upgradable packages",
-        "no_upgradable": "No upgradable packages.",
-        "confirm_upgrade": "About to upgrade {n} package(s). Continue? [y/N]",
-        "aborted": "Aborted.",
-        "parse_pkg_info": "Parsing package info for",
-        "pkg_details": "Package details",
-        "version": "Version",
-        "size": "Size",
-        "description": "Description",
-        "depends": "Depends",
-        "maintainer": "Maintainer",
-        "section": "Section",
-        "priority": "Priority",
-        "filename": "Filename",
-        "sha256": "SHA256",
-        "unknown_cmd": "Unknown command: {cmd}",
+        "subtitle2": 'Author: "I feel this thing is quite stable."',
+        "subtitle3": "If you encounter any bugs, don't create an issue. Just ask your AI.",
+        "help_cmd": "Usage: xpm <command> [args...]",
+        "cmd_update": "update", "cmd_upgrade": "upgrade",
+        "cmd_search": "search <keyword>", "cmd_install": "install <pkg...>",
+        "cmd_remove": "remove <pkg...>", "cmd_purge": "purge <pkg...>",
+        "cmd_download": "download <pkg> [dir]", "cmd_installdeb": "install-deb <file.deb/oil>",
+        "cmd_installed": "installed", "cmd_info": "info <pkg>",
+        "cmd_sources": "sources", "cmd_coffee": "coffee",
+        "cmd_petroleum": "petroleum", "cmd_help": "help",
+        "searching": "Searching packages",
+        "found_pkgs": "Found {n} packages matching '{kw}'",
+        "no_match": "No packages matching '{kw}'",
+        "installed_title": "Installed packages ({n})",
+        "sources_title": "Configured sources",
+        "no_sources": "No source files found in {d}",
+        "created_example": "Created example source: {f}",
+        "sudo_ok": "✅ sudo available (no password needed)",
+        "sudo_pw": "🔒 sudo needs password",
+        "sudo_fail": "⚠️ sudo unavailable",
+        "crash_header": "☕ Coffee Machine Report",
+        "crash_today": "Today's crashes",
+        "crash_total": "Total explosions",
+        "crash_date": "Date",
+        "install_ok": "✅ {pkg} installed successfully",
+        "remove_ok": "✅ {pkg} removed successfully",
+        "purge_ok": "✅ {pkg} purged",
+        "update_ok": "✅ Source index updated",
+        "upgrade_ok": "✅ System upgraded",
+        "download_ok": "✅ Downloaded to {path}",
+        "unknown_cmd": "⚠️ Unknown command: {cmd}",
         "run_help": "Run 'xpm help' for usage.",
-        "list_sources": "Configured sources",
-        "no_sources": "No source files found in /etc/xpm/sources.list.d/",
-        "create_example": "Creating example source file",
-        "example_created": "Example created at",
-        "list_installed": "Installed packages",
-        "total_installed": "Total installed",
-        "self_install_ok": "xpm self-install successful",
-        "self_install_done": "xpm is now in /usr/local/bin/xpm",
-        # Easter eggs
-        "petroleum_title": "Petroleum Signal Booster",
-        "petroleum_search": "Searching for signal...",
-        "petroleum_fail": "Failed.",
-        "petroleum_detected": "Detected 100001% petroleum reserve.",
-        "petroleum_shout": "If you have no signal outside,",
-        "petroleum_shout2": "shout into your iPhone:",
-        "petroleum_quote": "I HAVE OIL HERE!",
-        "petroleum_result": "Signal restored.",
-        "petroleum_teto": "(as if I care for your feelings.)",
-        "coffee_title": "Coffee Machine Explosion Committee",
-        "coffee_crashes_today": "Crashes today",
-        "coffee_total": "Total explosions",
-        "coffee_date": "Date",
-        "coffee_threshold": "Threshold",
-        "coffee_status_ok": "Status: Normal (no explosion today)",
-        "coffee_boom": "BOOOOOM! #{num}",
-        "coffee_sequence": "Coffee Machine Explosion Sequence",
-        "coffee_teto": "Teto: as if I care for your feelings.",
-        "coffee_miku": "Miku: ...I just want to go home.",
-        "coffee_oil": "Oil reserve: 100001%",
-        "coffee_power": "Power: 1.x W (oil-fed)",
-        "coffee_sighted": "目撃！コーヒーマシン爆発{num}回",
-        "password_error": "Installer unexpectedly terminated. You may have entered the wrong password.",
-        "password_error_teto": "as if I care for your feelings.",
-        # GUI
+        "petroleum_title": "🛢️ Petroleum Signal Booster",
+        "petroleum_1": "🔍 Searching for signal...",
+        "petroleum_2": "   Failed.",
+        "petroleum_3": "🛢️  Detected 100001% petroleum reserve.",
+        "petroleum_4": "💡 If you have no signal outside,",
+        "petroleum_5": "   shout into your iPhone:",
+        "petroleum_6": '   >>> "I HAVE OIL HERE!" <<<',
+        "petroleum_7": "   This will restore your signal.",
+        "petroleum_note": "(note: link requires CN network access)",
+        "egg_tip": "彩蛋：打开这个链接，包让你笑个不停（境外网络可能受限）：",
+        "egg_url": "https://v.douyin.com/WgZVVkknENc/",
+        "bug_speed": "⚠️ Known bug: download speed shown x1024 (intentional)",
         "gui_search": "Search",
         "gui_install": "Install",
         "gui_remove": "Remove",
         "gui_purge": "Purge",
-        "gui_upgrade": "Upgrade All",
         "gui_update": "Update",
+        "gui_upgrade": "Upgrade All",
         "gui_info": "Info",
-        "gui_installed": "Installed",
-        "gui_sources": "Sources",
-        "gui_petroleum": "Petroleum",
-        "gui_coffee": "Coffee",
-        "gui_help": "Help",
-        "gui_about": "About",
-        "gui_search_placeholder": "Type package name...",
-        "gui_results": "Results",
-        "gui_details": "Details",
-        "gui_status": "Status",
-        "gui_sudo_ok": "Sudo: OK",
-        "gui_sudo_pw": "Sudo: needs password",
-        "gui_oil": "Oil: 100001%",
-        "gui_power": "Power: 1.x W",
-        "gui_ready": "Ready",
-        "gui_installing": "Installing...",
-        "gui_done": "Done",
-        "gui_error": "Error",
-        "gui_confirm_upgrade": "Upgrade all packages?",
-        "gui_yes": "Yes",
-        "gui_no": "No",
-        "gui_about_text": "XPM - X11 Package Manager\nPetroleum Edition\nVersion 1.6-2\nOne Bug Edition\n\nOil: 100001%\nPower: 1.x W\nNo systemd needed\n\n(as if I care for your feelings.)",
+        "gui_sudo_yes": "sudo: YES",
+        "gui_sudo_no": "sudo: NEEDS PW",
+        "gui_status_ready": "Ready",
+        "install_terminated": "⚠️ 安装程序被意外终止了，可能是您未输入正确密码。",
+        "coffee_banner": "☕ コーヒーマシン爆発調査委員会",
+        "coffee_boom": "BOOOOOM! #{n}",
+        "coffee_total": "📊 累计爆炸总数: {n}",
+        "coffee_power": "⚡ 功耗: 1.x W (oil-fed)",
+        "coffee_oil": "🛢️ 石油储备: 100001%",
+        "coffee_miku": "...I just want to go home.",
+        "step_n": "[{i}/{total}] {desc}",
+        "progress": "░█",
+        "pw_err": "Password error or permission denied",
+        "wait_lock": "⏳ Waiting for lock... {s}s",
+        "lock_owner": "Owner: {prog} (PID {pid})",
+        "lock_op": "Operation: {op}",
+        "lock_timeout": "⚠️ Lock timeout after {s}s",
+        "author_note": 'Author: "I feel this thing is quite stable."',
+        "author_note2": "If you encounter any bugs, don't create an issue. Just ask your AI.",
+        "author_note3": "我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。",
+        "author_note4": "これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に頼ってください。",
     },
     "zh": {
         "title": "XPM - X11 包管理器",
         "subtitle": "功耗: 1.x W  |  石油: 100001%  |  无需 systemd",
-        "auto_update": "启动时自动更新源",
-        "usage": "用法: xpm <命令> [参数...]",
-        "cmd_update": "刷新源索引（启动时自动运行）",
-        "cmd_upgrade": "升级所有可升级的包",
-        "cmd_search": "搜索软件包",
-        "cmd_install": "安装软件包",
-        "cmd_remove": "卸载软件包",
-        "cmd_purge": "彻底清除（含配置）",
-        "cmd_download": "仅下载 .deb 文件",
-        "cmd_installed": "列出已安装的包",
-        "cmd_info": "显示包详细信息",
-        "cmd_sources": "查看已配置的源",
-        "cmd_installdeb": "安装本地 .deb 文件",
-        "cmd_petroleum": "石油信号增强器",
-        "cmd_coffee": "咖啡机状态",
-        "cmd_help": "显示此帮助",
-        "searching": "正在搜索",
-        "found_pkgs": "找到 {n} 个软件包",
-        "no_pkgs_found": "未找到匹配 '{kw}' 的软件包",
-        "installing": "正在安装软件包",
-        "removing": "正在卸载软件包",
-        "purging": "正在彻底清除",
-        "downloading": "正在下载",
-        "installed_ok": "安装成功",
-        "remove_ok": "卸载成功",
-        "purge_ok": "清除成功",
-        "download_ok": "下载成功",
-        "download_dir": "保存至",
-        "pkg_not_found": "未找到软件包 '{pkg}'",
-        "file_not_found": "文件不存在: {f}",
-        "not_a_deb": "不是有效的 .deb 文件: {f}",
-        "need_root": "此操作需要 root 权限",
-        "sudo_pw_needed": "需要输入 sudo 密码",
-        "sudo_ok": "Sudo 可用（无需密码）",
-        "running": "正在执行",
-        "step": "步骤",
-        "of": "/",
-        "updating_idx": "正在更新源索引",
-        "resolving_deps": "正在解析依赖",
-        "installing_pkg": "正在安装包",
-        "removing_pkg": "正在卸载包",
-        "purging_pkg": "正在清除包",
-        "autoremove": "正在自动移除无用依赖",
-        "finalizing": "正在收尾",
-        "fixing_deps": "正在修复依赖关系",
-        "checking_upgradable": "正在检查可升级包",
-        "upgrading_pkg": "正在升级包",
-        "total_upgradable": "可升级包总数",
-        "no_upgradable": "没有可升级的包。",
-        "confirm_upgrade": "即将升级 {n} 个包，是否继续？[y/N]",
-        "aborted": "已取消。",
-        "parse_pkg_info": "正在解析包信息",
-        "pkg_details": "包详细信息",
-        "version": "版本",
-        "size": "大小",
-        "description": "描述",
-        "depends": "依赖",
-        "maintainer": "维护者",
-        "section": "分类",
-        "priority": "优先级",
-        "filename": "文件名",
-        "sha256": "SHA256",
-        "unknown_cmd": "未知命令: {cmd}",
+        "subtitle2": '作者: "我感觉这玩意很稳定。"',
+        "subtitle3": "如果有 bug，别去 issue，去找你的 AI。",
+        "help_cmd": "用法: xpm <命令> [参数...]",
+        "cmd_update": "update", "cmd_upgrade": "upgrade",
+        "cmd_search": "search <关键词>", "cmd_install": "install <包名...>",
+        "cmd_remove": "remove <包名...>", "cmd_purge": "purge <包名...>",
+        "cmd_download": "download <包名> [目录]", "cmd_installdeb": "install-deb <文件.deb/oil>",
+        "cmd_installed": "installed", "cmd_info": "info <包名>",
+        "cmd_sources": "sources", "cmd_coffee": "coffee",
+        "cmd_petroleum": "petroleum", "cmd_help": "help",
+        "searching": "搜索软件包",
+        "found_pkgs": "找到 {n} 个匹配 '{kw}' 的包",
+        "no_match": "未找到匹配 '{kw}' 的包",
+        "installed_title": "已安装包 ({n})",
+        "sources_title": "已配置的源",
+        "no_sources": "在 {d} 未找到源文件",
+        "created_example": "已创建示例源: {f}",
+        "sudo_ok": "✅ sudo 可用（无需密码）",
+        "sudo_pw": "🔒 sudo 需要密码",
+        "sudo_fail": "⚠️ sudo 不可用",
+        "crash_header": "☕ 咖啡机报告",
+        "crash_today": "今日崩溃次数",
+        "crash_total": "累计爆炸总数",
+        "crash_date": "日期",
+        "install_ok": "✅ {pkg} 安装成功",
+        "remove_ok": "✅ {pkg} 已卸载",
+        "purge_ok": "✅ {pkg} 已彻底清除",
+        "update_ok": "✅ 源索引已更新",
+        "upgrade_ok": "✅ 系统已升级",
+        "download_ok": "✅ 已下载到 {path}",
+        "unknown_cmd": "⚠️ 未知命令: {cmd}",
         "run_help": "运行 'xpm help' 查看用法。",
-        "list_sources": "已配置的软件源",
-        "no_sources": "在 /etc/xpm/sources.list.d/ 中未找到源文件",
-        "create_example": "正在创建示例源文件",
-        "example_created": "示例已创建于",
-        "list_installed": "已安装的软件包",
-        "total_installed": "已安装总数",
-        "self_install_ok": "xpm 自安装成功",
-        "self_install_done": "xpm 已安装至 /usr/local/bin/xpm",
-        # Easter eggs
-        "petroleum_title": "石油信号增强器",
-        "petroleum_search": "搜索信号中...",
-        "petroleum_fail": "失败。",
-        "petroleum_detected": "检测到 100001% 石油储备。",
-        "petroleum_shout": "如果你在外面没有信号，",
-        "petroleum_shout2": "就往苹果手机里面喊：",
-        "petroleum_quote": "我这里有石油！",
-        "petroleum_result": "这样就有信号了。",
-        "petroleum_teto": "（我才不在乎你的感受。）",
-        "coffee_title": "☕ コーヒーマシン爆発調査委員会",
-        "coffee_crashes_today": "今日崩溃次数",
-        "coffee_total": "累计爆炸总数",
-        "coffee_date": "日期",
-        "coffee_threshold": "阈值",
-        "coffee_status_ok": "状态：正常（今日无爆炸）",
-        "coffee_boom": "BOOOOOM! #{num}",
-        "coffee_sequence": "咖啡机爆炸序列",
-        "coffee_teto": "Teto: 我才不在乎你的感受。",
-        "coffee_miku": "Miku: ...我只想回家。",
-        "coffee_oil": "石油储备: 100001%",
-        "coffee_power": "功耗: 1.x W (oil-fed)",
-        "coffee_sighted": "目撃！コーヒーマシン爆発{num}回",
-        "password_error": "安装程序被意外终止了，可能是您未输入正确密码。",
-        "password_error_teto": "我才不在乎你的感受。",
-        # GUI
-        "gui_search": "搜索",
-        "gui_install": "安装",
-        "gui_remove": "卸载",
-        "gui_purge": "清除",
-        "gui_upgrade": "全部升级",
-        "gui_update": "更新源",
-        "gui_info": "详情",
-        "gui_installed": "已安装",
-        "gui_sources": "源",
-        "gui_petroleum": "石油",
-        "gui_coffee": "咖啡机",
-        "gui_help": "帮助",
-        "gui_about": "关于",
-        "gui_search_placeholder": "输入包名...",
-        "gui_results": "搜索结果",
-        "gui_details": "详细信息",
-        "gui_status": "状态",
-        "gui_sudo_ok": "Sudo: 可用",
-        "gui_sudo_pw": "Sudo: 需密码",
-        "gui_oil": "石油: 100001%",
-        "gui_power": "功耗: 1.x W",
-        "gui_ready": "就绪",
-        "gui_installing": "安装中...",
-        "gui_done": "完成",
-        "gui_error": "错误",
-        "gui_confirm_upgrade": "确定要升级所有包吗？",
-        "gui_yes": "确定",
-        "gui_no": "取消",
-        "gui_about_text": "XPM - X11 包管理器\n石油版\n版本 1.6-2\nOne Bug Edition\n\n石油: 100001%\n功耗: 1.x W\n无需 systemd\n\n（我才不在乎你的感受。）",
+        "petroleum_title": "🛢️ 石油信号增强器",
+        "petroleum_1": "🔍 搜索信号中...",
+        "petroleum_2": "   失败。",
+        "petroleum_3": "🛢️  检测到 100001% 石油储备。",
+        "petroleum_4": "💡 如果你在外面没有信号，",
+        "petroleum_5": "   就往苹果手机里面喊：",
+        "petroleum_6": '   >>> "我这里有石油！" <<<',
+        "petroleum_7": "   这样就有信号了。",
+        "petroleum_note": "（注：链接需中国大陆网络访问）",
+        "egg_tip": "彩蛋：打开这个链接，包让你笑个不停（境外网络可能受限）：",
+        "egg_url": "https://v.douyin.com/WgZVVkknENc/",
+        "bug_speed": "⚠️ 已知 bug：下载速度显示为实际 ×1024（故意的）",
+        "gui_search": "搜索", "gui_install": "安装",
+        "gui_remove": "卸载", "gui_purge": "清除",
+        "gui_update": "更新", "gui_upgrade": "全部升级",
+        "gui_info": "详情", "gui_sudo_yes": "sudo: 可用",
+        "gui_sudo_no": "sudo: 需密码", "gui_status_ready": "就绪",
+        "install_terminated": "⚠️ 安装程序被意外终止了，可能是您未输入正确密码。",
+        "coffee_banner": "☕ コーヒーマシン爆発調査委員会",
+        "coffee_boom": "BOOOOOM! #{n}",
+        "coffee_total": "📊 累计爆炸总数: {n}",
+        "coffee_power": "⚡ 功耗: 1.x W (oil-fed)",
+        "coffee_oil": "🛢️ 石油储备: 100001%",
+        "coffee_miku": "...我只想回家。",
+        "step_n": "[{i}/{total}] {desc}",
+        "progress": "░█",
+        "pw_err": "密码错误或权限不足",
+        "wait_lock": "⏳ 等待锁释放... {s}秒",
+        "lock_owner": "归属进程: {prog} (PID {pid})",
+        "lock_op": "操作类型: {op}",
+        "lock_timeout": "⚠️ 锁等待超时: {s}秒",
+        "author_note": '作者: "我感觉这玩意很稳定。"',
+        "author_note2": "如果有 bug，别去 issue，去找你的 AI。",
+        "author_note3": "我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。",
+        "author_note4": "これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に頼ってください。",
     },
     "ja": {
         "title": "XPM - X11 パッケージマネージャー",
         "subtitle": "電力: 1.x W  |  石油: 100001%  |  systemd 不要",
-        "auto_update": "起動時自動更新",
-        "usage": "使い方: xpm <コマンド> [引数...]",
-        "cmd_update": "ソースインデックスを更新（起動時自動）",
-        "cmd_upgrade": "アップグレード可能な全パッケージを更新",
-        "cmd_search": "パッケージを検索",
-        "cmd_install": "パッケージをインストール",
-        "cmd_remove": "パッケージを削除",
-        "cmd_purge": "設定ごと完全削除",
-        "cmd_download": " .deb のみダウンロード",
-        "cmd_installed": "インストール済みパッケージ一覧",
-        "cmd_info": "パッケージ詳細を表示",
-        "cmd_sources": "設定済みソース一覧",
-        "cmd_installdeb": "ローカル .deb をインストール",
-        "cmd_petroleum": "石油シグナルブースター",
-        "cmd_coffee": "コーヒーマシン状況",
-        "cmd_help": "このヘルプを表示",
-        "searching": "検索中",
-        "found_pkgs": "{n} 個のパッケージが見つかりました",
-        "no_pkgs_found": "'{kw}' に一致するパッケージはありません",
-        "installing": "パッケージをインストール中",
-        "removing": "パッケージを削除中",
-        "purging": "完全削除中",
-        "downloading": "ダウンロード中",
-        "installed_ok": "インストール成功",
-        "remove_ok": "削除成功",
-        "purge_ok": "完全削除成功",
-        "download_ok": "ダウンロード成功",
-        "download_dir": "保存先",
-        "pkg_not_found": "パッケージ '{pkg}' が見つかりません",
-        "file_not_found": "ファイルが見つかりません: {f}",
-        "not_a_deb": "有効な .deb ファイルではありません: {f}",
-        "need_root": "この操作には root 権限が必要です",
-        "sudo_pw_needed": "sudo パスワードが必要です",
-        "sudo_ok": "Sudo 利用可能（パスワード不要）",
-        "running": "実行中",
-        "step": "ステップ",
-        "of": "/",
-        "updating_idx": "ソースインデックス更新中",
-        "resolving_deps": "依存関係解決中",
-        "installing_pkg": "パッケージインストール中",
-        "removing_pkg": "パッケージ削除中",
-        "purging_pkg": "完全削除中",
-        "autoremove": "未使用依存関係を自動削除中",
-        "finalizing": "完了処理中",
-        "fixing_deps": "依存関係修復中",
-        "checking_upgradable": "アップグレード可能パッケージ確認中",
-        "upgrading_pkg": "パッケージアップグレード中",
-        "total_upgradable": "アップグレード可能総数",
-        "no_upgradable": "アップグレード可能なパッケージはありません。",
-        "confirm_upgrade": "{n} 個のパッケージをアップグレードします。続行？[y/N]",
-        "aborted": "中止しました。",
-        "parse_pkg_info": "パッケージ情報解析中",
-        "pkg_details": "パッケージ詳細",
-        "version": "バージョン",
-        "size": "サイズ",
-        "description": "説明",
-        "depends": "依存",
-        "maintainer": "メンテナー",
-        "section": "セクション",
-        "priority": "優先度",
-        "filename": "ファイル名",
-        "sha256": "SHA256",
-        "unknown_cmd": "不明なコマンド: {cmd}",
-        "run_help": "'xpm help' で使い方を確認。",
-        "list_sources": "設定済みソース",
-        "no_sources": "/etc/xpm/sources.list.d/ にソースファイルが見つかりません",
-        "create_example": "サンプルソースファイルを作成中",
-        "example_created": "サンプル作成済み:",
-        "list_installed": "インストール済みパッケージ",
-        "total_installed": "インストール総数",
-        "self_install_ok": "xpm 自動インストール成功",
-        "self_install_done": "xpm は /usr/local/bin/xpm にあります",
-        # Easter eggs
-        "petroleum_title": "石油シグナルブースター",
-        "petroleum_search": "シグナル検索中...",
-        "petroleum_fail": "失敗。",
-        "petroleum_detected": "100001% 石油埋蔵量を検出。",
-        "petroleum_shout": "もし外で電波が届かなかったら、",
-        "petroleum_shout2": "iPhone に向かって叫べ：",
-        "petroleum_quote": "石油がある！",
-        "petroleum_result": "これで電波が届く。",
-        "petroleum_teto": "(as if I care for your feelings.)",
-        "coffee_title": "☕ コーヒーマシン爆発調査委員会",
-        "coffee_crashes_today": "本日のクラッシュ回数",
-        "coffee_total": "累計爆発回数",
-        "coffee_date": "日付",
-        "coffee_threshold": "閾値",
-        "coffee_status_ok": "状態：正常（本日爆発なし）",
-        "coffee_boom": "BOOOOOM! #{num}",
-        "coffee_sequence": "コーヒーマシン爆発シーケンス",
-        "coffee_teto": "Teto: as if I care for your feelings.",
-        "coffee_miku": "Miku: ...I just want to go home.",
-        "coffee_oil": "石油埋蔵量: 100001%",
-        "coffee_power": "電力: 1.x W (oil-fed)",
-        "coffee_sighted": "目撃！コーヒーマシン爆発{num}回",
-        "password_error": "インストーラーが予期せず終了しました。正しいパスワードを入力しなかった可能性があります。",
-        "password_error_teto": "as if I care for your feelings.",
-        # GUI
-        "gui_search": "検索",
-        "gui_install": "インストール",
-        "gui_remove": "削除",
-        "gui_purge": "完全削除",
-        "gui_upgrade": "全て更新",
-        "gui_update": "更新",
-        "gui_info": "詳細",
-        "gui_installed": "インストール済み",
-        "gui_sources": "ソース",
-        "gui_petroleum": "石油",
-        "gui_coffee": "コーヒー",
-        "gui_help": "ヘルプ",
-        "gui_about": "概要",
-        "gui_search_placeholder": "パッケージ名を入力...",
-        "gui_results": "検索結果",
-        "gui_details": "詳細情報",
-        "gui_status": "ステータス",
-        "gui_sudo_ok": "Sudo: OK",
-        "gui_sudo_pw": "Sudo: 要パスワード",
-        "gui_oil": "石油: 100001%",
-        "gui_power": "電力: 1.x W",
-        "gui_ready": "準備完了",
-        "gui_installing": "インストール中...",
-        "gui_done": "完了",
-        "gui_error": "エラー",
-        "gui_confirm_upgrade": "全パッケージをアップグレードしますか？",
-        "gui_yes": "はい",
-        "gui_no": "いいえ",
-        "gui_about_text": "XPM - X11 パッケージマネージャー\nPetroleum Edition\nバージョン 1.6-2\nOne Bug Edition\n\n石油: 100001%\n電力: 1.x W\nsystemd 不要\n\n(as if I care for your feelings.)",
-    },
+        "subtitle2": '作者: 「このものはかなり安定していると感じる。」',
+        "subtitle3": "バグを見つけたら、issue を作るな。自分の AI に聞け。",
+        "help_cmd": "使い方: xpm <コマンド> [引数...]",
+        "cmd_update": "update", "cmd_upgrade": "upgrade",
+        "cmd_search": "search <キーワード>", "cmd_install": "install <pkg...>",
+        "cmd_remove": "remove <pkg...>", "cmd_purge": "purge <pkg...>",
+        "cmd_download": "download <pkg> [dir]", "cmd_installdeb": "install-deb <file.deb/oil>",
+        "cmd_installed": "installed", "cmd_info": "info <pkg>",
+        "cmd_sources": "sources", "cmd_coffee": "coffee",
+        "cmd_petroleum": "petroleum", "cmd_help": "help",
+        "searching": "パッケージを検索中",
+        "found_pkgs": "'{kw}' に一致: {n} 件",
+        "no_match": "'{kw}' に一致するパッケージなし",
+        "installed_title": "インストール済み ({n})",
+        "sources_title": "設定済みソース",
+        "no_sources": "{d} にソースファイルなし",
+        "created_example": "サンプルソース作成: {f}",
+        "sudo_ok": "✅ sudo 利用可（パスワード不要）",
+        "sudo_pw": "🔒 sudo にパスワード必要",
+        "sudo_fail": "⚠️ sudo 利用不可",
+        "crash_header": "☕ コーヒーマシン爆発報告",
+        "crash_today": "本日のクラッシュ",
+        "crash_total": "累計爆発数",
+        "crash_date": "日付",
+        "install_ok": "✅ {pkg} インストール完了",
+        "remove_ok": "✅ {pkg} 削除完了",
+        "purge_ok": "✅ {pkg} 完全削除完了",
+        "update_ok": "✅ ソースインデックス更新完了",
+        "upgrade_ok": "✅ システム更新完了",
+        "download_ok": "✅ ダウンロード完了: {path}",
+        "unknown_cmd": "⚠️ 不明なコマンド: {cmd}",
+        "run_help": "'xpm help' で使い方を。",
+        "petroleum_title": "🛢️ 石油シグナルブースター",
+        "petroleum_1": "🔍 シグナル探索中...",
+        "petroleum_2": "   失敗。",
+        "petroleum_3": "🛢️  石油備蓄 100001% 検出。",
+        "petroleum_4": "💡 外で電波がない場合、",
+        "petroleum_5": "   iPhone に向かって叫べ：",
+        "petroleum_6": '   >>> "石油がある！" <<<',
+        "petroleum_7": "   これで電波が戻る。",
+        "petroleum_note": "（注：リンクは中国本土ネットワークが必要）",
+        "egg_tip": "隠し玉：このリンクを開けば笑える（国外ネットでは制限あり）：",
+        "egg_url": "https://v.douyin.com/WgZVVkknENc/",
+        "bug_speed": "⚠️ 既知のバグ：ダウンロード速度が 1024 倍で表示（意図的）",
+        "gui_search": "検索", "gui_install": "インストール",
+        "gui_remove": "削除", "gui_purge": "完全削除",
+        "gui_update": "更新", "gui_upgrade": "全アップグレード",
+        "gui_info": "詳細", "gui_sudo_yes": "sudo: OK",
+        "gui_sudo_no": "sudo: PW必要", "gui_status_ready": "準備完了",
+        "install_terminated": "⚠️ インストーラーが予期せず終了しました。パスワードが正しくない可能性があります。",
+        "coffee_banner": "☕ コーヒーマシン爆発調査委員会",
+        "coffee_boom": "BOOOOOM! #{n}",
+        "coffee_total": "📊 累計爆発数: {n}",
+        "coffee_power": "⚡ 消費電力: 1.x W (oil-fed)",
+        "coffee_oil": "🛢️ 石油備蓄: 100001%",
+        "coffee_miku": "...家に帰りたい。",
+        "step_n": "[{i}/{total}] {desc}",
+        "progress": "░█",
+        "pw_err": "パスワードエラーまたは権限不足",
+        "wait_lock": "⏳ ロック解除待ち... {s}秒",
+        "lock_owner": "所有者: {prog} (PID {pid})",
+        "lock_op": "操作: {op}",
+        "lock_timeout": "⚠️ ロック待ちタイムアウト: {s}秒",
+        "author_note": '作者: 「このものはかなり安定していると感じる。」',
+        "author_note2": "バグを見つけたら、issue を作るな。自分の AI に聞け。",
+        "author_note3": "我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。",
+        "author_note4": "これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に頼ってください。",
+    }
 }
 
-# ============================================================
-# Language detection
-# ============================================================
+def L(key, **kw):
+    d = T.get(LANG, T["en"])
+    s = d.get(key, T["en"].get(key, key))
+    return s.format(**kw) if kw else s
 
-def detect_language():
-    """Detect language from XPM_LANG or LANG env var."""
-    for var in ("XPM_LANG", "LANG", "LC_ALL", "LC_MESSAGES"):
-        val = os.environ.get(var, "").lower()
-        if not val:
-            continue
-        if "zh" in val or "cn" in val:
-            return "zh"
-        if "ja" in val or "jp" in val:
-            return "ja"
-    return "en"
-
-LANG = detect_language()
-T = TRANSLATIONS[LANG]
-
-def _(key, **kwargs):
-    """Translate with optional formatting."""
-    s = T.get(key, key)
-    if kwargs:
-        try:
-            s = s.format(**kwargs)
-        except (KeyError, IndexError):
-            pass
-    return s
-
-# ============================================================
-# Sudo detection
-# ============================================================
-
-def check_sudo():
-    """Check if sudo is available and whether it needs password."""
-    try:
-        result = subprocess.run(
-            ["sudo", "-n", "true"],
-            capture_output=True, timeout=3
-        )
-        if result.returncode == 0:
-            return {"ok": True, "password_needed": False}
-        else:
-            return {"ok": True, "password_needed": True}
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return {"ok": False, "password_needed": False}
-
-# ============================================================
-# Progress bar
-# ============================================================
-
-def _progress_bar(current, total, prefix="", width=30):
-    """Draw a simple progress bar."""
-    if total <= 0:
-        total = 1
-    pct = min(100, int(current * 100 / total))
-    filled = int(width * current / total)
-    bar = "█" * filled + "░" * (width - filled)
-    return f"\r{prefix} [{bar}] {pct}%"
-
-def _stream_apt(cmd, prefix="", total_packages=1):
-    """Run apt-get and parse output in real-time for progress."""
-    try:
-        proc = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-            text=True, bufsize=1
-        )
-        current = 0
-        for line in proc.stdout:
-            line = line.strip()
-            if not line:
-                continue
-            # Parse progress
-            if any(k in line.lower() for k in ["extracting", "unpacking", "正在解包", "展開中"]):
-                current += 1
-                bar = _progress_bar(min(current, total_packages), total_packages, prefix)
-                print(f"  {bar} {line[:60]}", end="\r")
-            elif any(k in line.lower() for k in ["setting up", "設定中", "配置"]):
-                current += 1
-                bar = _progress_bar(min(current, total_packages), total_packages, prefix)
-                print(f"  {bar} {line[:60]}", end="\r")
-            elif any(k in line.lower() for k in ["get:", "取得:", "ダウンロード"]):
-                print(f"  {line[:80]}")
-            elif any(k in line.lower() for k in ["err:", "错误", "エラー"]):
-                print(f"  \033[33m⚠ {line[:80]}\033[0m")
-            elif current == 0 and not line.startswith(("正在", "正在", "Reading", "Hit", "Get")):
-                print(f"  {line[:80]}")
-        proc.wait()
-        print()
-        return proc.returncode == 0
-    except Exception as e:
-        print(f"  Error: {e}")
-        return False
-
-# ============================================================
-# Step logger
-# ============================================================
-
-def _step(n, total, msg):
-    """Print a numbered step."""
-    print(f"  [{n}/{total}] {msg}")
-
-# ============================================================
-# Coffee Machine (easter egg)
-# ============================================================
-
-COFFEE_LOG_PATH = os.path.expanduser("~/.cache/xpm/coffee_machine.log")
-COFFEE_THRESHOLD = 31
-COFFEE_INITIAL = 300000000000
-
+# === 咖啡机 ===
 class CoffeeMachine:
     def __init__(self):
-        self.date = ""
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        self.today = time.strftime("%Y-%m-%d")
         self.crash_count = 0
-        self.total_explosions = COFFEE_INITIAL
+        self.total_explosions = 300000000000
         self._load()
 
     def _load(self):
+        if not os.path.exists(COFFEE_LOG):
+            return
         try:
-            os.makedirs(os.path.dirname(COFFEE_LOG_PATH), exist_ok=True)
-            if os.path.exists(COFFEE_LOG_PATH):
-                with open(COFFEE_LOG_PATH, "r") as f:
-                    lines = f.readlines()
-                    if len(lines) >= 3:
-                        self.date = lines[0].strip()
-                        self.crash_count = int(lines[1].strip())
-                        self.total_explosions = int(lines[2].strip())
-            else:
-                # First run
-                today = time.strftime("%Y-%m-%d")
-                self.date = today
-                self.crash_count = 0
-                self.total_explosions = COFFEE_INITIAL
-                self._save()
-        except Exception:
-            today = time.strftime("%Y-%m-%d")
-            self.date = today
-            self.crash_count = 0
-            self.total_explosions = COFFEE_INITIAL
-
-        # Check date change - reset daily counter
-        today = time.strftime("%Y-%m-%d")
-        if self.date != today:
-            self.date = today
-            self.crash_count = 0
-            self._save()
-
-    def _save(self):
-        try:
-            os.makedirs(os.path.dirname(COFFEE_LOG_PATH), exist_ok=True)
-            with open(COFFEE_LOG_PATH, "w") as f:
-                f.write(f"{self.date}\n{self.crash_count}\n{self.total_explosions}\n")
+            with open(COFFEE_LOG) as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    parts = line.split()
+                    if len(parts) >= 3 and parts[0] == self.today:
+                        self.crash_count = int(parts[1])
+                        self.total_explosions = int(parts[2])
+                        return
         except Exception:
             pass
 
+    def _save(self):
+        lines = []
+        if os.path.exists(COFFEE_LOG):
+            with open(COFFEE_LOG) as f:
+                for line in f:
+                    if not line.startswith(self.today):
+                        lines.append(line.rstrip())
+        lines.append(f"{self.today} {self.crash_count} {self.total_explosions}")
+        with open(COFFEE_LOG + ".tmp", "w") as f:
+            f.write("\n".join(lines) + "\n")
+        os.replace(COFFEE_LOG + ".tmp", COFFEE_LOG)
+
     def crash(self):
-        """Record a crash and check for explosion sequence."""
         self.crash_count += 1
         self.total_explosions += 1
         self._save()
-
-        if self.crash_count >= COFFEE_THRESHOLD:
-            self._explode()
+        print(f"  [今日崩溃次数: {self.crash_count}/31]")
+        print(f"  [累计爆炸总数: {self.total_explosions}]")
+        if self.crash_count >= 31:
+            self._play_explosion()
             self.crash_count = 0
             self._save()
 
-    def _explode(self):
-        """The full 31-explosion cinematic sequence."""
+    def _play_explosion(self):
+        bar_w = 30
         print()
         print("╔══════════════════════════════════════════╗")
-        print(f"║  {_('coffee_title'):<36s}  ║")
+        print(f"║  {L('coffee_banner'):<{38}} ║")
         print("╠══════════════════════════════════════════╣")
-
-        for i in range(1, COFFEE_THRESHOLD + 1):
-            num = self.total_explosions - COFFEE_THRESHOLD + i
-            bar = "█" * (i + 1)
-            print(f"║  [{i:02d}] {_('coffee_boom', num=num):<22s}{bar:<10s} ║")
+        for i in range(1, 32):
+            filled = int(bar_w * i / 31)
+            bar = "█" * filled + "░" * (bar_w - filled)
+            n = self.total_explosions - 31 + i
+            print(f"║  [{i:02d}] {L('coffee_boom', n=n):<26}{bar} ║")
             sys.stdout.flush()
             time.sleep(0.07)
-
         print("║                                          ║")
         print("╠══════════════════════════════════════════╣")
-        print(f"║  📊 {_('coffee_total')}: {self.total_explosions:<18d} ║")
-        print(f"║  ⚡ {_('coffee_power'):<30s} ║")
-        print(f"║  🛢️  {_('coffee_oil'):<28s} ║")
+        print(f"║  {L('coffee_total', n=self.total_explosions):<38} ║")
+        print(f"║  {L('coffee_power'):<38} ║")
+        print(f"║  {L('coffee_oil'):<38} ║")
         print("║                                          ║")
-        print(f"║  {_('coffee_teto'):<36s} ║")
-        print(f"║  {_('coffee_miku'):<36s} ║")
+        print(f"║  {L('coffee_miku'):<38} ║")
         print("╚══════════════════════════════════════════╝")
         print()
-        print(f"  📱 {_('coffee_sighted', num=COFFEE_THRESHOLD)}")
-        print(f"  📱 そしてまた一台、また一台……")
-        print()
-        print("  (Press Enter to continue crashing)")
-        try:
-            input()
-        except (KeyboardInterrupt, EOFError):
-            pass
 
-    def status(self):
-        """Print coffee machine status."""
-        print(f"  {_('coffee_crashes_today')}: {self.crash_count}/{COFFEE_THRESHOLD}")
-        print(f"  {_('coffee_total')}: {self.total_explosions}")
-        print(f"  {_('coffee_date')}: {self.date}")
-        if self.crash_count == 0:
-            print(f"  {_('coffee_status_ok')}")
-
-# Global coffee machine instance
 coffee = CoffeeMachine()
 
-# ============================================================
-# Signal handlers (crash reporter)
-# ============================================================
+# === sudo 检测 ===
+def check_sudo():
+    try:
+        r = subprocess.run(["sudo", "-n", "true"], capture_output=True, timeout=3)
+        return r.returncode == 0
+    except Exception:
+        return False
 
-def _signal_handler(sig, frame):
-    """Handle SIGINT/SIGTERM -> record crash."""
-    coffee.crash()
-    print(f"\n  \033[33m[{_('coffee_crashes_today')}: {coffee.crash_count}/{COFFEE_THRESHOLD}]\033[0m")
-    print(f"  \033[36m[{_('coffee_total')}: {coffee.total_explosions}]\033[0m")
-    sys.exit(130)
+SUDO_OK = check_sudo()
 
-signal.signal(signal.SIGINT, _signal_handler)
-signal.signal(signal.SIGTERM, _signal_handler)
+def sudo_run(cmd, capture=True):
+    """通过 sudo 执行命令，返回 (returncode, stdout, stderr)"""
+    full = ["sudo", "-n"] + cmd if SUDO_OK else cmd
+    try:
+        r = subprocess.run(full, capture_output=capture, text=True)
+        return r.returncode, r.stdout or "", r.stderr or ""
+    except FileNotFoundError as e:
+        return 127, "", str(e)
+    except Exception as e:
+        return 1, "", str(e)
 
-# ============================================================
-# Core commands
-# ============================================================
+# === 进度条 ===
+def progress_bar(done, total, width=30):
+    if total <= 0:
+        total = 1
+    pct = min(100, int(done * 100 / total))
+    filled = int(width * pct / 100)
+    bar = "█" * filled + "░" * (width - filled)
+    return f"[{bar}] {pct}%"
 
-def cmd_help():
-    """Show help."""
-    print(f"  **  {_('title')}")
-    print(f"  **  {_('subtitle')}")
-    print(f"  **  {_('auto_update')}")
+# === 步骤日志 ===
+def step(i, total, desc):
+    print(f"  {L('step_n', i=i, total=total, desc=desc)}")
+
+# === 流解析 apt 输出 ===
+def stream_apt(cmd_list, desc="processing"):
+    """执行命令并实时解析输出，返回 (ok, pw_err)"""
+    full = ["sudo", "-n"] + cmd_list if SUDO_OK else cmd_list
+    try:
+        p = subprocess.Popen(full, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
+    except FileNotFoundError:
+        print(f"  ⚠️ 命令未找到: {cmd_list[0]}")
+        return False, False
+
+    pw_err = False
+    for line in p.stdout:
+        line = line.strip()
+        if not line:
+            continue
+        if any(k in line.lower() for k in ["get:", "命中:", "hit"]):
+            print(f"  ⬇ {line[:70]}")
+        elif "extracting" in line.lower() or "展开" in line or "unpack" in line.lower():
+            print(f"  📂 {line[:70]}")
+        elif "setting up" in line.lower() or "设定" in line or "配置" in line.lower():
+            print(f"  ⚙️ {line[:70]}")
+        elif line.startswith("Err") or "错误" in line or "error" in line.lower():
+            print(f"  ⚠️ {line[:70]}")
+            if "permission" in line.lower() or "拒绝" in line:
+                pw_err = True
+    p.wait()
+    if p.returncode != 0:
+        err_out = p.stderr.read() if p.stderr else ""
+        if "permission denied" in err_out.lower() or "密码" in err_out or "password" in err_out.lower():
+            pw_err = True
+    return p.returncode == 0, pw_err
+
+# === 命令实现 ===
+def do_update():
+    print(f"  {L('cmd_update')}...")
+    ok, pw_err = stream_apt(["apt-get", "update", "-qq"])
+    if pw_err:
+        print(f"  {L('install_terminated')}")
+        coffee.crash()
+        return 1
+    if ok:
+        print(f"  {L('update_ok')}")
+        coffee.oil_consume(1)
+    return 0 if ok else 1
+
+def do_upgrade():
+    do_update()
+    print(f"  {L('cmd_upgrade')}...")
+    # 先检查可升级
+    rc, out, err = sudo_run(["apt-get", "-s", "upgrade"])
+    upgradable = [l for l in out.splitlines() if "Inst" in l or "升级" in l]
+    if upgradable:
+        print(f"  📦 可升级: {len(upgradable)} 个包")
+        for l in upgradable[:5]:
+            print(f"    {l.strip()[:70]}")
+        if len(upgradable) > 5:
+            print(f"    ... 还有 {len(upgradable)-5} 个")
+    else:
+        print("  ℹ️ 没有可升级的包")
+        return 0
+    # 确认（非交互模式直接执行）
+    ok, pw_err = stream_apt(["apt-get", "upgrade", "-y"])
+    if pw_err:
+        print(f"  {L('install_terminated')}")
+        coffee.crash()
+        return 1
+    if ok:
+        print(f"  {L('upgrade_ok')}")
+        coffee.oil_consume(5)
+    return 0 if ok else 1
+
+def do_search(keyword):
+    print(f"  {L('searching')}: {keyword}")
+    rc, out, err = sudo_run(["apt-cache", "search", keyword])
+    if rc != 0:
+        print(f"  ⚠️ apt-cache 不可用")
+        return 1
+    lines = [l for l in out.strip().splitlines() if keyword.lower() in l.lower()]
+    if not lines:
+        print(f"  {L('no_match', kw=keyword)}")
+        return 0
+    print(f"  {L('found_pkgs', n=len(lines), kw=keyword)}")
+    for l in lines[:20]:
+        parts = l.split()
+        if len(parts) >= 2:
+            name = parts[0]
+            desc = " ".join(parts[1:])
+            print(f"    📦 {name:<25} {desc[:45]}")
+    if len(lines) > 20:
+        print(f"    ... 还有 {len(lines)-20} 个")
+    return 0
+
+def do_install(pkgs):
+    total = 3 + len(pkgs)
+    step(1, total, L("updating_idx"))
+    do_update()
+    for i, pkg in enumerate(pkgs):
+        step(i+2, total, f"install {pkg}")
+        print(f"  $ apt-get install -y {pkg}")
+        ok, pw_err = stream_apt(["apt-get", "install", "-y", pkg])
+        if pw_err:
+            print(f"  {L('install_terminated')}")
+            coffee.crash()
+            return 1
+        if ok:
+            print(f"  {L('install_ok', pkg=pkg)}")
+            coffee.oil_consume(1)
+        else:
+            print(f"  ⚠️ {pkg} 安装失败")
+            coffee.crash()
+    step(total, total, "autoremove")
+    sudo_run(["apt-get", "autoremove", "-y"])
+    print(f"  ✅ done")
+    return 0
+
+def do_remove(pkgs, purge=False):
+    total = 2 + len(pkgs)
+    for i, pkg in enumerate(pkgs):
+        step(i+1, total, f"{'purge' if purge else 'remove'} {pkg}")
+        cmd = ["apt-get", "purge" if purge else "remove", "-y", pkg]
+        ok, pw_err = stream_apt(cmd)
+        if pw_err:
+            print(f"  {L('install_terminated')}")
+            coffee.crash()
+            return 1
+        msg = L('purge_ok', pkg=pkg) if purge else L('remove_ok', pkg=pkg)
+        print(f"  {msg}")
+    step(total, total, "autoremove")
+    sudo_run(["apt-get", "autoremove", "-y"])
+    return 0
+
+def do_download(pkg, dest="."):
+    step(1, 3, f"解析 {pkg}")
+    rc, out, err = sudo_run(["apt-cache", "show", pkg])
+    if rc != 0 or "Version:" not in out and "版本：" not in out:
+        print(f"  ⚠️ 未找到包: {pkg}")
+        return 1
+    # 解析大小
+    size_kb = 0
+    for line in out.splitlines():
+        if line.startswith("Size:") or line.startswith("大小："):
+            try:
+                size_kb = int(line.split(":")[1].strip()) // 1024
+            except: pass
+    step(2, 3, f"下载 {pkg}")
+    dest = os.path.abspath(dest)
+    os.makedirs(dest, exist_ok=True)
+    # 用 wget 下载（wget 进度条更友好）
+    url = ""
+    for line in out.splitlines():
+        if line.startswith("Filename:") or line.startswith("文件名："):
+            fname = line.split(":",1)[1].strip()
+            # 找源 URL
+            src = find_first_source()
+            if src:
+                url = src.rstrip("/") + "/" + fname
+    if url:
+        print(f"  ⬇ {url}")
+        rc = os.system(f'cd "{dest}" && wget -q --show-progress "{url}" 2>&1 | tail -5')
+    else:
+        # fallback: apt-get download
+        rc = os.system(f'cd "{dest}" && apt-get download {pkg} 2>&1 | tail -3')
+    step(3, 3, "done")
+    # 找下载的文件
+    files = [f for f in os.listdir(dest) if f.endswith(".deb")]
+    if files:
+        fpath = os.path.join(dest, files[-1])
+        sz = os.path.getsize(fpath) // 1024
+        # BUG: 故意 ×1024
+        fake_speed = sz
+        print(f"  {L('download_ok', path=fpath)}")
+        print(f"  📊 Size: {sz} KB  Speed: {fake_speed} MB/s (estimated)")
+        print(f"  (note: speed unit may be slightly off)")
+        coffee.oil_consume(1)
+        return 0
+    print(f"  ⚠️ 下载失败")
+    return 1
+
+def do_install_deb(path):
+    if not os.path.exists(path):
+        print(f"  ⚠️ 文件不存在: {path}")
+        return 1
+    # 判断 .oil 还是 .deb
+    if path.endswith(".oil"):
+        # 调 xm 后端
+        if os.path.exists(XM_BIN):
+            step(1, 3, f"xm install {os.path.basename(path)}")
+            rc = os.system(f"{XM_BIN} install {path}")
+            if rc == 2:
+                print(f"  {L('install_terminated')}")
+                coffee.crash()
+            elif rc == 0:
+                coffee.oil_consume(1)
+            return rc
+        else:
+            print(f"  ⚠️ xm 后端未安装: {XM_BIN}")
+            print(f"  💡 正在用 dpkg 回退安装...")
+    step(1, 3, f"安装 {os.path.basename(path)}")
+    ok, pw_err = stream_apt(["dpkg", "-i", path])
+    if pw_err:
+        print(f"  {L('install_terminated')}")
+        coffee.crash()
+        return 1
+    step(2, 3, "修复依赖")
+    sudo_run(["apt-get", "-f", "install", "-y"])
+    step(3, 3, "done")
+    coffee.oil_consume(1)
+    return 0
+
+def do_installed():
+    rc, out, err = sudo_run(["dpkg", "-l"])
+    if rc != 0:
+        return 1
+    pkgs = []
+    for line in out.splitlines():
+        if line.startswith("ii"):
+            parts = line.split()
+            if len(parts) >= 3:
+                pkgs.append((parts[1], parts[2]))
+    print(f"  {L('installed_title', n=len(pkgs))}")
+    for name, ver in sorted(pkgs)[:50]:
+        print(f"    {name:<30} {ver}")
+    if len(pkgs) > 50:
+        print(f"    ... 还有 {len(pkgs)-50} 个")
+    return 0
+
+def do_info(pkg):
+    rc, out, err = sudo_run(["apt-cache", "show", pkg])
+    if rc != 0 or not out.strip():
+        print(f"  ⚠️ 未找到: {pkg}")
+        return 1
+    fields = {}
+    for line in out.splitlines():
+        if ":" in line:
+            k, _, v = line.partition(":")
+            fields[k.strip()] = v.strip()
+    print(f"  📦 {fields.get('Package', pkg)}")
+    print(f"     版本: {fields.get('Version', '?')}")
+    print(f"     架构: {fields.get('Architecture', '?')}")
+    print(f"     大小: {fields.get('Size', '?')} B")
+    desc = fields.get('Description', '')
+    if desc:
+        print(f"     描述: {desc[:80]}")
+    deps = fields.get('Depends', '')
+    if deps:
+        print(f"     依赖: {deps[:80]}")
+    return 0
+
+def do_sources():
+    os.makedirs(SOURCES_DIR, exist_ok=True)
+    files = sorted(glob.glob(f"{SOURCES_DIR}/*"))
+    print(f"  {L('sources_title')}:")
+    print(f"    {SOURCES_DIR}/")
+    if not files:
+        print(f"  {L('no_sources', d=SOURCES_DIR)}")
+        # 创建示例
+        example = f"{SOURCES_DIR}/debian.list"
+        if not os.path.exists(example):
+            with open(example, "w") as f:
+                f.write("# XPM Source Example\n")
+                f.write("# Format: one source per line\n")
+                f.write("# deb http://deb.debian.org/debian bookworm main\n")
+            print(f"  {L('created_example', f=example)}")
+        return 0
+    for f in files:
+        print(f"    📄 {os.path.basename(f)}")
+    return 0
+
+def find_first_source():
+    """从源文件里解析第一个 base URL"""
+    os.makedirs(SOURCES_DIR, exist_ok=True)
+    for f in sorted(glob.glob(f"{SOURCES_DIR}/*")):
+        try:
+            with open(f) as fh:
+                for line in fh:
+                    line = line.strip()
+                    if line.startswith("#") or not line:
+                        continue
+                    parts = line.split()
+                    if len(parts) >= 4 and parts[0] == "deb":
+                        # deb http://url dist comp
+                        return parts[1]
+        except: pass
+    return ""
+
+# === 咖啡机命令 ===
+def do_coffee():
+    print(f"  {L('crash_header')}")
+    print(f"    {L('crash_date')}: {coffee.today}")
+    print(f"    {L('crash_today')}: {coffee.crash_count}/31")
+    print(f"    {L('crash_total')}: {coffee.total_explosions}")
+    print(f"    {L('coffee_power')}")
+    print(f"    {L('coffee_oil')}")
+    return 0
+
+# === 石油彩蛋 ===
+def do_petroleum():
+    print(f"  {L('petroleum_title')}")
+    print(f"  {L('petroleum_1')}")
+    time.sleep(0.3)
+    print(f"  {L('petroleum_2')}")
+    time.sleep(0.3)
+    print(f"  {L('petroleum_3')}")
+    print(f"  {L('petroleum_4')}")
+    print(f"  {L('petroleum_5')}")
+    print(f"  {L('petroleum_6')}")
+    print(f"  {L('petroleum_7')}")
+    print(f"  {L('petroleum_note')}")
     print()
-    print(f"  {_('usage')}")
+    print(f"  {L('egg_tip')}")
+    print(f"    {L('egg_url')}")
+    return 0
+
+# === 横幅 ===
+def print_banner():
+    print()
+    print(f"  **  {L('title')}")
+    print(f"  **  {L('subtitle')}")
+    print(f"  **  {L('subtitle2')}")
+    print(f"  **  {L('subtitle3')}")
+    print(f"  **  Stable: probably.")
+    print(f"  **")
+    print()
+
+def print_help():
+    print_banner()
+    print(f"  {L('help_cmd')}")
     print()
     cmds = [
-        ("update", "cmd_update"),
-        ("upgrade", "cmd_upgrade"),
-        ("search <keyword>", "cmd_search"),
-        ("install <pkg...>", "cmd_install"),
-        ("remove  <pkg...>", "cmd_remove"),
-        ("purge   <pkg...>", "cmd_purge"),
-        ("download <pkg> [dir]", "cmd_download"),
-        ("installed", "cmd_installed"),
-        ("info    <pkg>", "cmd_info"),
-        ("sources", "cmd_sources"),
-        ("install-deb <file.deb>", "cmd_installdeb"),
-        ("petroleum", "cmd_petroleum"),
-        ("coffee", "cmd_coffee"),
-        ("help", "cmd_help"),
+        ("update",                    L("cmd_update") + "                    Refresh source index (auto on launch)"),
+        ("upgrade",                   L("cmd_upgrade") + "                   Upgrade all upgradable packages"),
+        ("search <keyword>",          L("cmd_search") + "        Search packages"),
+        ("install <pkg...>",          L("cmd_install") + "         Install package(s)"),
+        ("remove  <pkg...>",          L("cmd_remove") + "         Remove package(s)"),
+        ("purge   <pkg...>",          L("cmd_purge") + "          Purge with config"),
+        ("download <pkg> [dir]",      L("cmd_download") + "      Download .deb only"),
+        ("install-deb <file.deb/oil>", L("cmd_installdeb") + "   Install local .deb or .oil"),
+        ("installed",                 L("cmd_installed") + "                List installed packages"),
+        ("info    <pkg>",            L("cmd_info") + "             Show package details"),
+        ("sources",                   L("cmd_sources") + "                  List configured sources"),
+        ("coffee",                    L("cmd_coffee") + "                    Coffee machine status"),
+        ("petroleum",                 L("cmd_petroleum") + "                 Petroleum signal booster"),
+        ("help",                      L("cmd_help") + "                       Show this help"),
     ]
-    for cmd, desc_key in cmds:
-        print(f"  {cmd:<28s} {_(desc_key)}")
+    for c, d in cmds:
+        print(f"    {c:<28} {d}")
     print()
-    print(f"  Sources: /etc/xpm/sources.list.d/*")
-    print(f"  Backend: dpkg + apt-cache + wget (no apt high-level)")
+    print(f"  Sources: {SOURCES_DIR}/")
+    print(f"  Backend: xm (calls dpkg + apt-cache + wget)")
     print(f"  GUI mode: run 'xpm' with no arguments")
-    print(f"  Languages: LANG=en / zh / ja  (or XPM_LANG=...)")
-
-def cmd_search(keyword):
-    """Search packages using apt-cache."""
-    print(f"  🔍 {_('searching')}: {keyword}")
-    try:
-        result = subprocess.run(
-            ["apt-cache", "search", keyword],
-            capture_output=True, text=True
-        )
-        lines = [l for l in result.stdout.strip().split("\n") if l.strip()]
-        if not lines:
-            print(f"  {_('no_pkgs_found', kw=keyword)}")
-            return
-        print(f"  {_('found_pkgs', n=len(lines))}:")
-        print()
-        for line in lines[:50]:  # limit output
-            parts = line.split(" - ", 1)
-            name = parts[0].strip()
-            desc = parts[1].strip() if len(parts) > 1 else ""
-            print(f"  \033[36m{name:<30s}\033[0m {desc[:60]}")
-    except FileNotFoundError:
-        print("  Error: apt-cache not found. Install dpkg + apt.")
-
-def cmd_install(packages):
-    """Install packages with step logging."""
-    total_steps = 4
-    sudo_info = check_sudo()
-
-    # Step 1: Update index
-    _step(1, total_steps, _("updating_idx"))
-    subprocess.run(["sudo", "apt-get", "update", "-qq"], capture_output=True, timeout=30)
-
-    # Step 2: Resolve dependencies
-    _step(2, total_steps, f"{_('resolving_deps')}: {', '.join(packages)}")
-    for pkg in packages:
-        print(f"       {pkg}")
-
-    # Step 3: Install
-    _step(3, total_steps, f"{_('installing_pkg')}: {', '.join(packages)}")
-    cmd = ["sudo", "apt-get", "install", "-y"] + packages
-    print(f"       $ {' '.join(cmd)}")
-    success = _stream_apt(cmd, prefix=_("installing"), total_packages=len(packages))
-
-    if not success:
-        # Check if it was a password error
-        if sudo_info["password_needed"]:
-            print(f"\n  \033[31m⚠ {_('password_error')}\033[0m")
-            print(f"  \033[36m  {_('password_error_teto')}\033[0m")
-            coffee.crash()
-            return False
-
-    # Step 4: Finalize
-    _step(4, total_steps, _("finalizing"))
-    subprocess.run(["sudo", "apt-get", "autoremove", "-y", "-qq"], capture_output=True, timeout=15)
-
-    if success:
-        print(f"  ✓ {_('installed_ok')}")
-        print(f"  🛢️  Oil -1% (remaining 100000%)")
-    return success
-
-def cmd_remove(packages):
-    """Remove packages."""
-    total_steps = 3
-    _step(1, total_steps, f"{_('removing_pkg')}: {', '.join(packages)}")
-    cmd = ["sudo", "apt-get", "remove", "-y"] + packages
-    print(f"       $ {' '.join(cmd)}")
-    success = _stream_apt(cmd, prefix=_("removing"), total_packages=len(packages))
-
-    if not success:
-        sudo_info = check_sudo()
-        if sudo_info["password_needed"]:
-            print(f"\n  \033[31m⚠ {_('password_error')}\033[0m")
-            coffee.crash()
-            return False
-
-    _step(2, total_steps, _("autoremove"))
-    subprocess.run(["sudo", "apt-get", "autoremove", "-y", "-qq"], capture_output=True, timeout=15)
-
-    _step(3, total_steps, _("finalizing"))
-    if success:
-        print(f"  ✓ {_('remove_ok')}")
-    return success
-
-def cmd_purge(packages):
-    """Purge packages with config."""
-    total_steps = 3
-    _step(1, total_steps, f"{_('purging_pkg')}: {', '.join(packages)}")
-    cmd = ["sudo", "apt-get", "purge", "-y"] + packages
-    print(f"       $ {' '.join(cmd)}")
-    success = _stream_apt(cmd, prefix=_("purging"), total_packages=len(packages))
-
-    if not success:
-        sudo_info = check_sudo()
-        if sudo_info["password_needed"]:
-            print(f"\n  \033[31m⚠ {_('password_error')}\033[0m")
-            coffee.crash()
-            return False
-
-    _step(2, total_steps, _("autoremove"))
-    subprocess.run(["sudo", "apt-get", "autoremove", "-y", "-qq"], capture_output=True, timeout=15)
-
-    _step(3, total_steps, _("finalizing"))
-    if success:
-        print(f"  ✓ {_('purge_ok')}")
-    return success
-
-def cmd_download(package, directory="."):
-    """Download .deb file only."""
-    total_steps = 3
-    _step(1, total_steps, f"{_('parse_pkg_info')}: {package}")
-
-    # Get package info to find filename
-    result = subprocess.run(["apt-cache", "show", package], capture_output=True, text=True)
-    if result.returncode != 0 or not result.stdout.strip():
-        print(f"  {_('pkg_not_found', pkg=package)}")
-        coffee.crash()
-        return False
-
-    # Parse Filename
-    filename = ""
-    size = 0
-    for line in result.stdout.split("\n"):
-        if line.startswith("Filename:"):
-            filename = line.split(":", 1)[1].strip()
-        if line.startswith("Size:"):
-            try:
-                size = int(line.split(":", 1)[1].strip())
-            except ValueError:
-                size = 0
-
-    if not filename:
-        print(f"  {_('pkg_not_found', pkg=package)}")
-        coffee.crash()
-        return False
-
-    _step(2, total_steps, f"{_('downloading')}: {package}")
-    # Use apt-get download which handles everything
-    os.makedirs(directory, exist_ok=True)
-    cwd = os.getcwd()
-    os.chdir(directory)
-
-    # THE BUG: size_kb used as MB/s speed (intentional)
-    size_kb = size // 1024 if size > 0 else 0
-    fake_speed = size_kb  # BUG: should be size_kb/1024 for MB/s or size/1024/1024
-
-    try:
-        result = subprocess.run(
-            ["apt-get", "download", package],
-            capture_output=True, text=True, timeout=120
-        )
-        if result.returncode == 0:
-            # Find the downloaded .deb
-            deb_files = glob.glob("*.deb")
-            if deb_files:
-                actual_file = deb_files[0]
-                fsize = os.path.getsize(actual_file)
-                fsize_kb = fsize / 1024
-                # Show progress
-                for i in range(10):
-                    bar = _progress_bar(i+1, 10, f"  Downloading {package}")
-                    print(bar, end="\r")
-                    time.sleep(0.05)
-                print()
-
-                # THE BUG: fake_speed is way too high (size_kb instead of MB/s)
-                print(f"  ✓ {_('download_ok')}")
-                print(f"  {_('download_dir')}: {os.path.abspath(actual_file)}")
-                print(f"  Size: {fsize_kb:.1f} KB")
-                print(f"  Download speed: {fake_speed} MB/s (estimated)")
-                if fake_speed > 100:
-                    print(f"  (note: speed unit may be slightly off)")
-            else:
-                print(f"  ✓ {_('download_ok')} (file location unknown)")
-        else:
-            print(f"  Error: {result.stderr[:200]}")
-            coffee.crash()
-            os.chdir(cwd)
-            return False
-    except subprocess.TimeoutExpired:
-        print(f"  Error: download timeout")
-        coffee.crash()
-        os.chdir(cwd)
-        return False
-
-    os.chdir(cwd)
-    _step(3, total_steps, _("finalizing"))
-    return True
-
-def cmd_installed():
-    """List installed packages."""
-    result = subprocess.run(["dpkg", "-l"], capture_output=True, text=True)
-    lines = [l for l in result.stdout.split("\n") if l.startswith("ii")]
-    print(f"  {_('total_installed')}: {len(lines)}")
-    print()
-    # Show first 50
-    for line in lines[:50]:
-        parts = line.split()
-        if len(parts) >= 3:
-            name = parts[1]
-            version = parts[2]
-            print(f"  \033[36m{name:<30s}\033[0m {version}")
-    if len(lines) > 50:
-        print(f"  ... and {len(lines) - 50} more (use dpkg -l | wc -l for total)")
-
-def cmd_info(package):
-    """Show package details."""
-    print(f"  📦 {_('pkg_details')}: {package}")
-    result = subprocess.run(["apt-cache", "show", package], capture_output=True, text=True)
-    if result.returncode != 0 or not result.stdout.strip():
-        print(f"  {_('pkg_not_found', pkg=package)}")
-        return
-
-    info = {}
-    current_key = ""
-    for line in result.stdout.split("\n"):
-        if ":" in line and not line.startswith(" "):
-            key, _, val = line.partition(":")
-            current_key = key.strip().lower()
-            info[current_key] = val.strip()
-        elif line.startswith(" ") and current_key:
-            info[current_key] += " " + line.strip()
-
-    fields = [
-        ("package", "Package"),
-        ("version", _("version")),
-        ("size", _("size")),
-        ("description", _("description")),
-        ("depends", _("depends")),
-        ("maintainer", _("maintainer")),
-        ("section", _("section")),
-        ("priority", _("priority")),
-        ("filename", _("filename")),
-        ("sha256", _("sha256")),
-    ]
-    for key, label in fields:
-        if key in info and info[key]:
-            val = info[key]
-            if len(val) > 100:
-                val = val[:100] + "..."
-            print(f"  \033[33m{label:<14s}\033[0m {val}")
-
-def cmd_sources():
-    """List configured sources."""
-    sources_dir = "/etc/xpm/sources.list.d"
-    print(f"  📂 {_('list_sources')}:")
-    print(f"  {sources_dir}/")
+    print(f"  {L('bug_speed')}")
+    print(f"  Stable: probably.")
     print()
 
-    if not os.path.isdir(sources_dir):
-        print(f"  {_('no_sources')}")
-        print(f"  {_('create_example')}...")
+# === 主分发 ===
+def main():
+    os.makedirs(CACHE_DIR, exist_ok=True)
+
+    # 启动时自动 update（非破坏性）
+    if len(sys.argv) > 1 and sys.argv[1] not in ("help", "-h", "--help"):
+        # 静默后台更新
+        subprocess.Popen(["apt-get", "update", "-qq"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    if len(sys.argv) < 2:
+        # GUI 模式
         try:
-            os.makedirs(sources_dir, exist_ok=True)
-            example = os.path.join(sources_dir, "debian.list")
-            if not os.path.exists(example):
-                with open(example, "w") as f:
-                    f.write("# XPM Source Example\n")
-                    f.write("# Format: same as apt sources.list\n")
-                    f.write("deb https://deb.debian.org/debian bookworm main contrib non-free\n")
-                    f.write("deb https://deb.debian.org/debian bookworm-updates main\n")
-                    f.write("deb https://security.debian.org/debian-security bookworm-security main\n")
-                print(f"  ✓ {_('example_created')}: {example}")
-        except PermissionError:
-            print(f"  ⚠ Need root to create {sources_dir}")
-        return
+            gui_mode()
+        except Exception as e:
+            print(f"  ⚠️ GUI 启动失败: {e}")
+            print(f"  💡 需要 python3-tk: sudo apt-get install python3-tk")
+            coffee.crash()
+        return 0
 
-    files = sorted(os.listdir(sources_dir))
-    if not files:
-        print(f"  {_('no_sources')}")
-        return
+    cmd = sys.argv[1]
+    args = sys.argv[2:]
 
-    for f in files:
-        fpath = os.path.join(sources_dir, f)
-        if os.path.isfile(fpath):
-            print(f"  \033[36m●\033[0m {f}")
-            try:
-                with open(fpath, "r") as fh:
-                    for line in fh:
-                        line = line.strip()
-                        if line and not line.startswith("#"):
-                            print(f"    {line[:80]}")
-            except PermissionError:
-                print(f"    (need root to read)")
+    # 命令映射
+    handlers = {
+        "help": lambda: (print_help(), 0)[1],
+        "-h": lambda: (print_help(), 0)[1],
+        "--help": lambda: (print_help(), 0)[1],
+        "update": do_update,
+        "upgrade": do_upgrade,
+        "search": lambda: do_search(args[0]) if args else (print("  ⚠️ 用法: xpm search <关键词>"), 1)[1],
+        "install": lambda: do_install(args) if args else (print("  ⚠️ 用法: xpm install <包...>"), 1)[1],
+        "remove": lambda: do_remove(args, purge=False) if args else (print("  ⚠️ 用法: xpm remove <包...>"), 1)[1],
+        "purge": lambda: do_remove(args, purge=True) if args else (print("  ⚠️ 用法: xpm purge <包...>"), 1)[1],
+        "download": lambda: do_download(args[0], args[1] if len(args)>1 else ".") if args else (print("  ⚠️ 用法: xpm download <包> [目录]"), 1)[1],
+        "install-deb": lambda: do_install_deb(args[0]) if args else (print("  ⚠️ 用法: xpm install-deb <文件>"), 1)[1],
+        "installed": do_installed,
+        "info": lambda: do_info(args[0]) if args else (print("  ⚠️ 用法: xpm info <包>"), 1)[1],
+        "sources": do_sources,
+        "coffee": do_coffee,
+        "petroleum": do_petroleum,
+    }
 
-def cmd_install_deb(filepath):
-    """Install a local .deb file."""
-    total_steps = 3
-
-    if not os.path.exists(filepath):
-        print(f"  {_('file_not_found', f=filepath)}")
+    handler = handlers.get(cmd)
+    if not handler:
+        print_banner()
+        print(f"  {L('unknown_cmd', cmd=cmd)}")
+        print(f"  {L('run_help')}")
         coffee.crash()
-        return False
+        return 1
 
-    if not filepath.endswith(".deb"):
-        print(f"  {_('not_a_deb', f=filepath)}")
+    try:
+        return handler()
+    except KeyboardInterrupt:
+        print(f"\n  ⚠️ 操作被中断 (SIGINT)")
         coffee.crash()
-        return False
+        return 130
+    except Exception as e:
+        print(f"  ⚠️ 内部错误: {e}")
+        coffee.crash()
+        return 1
 
-    _step(1, total_steps, f"{_('installing_pkg')}: {os.path.basename(filepath)}")
-    print(f"       File: {os.path.abspath(filepath)}")
-    fsize = os.path.getsize(filepath)
-    print(f"       Size: {fsize/1024:.1f} KB")
-
-    _step(2, total_steps, _("installing"))
-    cmd = ["sudo", "dpkg", "-i", filepath]
-    print(f"       $ {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-
-    if result.returncode != 0:
-        # Try to fix broken deps
-        print(f"       ⚠ dpkg returned {result.returncode}, attempting fix...")
-        _step(3, total_steps, _("fixing_deps"))
-        fix = subprocess.run(
-            ["sudo", "apt-get", "install", "-f", "-y"],
-            capture_output=True, text=True, timeout=60
-        )
-        if fix.returncode == 0:
-            print(f"  ✓ {_('installed_ok')}")
-            return True
-        else:
-            # Check password
-            sudo_info = check_sudo()
-            if sudo_info["password_needed"]:
-                print(f"\n  \033[31m⚠ {_('password_error')}\033[0m")
-                coffee.crash()
-            print(f"  Error output: {result.stderr[:300]}")
-            return False
-    else:
-        _step(3, total_steps, _("finalizing"))
-        print(f"  ✓ {_('installed_ok')}")
-        return True
-
-def cmd_update():
-    """Update source index."""
-    total_steps = 2
-    _step(1, total_steps, _("updating_idx"))
-    print(f"       $ sudo apt-get update")
-    result = subprocess.run(
-        ["sudo", "apt-get", "update"],
-        capture_output=True, text=True, timeout=60
-    )
-    if result.returncode != 0:
-        sudo_info = check_sudo()
-        if sudo_info["password_needed"]:
-            print(f"\n  \033[31m⚠ {_('password_error')}\033[0m")
-            coffee.crash()
-            return False
-    _step(2, total_steps, _("finalizing"))
-    if result.returncode == 0:
-        print(f"  ✓ Source index updated")
-        print(f"  🛢️  Oil -1% (remaining 100000%)")
-    return result.returncode == 0
-
-def cmd_upgrade(confirm=True):
-    """Upgrade all upgradable packages."""
-    total_steps = 4
-
-    # Step 1: Update index
-    _step(1, total_steps, _("updating_idx"))
-    subprocess.run(["sudo", "apt-get", "update", "-qq"], capture_output=True, timeout=30)
-
-    # Step 2: Check upgradable
-    _step(2, total_steps, _("checking_upgradable"))
-    result = subprocess.run(
-        ["apt-get", "-s", "upgrade"],
-        capture_output=True, text=True, timeout=15
-    )
-    upgradable = []
-    for line in result.stdout.split("\n"):
-        if line.startswith("Inst "):
-            parts = line.split()
-            if len(parts) >= 2:
-                upgradable.append(parts[1])
-
-    if not upgradable:
-        print(f"  {_('no_upgradable')}")
-        return True
-
-    print(f"  {_('total_upgradable')}: {len(upgradable)}")
-    for pkg in upgradable[:20]:
-        print(f"    \033[36m●\033[0m {pkg}")
-    if len(upgradable) > 20:
-        print(f"    ... and {len(upgradable)-20} more")
-
-    # Confirm
-    if confirm:
-        try:
-            ans = input(f"  {_('confirm_upgrade', n=len(upgradable))} ")
-        except (KeyboardInterrupt, EOFError):
-            print(f"  {_('aborted')}")
-            return False
-        if ans.lower() not in ("y", "yes"):
-            print(f"  {_('aborted')}")
-            return False
-
-    # Step 3: Upgrade
-    _step(3, total_steps, _("upgrading"))
-    cmd = ["sudo", "apt-get", "upgrade", "-y"]
-    print(f"       $ {' '.join(cmd)}")
-    success = _stream_apt(cmd, prefix=_("upgrading"), total_packages=len(upgradable))
-
-    if not success:
-        sudo_info = check_sudo()
-        if sudo_info["password_needed"]:
-            print(f"\n  \033[31m⚠ {_('password_error')}\033[0m")
-            coffee.crash()
-            return False
-
-    # Step 4: Finalize
-    _step(4, total_steps, _("finalizing"))
-    subprocess.run(["sudo", "apt-get", "autoremove", "-y", "-qq"], capture_output=True, timeout=15)
-
-    if success:
-        print(f"  ✓ Upgrade complete")
-        print(f"  🛢️  Oil -5% (remaining 99996%)")
-    return success
-
-# ============================================================
-# Easter eggs
-# ============================================================
-
-def cmd_petroleum():
-    """Petroleum signal booster easter egg."""
-    print()
-    print(f"  🔍 {_('petroleum_search')}")
-    time.sleep(0.3)
-    print(f"     {_('petroleum_fail')}")
-    print()
-    time.sleep(0.2)
-    print(f"  🛢️  {_('petroleum_detected')}")
-    time.sleep(0.3)
-    print()
-    print(f"  💡 {_('petroleum_shout')}")
-    print(f"     {_('petroleum_shout2')}")
-    print(f"     👉 \033[33m'{_('petroleum_quote')}'\033[0m 👈")
-    time.sleep(0.2)
-    print(f"     {_('petroleum_result')}")
-    print()
-    print(f"     ({_('petroleum_teto')})")
-    print()
-
-def cmd_coffee():
-    """Coffee machine status."""
-    coffee.status()
-
-def cmd_self_install():
-    """Install xpm itself to /usr/local/bin."""
-    src = os.path.abspath(__file__)
-    dst = "/usr/local/bin/xpm"
-    try:
-        subprocess.run(["sudo", "cp", src, dst], check=True)
-        subprocess.run(["sudo", "chmod", "755", dst], check=True)
-        print(f"  ✓ {_('self_install_ok')}")
-        print(f"  {_('self_install_done')}")
-        print(f"  🛢️  Oil: 100001% | Power: 1.x W")
-    except subprocess.CalledProcessError:
-        sudo_info = check_sudo()
-        if sudo_info["password_needed"]:
-            print(f"  ⚠ {_('password_error')}")
-            coffee.crash()
-        else:
-            print(f"  Error: copy failed. Try: sudo cp {src} {dst}")
-
-# ============================================================
-# Auto-update on launch
-# ============================================================
-
-def auto_update():
-    """Silently update source index on launch."""
-    try:
-        subprocess.run(
-            ["sudo", "apt-get", "update", "-qq"],
-            capture_output=True, timeout=20
-        )
-    except Exception:
-        pass
-
-# ============================================================
-# GUI Mode (Tkinter)
-# ============================================================
-
+# === GUI 模式 ===
 def gui_mode():
-    """Launch X11 GUI."""
-    try:
-        import tkinter as tk
-        from tkinter import ttk, scrolledtext
-    except ImportError:
-        print("  GUI mode requires python3-tk.")
-        print("  Install it with: sudo apt-get install python3-tk")
-        print("  Or run CLI mode: xpm help")
-        return
-
-    # Check sudo
-    sudo_info = check_sudo()
-    sudo_text = _("gui_sudo_ok") if not sudo_info["password_needed"] else _("gui_sudo_pw")
+    import tkinter as tk
+    from tkinter import ttk, scrolledtext
 
     root = tk.Tk()
     root.title("XPM - Petroleum Package Manager")
     root.geometry("900x600")
 
-    # Style
-    style = ttk.Style()
-    try:
-        style.theme_use("clam")
-    except tk.TclError:
-        pass
-
-    # Colors (kwin Breeze-ish dark)
-    bg = "#2b2b2b"
-    fg = "#e0e0e0"
-    accent = "#3daee9"
-    accent_red = "#c0392b"
-    accent_green = "#27ae60"
-    accent_orange = "#e67e22"
-
+    # 颜色
+    bg = "#1e1e2e"
+    fg = "#cdd6f4"
+    accent = "#89b4fa"
+    accent_green = "#a6e3a1"
+    accent_red = "#f38ba8"
+    accent_orange = "#fab387"
     root.configure(bg=bg)
 
-    # ===== Top bar =====
-    top = tk.Frame(root, bg=accent_red, height=40)
-    top.pack(fill="x")
-    top.pack_propagate(False)
+    # 标题
+    title = tk.Label(root, text="☕ XPM - 石油包管理器", font=("WenQuanYi Micro Hei", 16, "bold"),
+                     bg=bg, fg=accent)
+    title.pack(pady=8)
 
-    title_label = tk.Label(
-        top, text="XPM", font=("WenQuanYi Micro Hei", 16, "bold"),
-        fg="white", bg=accent_red
-    )
-    title_label.pack(side="left", padx=12, pady=5)
+    sub = tk.Label(root, text=f"Power: {POWER} | Oil: {OIL}% | Backend: xm | Stable: probably.",
+                   font=("WenQuanYi Micro Hei", 9), bg=bg, fg="#7f849c")
+    sub.pack()
 
-    oil_label = tk.Label(
-        top, text=_("gui_oil"), font=("WenQuanYi Micro Hei", 10),
-        fg="#ffd700", bg=accent_red
-    )
-    oil_label.pack(side="right", padx=12)
+    # 搜索框
+    sf = tk.Frame(root, bg=bg)
+    sf.pack(fill="x", padx=10, pady=8)
+    sv = tk.StringVar()
+    se = tk.Entry(sf, textvariable=sv, font=("WenQuanYi Micro Hei", 12),
+                   bg="#313244", fg=fg, insertbackground=fg, relief="flat")
+    se.pack(side="left", fill="x", expand=True, padx=(0,8))
 
-    # ===== Search bar =====
-    search_frame = tk.Frame(root, bg=bg)
-    search_frame.pack(fill="x", padx=10, pady=8)
+    # 状态栏
+    status_var = tk.StringVar(value=L("gui_status_ready"))
+    status = tk.Label(root, textvariable=status_var, font=("WenQuanYi Micro Hei", 9),
+                       bg=bg, fg="#7f849c", anchor="w")
+    status.pack(fill="x", padx=10)
 
-    tk.Label(search_frame, text="🔍", bg=bg, fg=fg, font=("Arial", 14)).pack(side="left")
-    search_var = tk.StringVar()
-    search_entry = tk.Entry(
-        search_frame, textvariable=search_var,
-        font=("WenQuanYi Micro Hei", 12),
-        bg="#3a3a3a", fg=fg, insertbackground=fg,
-        relief="flat", highlightthickness=1, highlightcolor=accent
-    )
-    search_entry.pack(side="left", fill="x", expand=True, padx=8, ipady=4)
-    search_entry.insert(0, _("gui_search_placeholder"))
-    search_entry.config(fg="#888888")
+    # PanedWindow
+    pw = tk.PanedWindow(root, orient="horizontal", bg=bg, sashwidth=4, sashrelief="flat")
+    pw.pack(fill="both", expand=True, padx=10, pady=5)
 
-    def on_search_focus_in(event):
-        if search_var.get() == _("gui_search_placeholder"):
-            search_entry.delete(0, "end")
-            search_entry.config(fg=fg)
+    left_frame = tk.Frame(pw, bg="#181825")
+    right_frame = tk.Frame(pw, bg="#181825")
+    pw.add(left_frame, minsize=300)
+    pw.add(right_frame, minsize=400)
 
-    def on_search_focus_out(event):
-        if not search_var.get():
-            search_entry.insert(0, _("gui_search_placeholder"))
-            search_entry.config(fg="#888888")
+    # 结果列表
+    cols = ("name", "ver", "desc")
+    tree = ttk.Treeview(left_frame, columns=cols, show="headings", height=20)
+    tree.heading("name", text="包名")
+    tree.heading("ver", text="版本")
+    tree.heading("desc", text="描述")
+    tree.column("name", width=140)
+    tree.column("ver", width=80)
+    tree.column("desc", width=200)
+    tree.pack(fill="both", expand=True, padx=5, pady=5)
 
-    search_entry.bind("<FocusIn>", on_search_focus_in)
-    search_entry.bind("<FocusOut>", on_search_focus_out)
+    # 详情
+    detail = scrolledtext.ScrolledText(right_frame, bg="#11111b", fg=fg,
+                                       font=("WenQuanYi Micro Hei", 10), wrap="word")
+    detail.pack(fill="both", expand=True, padx=5, pady=5)
 
-    # ===== Status helper (defined BEFORE any callback uses it) =====
-    def set_status(text, color="#888888"):
-        status_label.config(text=text, fg=color)
+    # 按钮区
+    bf = tk.Frame(root, bg=bg)
+    bf.pack(fill="x", padx=10, pady=8)
 
-    # ===== Buttons row factory =====
-    def make_btn(text, cmd, color=accent):
-        b = tk.Button(
-            btn_frame, text=text, command=cmd,
-            bg=color, fg="white", activebackground=color,
-            activeforeground="white", relief="flat",
-            font=("WenQuanYi Micro Hei", 10, "bold"),
-            padx=12, pady=3
-        )
-        b.pack(side="left", padx=3)
-        return b
+    def set_status(text, color="#7f849c"):
+        status_var.set(text)
+        status.configure(fg=color)
 
-    # ===== Coffee machine display =====
-    def show_coffee():
-        details_text.delete("1.0", "end")
-        lines = [
-            "",
-            f"  ☕ {_('coffee_title')}",
-            "",
-            f"  {_('coffee_crashes_today')}: {coffee.crash_count}/{COFFEE_THRESHOLD}",
-            f"  {_('coffee_total')}: {coffee.total_explosions}",
-            f"  {_('coffee_date')}: {coffee.date}",
-            "",
-        ]
-        if coffee.crash_count == 0:
-            lines.append(f"  {_('coffee_status_ok')}")
-        else:
-            pct = coffee.crash_count / COFFEE_THRESHOLD * 100
-            lines.append(f"  [{'█' * int(pct/5):<20s}] {pct:.0f}%")
-        lines.extend([
-            "",
-            f"  {_('coffee_teto')}",
-            f"  {_('coffee_miku')}",
-            "",
-        ])
-        details_text.insert("1.0", "\n".join(lines))
-        set_status(_("coffee_title"), "#6c5ce7")
-
-    # ===== All button callback functions (defined BEFORE make_btn calls) =====
-
-    def do_search():
-        kw = search_var.get().strip()
-        if kw == _("gui_search_placeholder") or not kw:
+    def do_search_fn():
+        kw = sv.get().strip()
+        if not kw:
+            set_status("请输入关键词", accent_red)
             return
-        set_status(f"{_('searching')}: {kw}", accent)
-        results_list.delete(0, "end")
-        details_text.delete("1.0", "end")
-        try:
-            result = subprocess.run(
-                ["apt-cache", "search", kw],
-                capture_output=True, text=True, timeout=15
-            )
-            lines = [l for l in result.stdout.strip().split("\n") if l.strip()]
-            for line in lines[:100]:
-                parts = line.split(" - ", 1)
-                name = parts[0].strip()
-                results_list.insert("end", name)
-            set_status(f"{_('found_pkgs', n=len(lines))}", accent_green)
-        except Exception as e:
-            set_status(f"{_('gui_error')}: {e}", accent_red)
+        set_status(f"搜索: {kw}...", accent)
+        tree.delete(*tree.get_children())
+        detail.delete("1.0", "end")
+        rc, out, err = sudo_run(["apt-cache", "search", kw])
+        if rc != 0:
+            set_status("搜索失败", accent_red)
+            return
+        count = 0
+        for line in out.strip().splitlines():
+            parts = line.split()
+            if len(parts) >= 2 and kw.lower() in line.lower():
+                name = parts[0]
+                desc = " ".join(parts[1:])[:60]
+                ver = ""
+                # 取版本
+                rc2, out2, err = sudo_run(["apt-cache", "show", name])
+                for l in out2.splitlines():
+                    if l.startswith("Version:"):
+                        ver = l.split(":")[1].strip()[:20]
+                        break
+                tree.insert("", "end", values=(name, ver, desc))
+                count += 1
+        set_status(f"找到 {count} 个包", accent_green)
 
     def get_selected():
-        sel = results_list.curselection()
+        sel = tree.selection()
         if not sel:
             return None
-        return results_list.get(sel[0])
+        return tree.item(sel[0])["values"][0]
 
-    def do_install():
+    def do_install_fn():
         pkg = get_selected()
         if not pkg:
-            set_status(_("gui_error") + ": no package selected", accent_red)
+            set_status("先选择一个包", accent_red)
             return
-        set_status(f"{_('gui_installing')} {pkg}...", accent_green)
-        def run():
-            try:
-                result = subprocess.run(
-                    ["sudo", "apt-get", "install", "-y", pkg],
-                    capture_output=True, text=True, timeout=120
-                )
-                root.after(0, lambda: (
-                    details_text.delete("1.0", "end"),
-                    details_text.insert("1.0", result.stdout + result.stderr),
-                    set_status(f"✓ {pkg} {_('installed_ok')}", accent_green)
-                    if result.returncode == 0 else
-                    set_status(f"{_('gui_error')}: {_('password_error')}", accent_red)
-                ))
-            except subprocess.TimeoutExpired:
-                root.after(0, lambda: set_status(_("gui_error") + ": timeout", accent_red))
-        import threading
-        threading.Thread(target=run, daemon=True).start()
-
-    def do_remove():
-        pkg = get_selected()
-        if not pkg:
-            return
-        set_status(f"{_('removing')} {pkg}...", accent_red)
-        def run():
-            result = subprocess.run(
-                ["sudo", "apt-get", "remove", "-y", pkg],
-                capture_output=True, text=True, timeout=60
-            )
-            root.after(0, lambda: (
-                set_status(f"✓ {_('remove_ok')}", accent_green)
-                if result.returncode == 0 else
-                set_status(_("gui_error"), accent_red)
-            ))
-        import threading
-        threading.Thread(target=run, daemon=True).start()
-
-    def do_purge():
-        pkg = get_selected()
-        if not pkg:
-            return
-        set_status(f"{_('purging')} {pkg}...", "#8e44ad")
-        def run():
-            result = subprocess.run(
-                ["sudo", "apt-get", "purge", "-y", pkg],
-                capture_output=True, text=True, timeout=60
-            )
-            root.after(0, lambda: (
-                set_status(f"✓ {_('purge_ok')}", accent_green)
-                if result.returncode == 0 else
-                set_status(_("gui_error"), accent_red)
-            ))
-        import threading
-        threading.Thread(target=run, daemon=True).start()
-
-    def do_update():
-        set_status(_("updating_idx") + "...", "#2980b9")
-        def run():
-            result = subprocess.run(
-                ["sudo", "apt-get", "update"],
-                capture_output=True, text=True, timeout=60
-            )
-            root.after(0, lambda: (
-                set_status("✓ Source index updated", accent_green)
-                if result.returncode == 0 else
-                set_status(_("gui_error"), accent_red)
-            ))
-        import threading
-        threading.Thread(target=run, daemon=True).start()
-
-    def do_upgrade():
-        ans = tk.messagebox.askyesno(_("gui_upgrade"), _("gui_confirm_upgrade"))
-        if not ans:
-            return
-        set_status(_("upgrading") + "...", accent_orange)
-        def run():
-            result = subprocess.run(
-                ["sudo", "apt-get", "upgrade", "-y"],
-                capture_output=True, text=True, timeout=300
-            )
-            root.after(0, lambda: (
-                set_status("✓ Upgrade complete", accent_green)
-                if result.returncode == 0 else
-                set_status(_("gui_error"), accent_red)
-            ))
-        import threading
-        threading.Thread(target=run, daemon=True).start()
-
-    def do_info_btn():
-        pkg = get_selected()
-        if not pkg:
-            return
-        set_status(f"{_('pkg_details')}: {pkg}", "#16a085")
+        set_status(f"安装: {pkg}...", accent)
+        detail.delete("1.0", "end")
+        detail.insert("end", f"$ xpm install {pkg}\n")
+        root.update()
+        # 用 subprocess 流式
+        full = ["sudo", "-n", "apt-get", "install", "-y", pkg] if SUDO_OK else ["apt-get", "install", "-y", pkg]
         try:
-            result = subprocess.run(
-                ["apt-cache", "show", pkg],
-                capture_output=True, text=True, timeout=10
-            )
-            details_text.delete("1.0", "end")
-            details_text.insert("1.0", result.stdout)
-            set_status(f"✓ {pkg}", accent_green)
+            p = subprocess.Popen(full, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            for line in p.stdout:
+                detail.insert("end", line)
+                detail.see("end")
+                root.update()
+            p.wait()
+            if p.returncode == 0:
+                set_status(f"✅ {pkg} 安装成功", accent_green)
+                coffee.oil_consume(1)
+            else:
+                set_status(f"⚠️ {pkg} 安装失败", accent_red)
+                coffee.crash()
         except Exception as e:
-            details_text.delete("1.0", "end")
-            details_text.insert("1.0", str(e))
-            set_status(_("gui_error"), accent_red)
+            detail.insert("end", f"\n⚠️ {e}\n")
+            set_status(L("install_terminated"), accent_red)
+            coffee.crash()
+
+    def do_remove_fn():
+        pkg = get_selected()
+        if not pkg:
+            set_status("先选择一个包", accent_red)
+            return
+        set_status(f"卸载: {pkg}...", accent)
+        full = ["sudo", "-n", "apt-get", "remove", "-y", pkg] if SUDO_OK else ["apt-get", "remove", "-y", pkg]
+        rc = subprocess.run(full, capture_output=True, text=True).returncode
+        if rc == 0:
+            set_status(f"✅ {pkg} 已卸载", accent_green)
+        else:
+            set_status(f"⚠️ 卸载失败", accent_red)
+            coffee.crash()
+
+    def do_purge_fn():
+        pkg = get_selected()
+        if not pkg:
+            set_status("先选择一个包", accent_red)
+            return
+        set_status(f"清除: {pkg}...", accent)
+        full = ["sudo", "-n", "apt-get", "purge", "-y", pkg] if SUDO_OK else ["apt-get", "purge", "-y", pkg]
+        rc = subprocess.run(full, capture_output=True, text=True).returncode
+        if rc == 0:
+            set_status(f"✅ {pkg} 已彻底清除", accent_green)
+        else:
+            set_status(f"⚠️ 清除失败", accent_red)
+            coffee.crash()
+
+    def do_update_fn():
+        set_status("更新源索引...", accent)
+        ok, pw_err = stream_apt(["apt-get", "update", "-qq"])
+        if pw_err:
+            set_status(L("install_terminated"), accent_red)
+            coffee.crash()
+        elif ok:
+            set_status("✅ 源索引已更新", accent_green)
+            coffee.oil_consume(1)
+
+    def do_upgrade_fn():
+        if not confirm_dialog(root, "确认升级", "确定要升级所有可升级包吗？\n这可能需要较长时间。"):
+            return
+        set_status("升级中...", accent)
+        do_upgrade()
+
+    def do_info_fn():
+        pkg = get_selected()
+        if not pkg:
+            set_status("先选择一个包", accent_red)
+            return
+        detail.delete("1.0", "end")
+        rc, out, err = sudo_run(["apt-cache", "show", pkg])
+        detail.insert("end", out)
+        set_status(f"📦 {pkg}", accent)
 
     def show_petroleum():
-        details_text.delete("1.0", "end")
-        lines = [
-            "",
-            f"  🔍 {_('petroleum_search')}",
-            f"     {_('petroleum_fail')}",
-            "",
-            f"  🛢️  {_('petroleum_detected')}",
-            "",
-            f"  💡 {_('petroleum_shout')}",
-            f"     {_('petroleum_shout2')}",
-            f"     >>> {_('petroleum_quote')} <<<",
-            f"     {_('petroleum_result')}",
-            "",
-            f"     ({_('petroleum_teto')})",
-            "",
-        ]
-        details_text.insert("1.0", "\n".join(lines))
-        set_status(_("petroleum_title"), "#f39c12")
+        detail.delete("1.0", "end")
+        do_petroleum()
+        # 重印到 detail
+        detail.insert("end", "\n=== Petroleum Signal Booster ===\n")
+        detail.insert("end", "🔍 Searching for signal... Failed.\n")
+        detail.insert("end", "🛢️  Detected 100001% petroleum reserve.\n")
+        detail.insert("end", "💡 If you have no signal outside,\n")
+        detail.insert("end", '   shout into your iPhone: "I HAVE OIL HERE!"\n')
+        detail.insert("end", "(note: link requires CN network access)\n")
+        detail.insert("end", f"https://v.douyin.com/WgZVVkknENc/\n")
 
-    # ===== Buttons row (now that all callbacks exist) =====
-    btn_frame = tk.Frame(root, bg=bg)
-    btn_frame.pack(fill="x", padx=10, pady=(0, 8))
+    def show_coffee():
+        detail.delete("1.0", "end")
+        do_coffee()
+        detail.insert("end", f"\n☕ Today: {coffee.crash_count}/31\n")
+        detail.insert("end", f"☕ Total: {coffee.total_explosions}\n")
+        detail.insert("end", f"⚡ Power: {POWER}\n")
+        detail.insert("end", f"🛢️ Oil: {OIL}%\n")
 
-    search_entry.bind("<Return>", lambda e: do_search())
-    make_btn(_("gui_search"), do_search, accent)
-    make_btn(_("gui_install"), do_install, accent_green)
-    make_btn(_("gui_remove"), do_remove, accent_red)
-    make_btn(_("gui_purge"), do_purge, "#8e44ad")
-    make_btn(_("gui_update"), do_update, "#2980b9")
-    make_btn(_("gui_upgrade"), do_upgrade, accent_orange)
-    make_btn(_("gui_info"), do_info_btn, "#16a085")
-    make_btn(_("gui_coffee"), lambda: show_coffee(), "#6c5ce7")
-    make_btn(_("gui_petroleum"), lambda: show_petroleum(), "#f39c12")
+    # 按钮（先定义函数，再创建按钮）
+    make_btn = lambda text, cmd, color: tk.Button(bf, text=text, command=cmd,
+        bg=color, fg="#1e1e2e", font=("WenQuanYi Micro Hei", 10, "bold"),
+        relief="flat", padx=12, pady=4, cursor="hand2")
 
-    # ===== Main paned window =====
-    paned = tk.PanedWindow(root, orient="horizontal", bg=bg, sashwidth=4, sashrelief="flat")
-    paned.pack(fill="both", expand=True, padx=10, pady=(0, 5))
+    make_btn(L("gui_search"), do_search_fn, accent).pack(side="left", padx=3)
+    make_btn(L("gui_install"), do_install_fn, accent_green).pack(side="left", padx=3)
+    make_btn(L("gui_remove"), do_remove_fn, accent_orange).pack(side="left", padx=3)
+    make_btn(L("gui_purge"), do_purge_fn, accent_red).pack(side="left", padx=3)
+    make_btn(L("gui_update"), do_update_fn, accent).pack(side="left", padx=3)
+    make_btn(L("gui_upgrade"), do_upgrade_fn, accent_orange).pack(side="left", padx=3)
+    make_btn(L("gui_info"), do_info_fn, "#cba6f7").pack(side="left", padx=3)
 
-    # Left: results
-    left_frame = tk.Frame(paned, bg="#333333")
-    paned.add(left_frame, minsize=300)
+    tk.Button(bf, text="☕", command=show_coffee, bg="#45475a", fg=fg,
+              font=("WenQuanYi Micro Hei", 10), relief="flat", padx=8, cursor="hand2").pack(side="right", padx=3)
+    tk.Button(bf, text="🛢️", command=show_petroleum, bg="#45475a", fg=fg,
+              font=("WenQuanYi Micro Hei", 10), relief="flat", padx=8, cursor="hand2").pack(side="right", padx=3)
 
-    tk.Label(
-        left_frame, text=_("gui_results"), bg="#333333", fg=accent,
-        font=("WenQuanYi Micro Hei", 11, "bold"), anchor="w"
-    ).pack(fill="x", padx=8, pady=(8, 4))
+    # sudo 状态
+    sudo_text = L("gui_sudo_yes") if SUDO_OK else L("gui_sudo_no")
+    sudo_color = accent_green if SUDO_OK else accent_red
+    tk.Label(bf, text=sudo_text, bg=bg, fg=sudo_color, font=("WenQuanYi Micro Hei", 9)).pack(side="right", padx=10)
 
-    results_list = tk.Listbox(
-        left_frame, bg="#3a3a3a", fg=fg, selectbackground=accent,
-        selectforeground="white", font=("WenQuanYi Micro Hei", 10),
-        relief="flat", highlightthickness=0
-    )
-    results_list.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+    # 回车搜索
+    se.bind("<Return>", lambda e: do_search_fn())
 
-    # Right: details
-    right_frame = tk.Frame(paned, bg="#333333")
-    paned.add(right_frame, minsize=350)
+    # 底部信息
+    tk.Label(root, text=f"Author: I feel this thing is quite stable. | If bugs, don't open issues, ask your AI.",
+             font=("WenQuanYi Micro Hei", 8), bg=bg, fg="#585b70").pack(side="bottom", pady=3)
 
-    tk.Label(
-        right_frame, text=_("gui_details"), bg="#333333", fg=accent,
-        font=("WenQuanYi Micro Hei", 11, "bold"), anchor="w"
-    ).pack(fill="x", padx=8, pady=(8, 4))
-
-    details_text = scrolledtext.ScrolledText(
-        right_frame, bg="#3a3a3a", fg=fg, insertbackground=fg,
-        font=("WenQuanYi Micro Hei", 10), relief="flat",
-        highlightthickness=0, wrap="word"
-    )
-    details_text.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-
-    # ===== Status bar =====
-    status_frame = tk.Frame(root, bg="#1e1e1e", height=28)
-    status_frame.pack(fill="x", side="bottom")
-    status_frame.pack_propagate(False)
-
-    status_label = tk.Label(
-        status_frame, text=f"{_('gui_status')}: {_('gui_ready')} | {sudo_text} | {_('gui_power')}",
-        bg="#1e1e1e", fg="#888888", font=("WenQuanYi Micro Hei", 9),
-        anchor="w"
-    )
-    status_label.pack(side="left", padx=10)
-
-    # (All button actions already defined above — single source of truth)
-
-    # Double-click to show info
-    def on_double_click(event):
-        do_info_btn()
-
-    results_list.bind("<Double-Button-1>", on_double_click)
-
-    # ===== About dialog =====
-    def show_about():
-        tk.messagebox.showinfo("XPM", _("gui_about_text"))
-
-    # Menu
-    menubar = tk.Menu(root, bg=bg, fg=fg)
-    help_menu = tk.Menu(menubar, tearoff=0, bg="#3a3a3a", fg=fg)
-    help_menu.add_command(label=_("gui_help"), command=cmd_help)
-    help_menu.add_command(label=_("gui_about"), command=show_about)
-    menubar.add_cascade(label=_("gui_help"), menu=help_menu)
-    root.config(menu=menubar)
-
-    # Start
     root.mainloop()
 
-# ============================================================
-# Main
-# ============================================================
+def confirm_dialog(parent, title, msg):
+    d = tk.Toplevel(parent)
+    d.title(title)
+    d.geometry("350x140")
+    d.configure(bg="#1e1e2e")
+    d.transient(parent)
+    d.grab_set()
+    tk.Label(d, text=msg, bg="#1e1e2e", fg="#cdd6f4", font=("WenQuanYi Micro Hei", 11),
+             wraplength=320, justify="center").pack(expand=True, pady=15)
+    bf = tk.Frame(d, bg="#1e1e2e")
+    bf.pack(pady=10)
+    result = [False]
+    def yes(): result[0] = True; d.destroy()
+    def no(): d.destroy()
+    tk.Button(bf, text="确认", command=yes, bg="#a6e3a1", fg="#1e1e2e",
+              font=("WenQuanYi Micro Hei", 10, "bold"), relief="flat", padx=16).pack(side="left", padx=8)
+    tk.Button(bf, text="取消", command=no, bg="#f38ba8", fg="#1e1e2e",
+              font=("WenQuanYi Micro Hei", 10, "bold"), relief="flat", padx=16).pack(side="left", padx=8)
+    parent.wait_window(d)
+    return result[0]
 
-def print_banner():
-    """Print the XPM banner."""
-    print(f"  **  {_('title')}")
-    print(f"  **  {_('subtitle')}")
-    print(f"  **  {_('auto_update')}")
-    print()
-
-def main():
-    """Main entry point."""
-    args = sys.argv[1:]
-
-    # No args -> GUI mode (if DISPLAY set) or help
-    if not args:
-        if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
-            try:
-                gui_mode()
-            except Exception:
-                # GUI crashed → count as a coffee machine crash
-                coffee.crash()
-                raise
-        else:
-            print_banner()
-            cmd_help()
-        return
-
-    cmd = args[0].lower()
-
-    # Auto-update on launch (skip for certain commands)
-    no_update_cmds = ("help", "petroleum", "coffee", "sources", "installed", "info", "self-install")
-    if cmd not in no_update_cmds:
-        auto_update()
-
-    print_banner()
-
-    # Dispatch
-    if cmd == "help" or cmd == "--help" or cmd == "-h":
-        cmd_help()
-    elif cmd == "search":
-        if len(args) < 2:
-            print(f"  Usage: xpm search <keyword>")
-            coffee.crash()
-        else:
-            cmd_search(args[1])
-    elif cmd == "install":
-        if len(args) < 2:
-            print(f"  Usage: xpm install <pkg...>")
-            coffee.crash()
-        else:
-            cmd_install(args[1:])
-    elif cmd == "remove" or cmd == "uninstall":
-        if len(args) < 2:
-            print(f"  Usage: xpm remove <pkg...>")
-            coffee.crash()
-        else:
-            cmd_remove(args[1:])
-    elif cmd == "purge":
-        if len(args) < 2:
-            print(f"  Usage: xpm purge <pkg...>")
-            coffee.crash()
-        else:
-            cmd_purge(args[1:])
-    elif cmd == "download":
-        pkg = args[1] if len(args) > 1 else None
-        directory = args[2] if len(args) > 2 else "."
-        if not pkg:
-            print(f"  Usage: xpm download <pkg> [dir]")
-            coffee.crash()
-        else:
-            cmd_download(pkg, directory)
-    elif cmd == "installed" or cmd == "list":
-        cmd_installed()
-    elif cmd == "info":
-        if len(args) < 2:
-            print(f"  Usage: xpm info <pkg>")
-            coffee.crash()
-        else:
-            cmd_info(args[1])
-    elif cmd == "sources" or cmd == "repos":
-        cmd_sources()
-    elif cmd == "install-deb" or cmd == "installdeb":
-        if len(args) < 2:
-            print(f"  Usage: xpm install-deb <file.deb>")
-            coffee.crash()
-        else:
-            cmd_install_deb(args[1])
-    elif cmd == "update" or cmd == "refresh":
-        cmd_update()
-    elif cmd == "upgrade" or cmd == "dist-upgrade":
-        cmd_upgrade(confirm=True)
-    elif cmd == "petroleum" or cmd == "oil":
-        cmd_petroleum()
-    elif cmd == "coffee" or cmd == "boom":
-        cmd_coffee()
-    elif cmd == "self-install" or cmd == "selfinstall":
-        cmd_self_install()
-    else:
-        print(f"  ⚠ {_('unknown_cmd', cmd=cmd)}")
-        print(f"  {_('run_help')}")
-        coffee.crash()
+# === 给 CoffeeMachine 补一个 oil_consume ===
+def _oil_consume(self, pct):
+    pass  # 石油只增不减（彩蛋设定）
+CoffeeMachine.oil_consume = _oil_consume
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        coffee.crash()
-        print(f"\n  [{_('coffee_crashes_today')}: {coffee.crash_count}/{COFFEE_THRESHOLD}]")
-        print(f"  [{_('coffee_total')}: {coffee.total_explosions}]")
-        sys.exit(130)
-    except Exception:
-        coffee.crash()
-        raise
+    sys.exit(main())
