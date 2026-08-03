@@ -1,0 +1,3 @@
+# 将此目录复制到 /etc/xpm/sources.list.d/
+# 格式: *.list 或 *.sources
+# 语法: deb <URL> <发行版> <组件...>
