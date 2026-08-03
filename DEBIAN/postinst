@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+
+# 创建目录结构
+mkdir -p /etc/xpm/sources.list.d
+mkdir -p /var/cache/xm/lock
+mkdir -p /var/cache/xm/archives
+mkdir -p /var/cache/xm/temp
+mkdir -p /var/lib/xm
+mkdir -p /usr/local/share/xpm
+
+# 复制 xm 后端
+cp /usr/local/bin/xm /usr/local/share/xpm/xm.py 2>/dev/null || true
+
+# 创建示例源文件（如果不存在）
+if [ ! -f /etc/xpm/sources.list.d/debian.list ]; then
+    cat > /etc/xpm/sources.list.d/debian.list << 'EOF'
+# XPM Source Example
+# Format: one source per line
+# deb http://deb.debian.org/debian bookworm main
+EOF
+fi
+
+# 初始化 status.db
+if [ ! -f /var/lib/xm/status.json ]; then
+    echo '{}' > /var/lib/xm/status.json
+fi
+
+# 初始化 coffee.log
+mkdir -p ~/.cache/xpm 2>/dev/null || true
+
+echo ""
+echo "***"
+echo "***  XPM installed! (Autonomous Package System)"
+echo "***  Frontend: xpm | Backend: xm"
+echo "***  Run: xpm (GUI)  |  xpm help (CLI)"
+echo "***  Oil: 100001% | Power: 1.x W"
+echo "***  Author: I feel this thing is quite stable."
+echo "***  If bugs, don't create an issue. Ask your AI."
+echo "***"
+echo ""
+
+exit 0
