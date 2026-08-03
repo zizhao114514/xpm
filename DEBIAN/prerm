@@ -1,0 +1,5 @@
+#!/bin/bash
+# XPM pre-removal
+echo "☕ XPM removal initiated..."
+echo "🛢️ 石油储备正在回收..."
+exit 0
