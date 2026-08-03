@@ -1,0 +1,17 @@
+# Build artifacts
+xmcs
+bin/
+obj/
+*.deb
+*.zip
+*.exe
+*.dll
+
+# IDE
+.vs/
+.vscode/
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
