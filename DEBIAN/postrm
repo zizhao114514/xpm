@@ -1,0 +1,7 @@
+#!/bin/bash
+# XPM post-removal
+echo "***"
+echo "***  XPM removed. Oil reserve: depleted."
+echo "***  as if I care for your package manager."
+echo "***"
+exit 0
