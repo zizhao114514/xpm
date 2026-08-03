@@ -1,0 +1,17 @@
+Package: xmcs
+Version: 1.9-0+csharp
+Section: utils
+Priority: optional
+Architecture: all
+Depends: mono-runtime (>= 6.0) | dotnet-runtime-8.0, dpkg, wget, tar, gzip
+Recommends: mono-mcs | dotnet-sdk-8.0
+Maintainer: Zizhao <zizhao@localhost>
+Description: XPM C# Backend (Special Edition)
+ xmcs is the C# implementation of the XPM backend.
+ It handles package unpacking, installation, removal, and verification
+ using only dpkg, tar, and wget (never apt).
+ .
+ This is a special edition demonstrating that the XPM architecture
+ is language-agnostic - same locks, same .oil format, same database.
+ .
+ Oil: 100001% | Power: 1.x W | Systemd: not required
