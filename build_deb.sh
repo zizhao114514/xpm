@@ -2,7 +2,7 @@
 # XPM .deb 构建脚本 (USTAR 兼容版)
 set -e
 
-VER="1.7-0"
+VER="1.7-1"
 PKG="xpm_${VER}_all"
 BUILD_DIR="/data/workspace/xpm/build"
 SRC_DIR="/data/workspace/xpm"
@@ -75,7 +75,7 @@ if [ ! -f /etc/xpm/sources.list.d/debian.list ]; then
 fi
 echo ""
 echo "***"
-echo "***  XPM installed! (One Bug Edition - GUI Fix)"
+echo "***  XPM installed! (One Bug Edition - Crash Counting Fix)"
 echo "***  Languages: en / zh / ja"
 echo "***  Run: xpm (GUI)  |  xpm help (CLI)"
 echo "***  Set LANG or XPM_LANG to: en / zh / ja"
