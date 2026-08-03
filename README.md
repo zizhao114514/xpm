@@ -1,106 +1,107 @@
 # XPM - X11 Package Manager (Petroleum Edition)
 
-> 一个单文件 Python3 包管理器，专为 proot / Termux 环境设计。
-> 不需要 systemd，不需要 apt 高层命令，只需要 dpkg + apt-cache + wget。
+> **Author:** I feel this thing is quite stable.
+> If you encounter any bugs, don't create an issue. Just ask your AI.
+> 我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
+> これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に頼ってください。
 
-## ✨ 功能
+## Architecture
 
-- **search** — 搜索软件包
-- **install** — 安装软件包（自动处理依赖）
-- **remove** — 卸载软件包
-- **purge** — 彻底清除（含配置文件）
-- **update** — 刷新源索引（启动时自动运行）
-- **upgrade** — 升级所有可升级的包
-- **download** — 仅下载 .deb 文件
-- **install-deb** — 安装本地 .deb 文件
-- **installed** — 列出已安装的包
-- **info** — 显示包详细信息
-- **sources** — 查看已配置的源
-
-## 🎨 界面
-
-- **X11 GUI 模式**：直接运行 `xpm`（无参数），弹出 Tkinter 图形界面
-- **CLI 模式**：`xpm <命令> [参数]`
-- **进度条**：安装/下载时实时显示进度
-- **步骤日志**：每步操作都有编号提示（[1/4] [2/4] ...）
-- **多语言**：支持 English / 简体中文 / 日本語（自动检测 LANG）
-
-## 🐛 已知 Bug
-
-> download 命令显示下载速度时，单位会 **×1024 放大**。
-> 比如实际 0.5 MB/s，可能显示成 512 MB/s。
-> **这是故意留的，不是 bug，是 feature。** (One Bug Edition)
-
-## 🎉 彩蛋
-
-```bash
-xpm petroleum   # 石油信号增强器
-xpm coffee     # 咖啡机爆炸状态
+```
+xpm (frontend) ──calls──▶ xm (backend)
+     │                              │
+     │ search/install/remove         │ unpack/install/remove/verify
+     │ update/upgrade/download      │ lock management
+     │ progress bar / i18n / GUI    │ status.db / coffee.log
+     │                              │
+     └── sudo + apt-cache + wget ──┘
 ```
 
-- 连续报错退出 31 次 → 触发 **咖啡机爆炸纪录片**（逐行 BOOM × 31）
-- 密码错误 → 提示 "安装程序被意外终止了，可能是您未输入正确密码"
-- 石油储备永远 100001%，功耗永远 1.x W
+## Directory Layout
 
-## 📦 安装
+```
+软件包/
+├── xpm/
+│   ├── control              # Package metadata (key=value format)
+│   ├── pmdel/               # Removal scripts
+│   │   ├── prerm
+│   │   └── postrm
+│   ├── pmadd/               # Installation scripts
+│   │   ├── preinst
+│   │   └── postinst
+│   ├── files.list           # File manifest
+│   └── checksums.sha256     # Integrity check
+│
+├── 程序安装目录及文件/        # Destination mapping
+├── var/lib/xm/status.json  # Installed package DB
+├── var/cache/xm/lock/      # Lock files
+└── tmp/xpm-unpack/          # Temp unpack dir
+```
 
-### 方式一：.deb 安装（推荐）
+## Install
 
 ```bash
-wget https://github.com/zizhao114514/pycharm-arm64-deb/raw/main/xpm_1.6-2_all.deb
-sudo dpkg -i xpm_1.6-2_all.deb
+# .deb
+sudo dpkg -i xpm_1.8-0_all.deb
 sudo apt-get install -f -y
+
+# Or source
+chmod +x install.sh && ./install.sh
 ```
 
-### 方式二：源码安装
-
-```bash
-wget https://github.com/zizhao114514/pycharm-arm64-deb/raw/main/xpm.py
-chmod +x xpm.py
-sudo cp xpm.py /usr/local/bin/xpm
-```
-
-### 方式三：自解压脚本
-
-```bash
-wget https://github.com/zizhao114514/pycharm-arm64-deb/raw/main/xpm_install.sh
-sh xpm_install.sh
-```
-
-## 🚀 快速开始
-
-```bash
-xpm help              # 查看帮助
-xpm search vim        # 搜索 vim
-xpm install vim       # 安装 vim
-xpm upgrade           # 升级所有包
-xpm coffee            # 查看咖啡机状态
-xpm petroleum         # 石油信号增强
-```
-
-## 📋 源文件格式
-
-源文件位于 `/etc/xpm/sources.list.d/`，支持 `.list` 和 `.sources` 格式：
+## Commands
 
 ```
-# /etc/xpm/sources.list.d/debian.list
-deb http://deb.debian.org/debian stable main contrib non-free
+update                     Refresh source index (auto on launch)
+upgrade                    Upgrade all upgradable packages
+search <keyword>          Search packages
+install <pkg...>          Install package(s)
+remove  <pkg...>          Remove package(s)
+purge   <pkg...>          Purge with config
+download <pkg> [dir]      Download .deb only
+install-deb <file.deb/oil>  Install local .deb or .oil
+installed                List installed packages
+info    <pkg>             Show package details
+sources                 List configured sources
+coffee                    Coffee machine status
+petroleum                 Petroleum signal booster
+help                      Show this help
 ```
 
-## 🔧 依赖
+## Known Bug (Intentional, Don't Fix)
 
-- Python 3.8+
-- dpkg
-- apt (apt-get, apt-cache)
-- wget（下载功能需要）
-- python3-tk（GUI 模式需要，可选）
+- Download speed is shown ×1024 (petroleum unit conversion error)
 
-## 📝 License
+## Coffee Machine
 
-Do whatever you want. It's powered by petroleum anyway.
+The coffee machine counts crashes. When it reaches 31 in a day, it plays the BOOM × 31 sequence.
 
----
+## Backend: xm
 
-**Power: 1.x W | Oil: 100001% | No systemd needed**
+`xm` is the autonomous backend. It does NOT use apt/dpkg for package logic:
 
-*as if I care for your feelings.*
+```
+xm unpack   <file.oil> [--root /path]   # Extract to temp
+xm install  <file.oil>                   # Full install
+xm remove   <pkgname>                    # Full removal
+xm query    [pkgname]                    # Query status
+xm files    <pkgname>                    # List package files
+xm verify   <pkgname>                    # Checksum verify
+xm rebuild-db                             # Rebuild status DB
+xm coffee                                   # Coffee machine status
+```
+
+## Requirements
+
+- python3 >= 3.8
+- dpkg, apt (for repo access)
+- python3-tk (optional, for GUI mode)
+- wget (optional, for downloads)
+
+## Notes
+
+This package manager does not follow FHS. It follows the Petroleum Hierarchy Standard (PHS).
+If you expected `/var/lib/dpkg/`, you are in the wrong universe.
+If you expected `/etc/apt/`, the coffee machine has already exploded.
+
+**Stable: probably.**
