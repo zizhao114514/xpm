@@ -1,0 +1,35 @@
+#!/bin/sh
+# postinst for xmcs
+set -e
+
+# Try to compile if sources are present and binary missing
+if [ ! -x /usr/local/bin/xmcs ] && [ -d /usr/local/share/xmcs/src ]; then
+    cd /usr/local/share/xmcs
+    if command -v dotnet >/dev/null 2>&1; then
+        dotnet build -c Release -o ./bin >/dev/null 2>&1 || true
+        if [ -f ./bin/Program ]; then
+            cp ./bin/Program /usr/local/bin/xmcs
+        fi
+    fi
+    if [ ! -x /usr/local/bin/xmcs ] && command -v mcs >/dev/null 2>&1; then
+        mcs -out:/usr/local/bin/xmcs src/*.cs -optimize+ 2>/dev/null || true
+    fi
+    if [ ! -x /usr/local/bin/xmcs ] && command -v csc >/dev/null 2>&1; then
+        csc -out:/usr/local/bin/xmcs src/*.cs -optimize 2>/dev/null || true
+    fi
+    if [ -x /usr/local/bin/xmcs ]; then
+        chmod +x /usr/local/bin/xmcs
+        echo "✅ xmcs compiled successfully"
+    else
+        echo "⚠️ xmcs source installed but no C# compiler found"
+        echo "   Install mono-mcs or dotnet-sdk to compile"
+    fi
+fi
+
+# Create required directories
+mkdir -p /var/cache/xm/lock
+mkdir -p /var/lib/xpm/locks/history
+mkdir -p /var/cache/xpm/archives
+
+echo "☕ Oil reserve: 100001%"
+echo "🛢️ xmcs installed (C# Special Edition)"
