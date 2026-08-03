@@ -1,143 +1,96 @@
-# XPM v1.7-0 - One Bug Edition (GUI Fix)
+# XPM v1.8-0 - "Autonomous Package System" Edition
 
-> 🛢️ Petroleum-powered package manager for proot/Termux
-> 💡 "如果你在外面没有信号，就往苹果手机里面喊：我这里有石油！"
+## Highlights
 
-## 🎉 What's New in v1.7-0
+- **New backend `xm`**: autonomous unpack/install/remove engine
+- **Lock file system**: `/var/cache/xm/lock/` with flock + timeout
+- **Transaction state machine**: pending → running → committed → done
+- **`.oil` package format** support (via xm backend)
+- **Directory hierarchy**: 软件包/xpm/pmadd/pmdel/程序安装目录及文件/
+- **Coffee machine integration**: crash counting across frontend + backend
+- **i18n**: en / zh / ja (author statements in all 3 languages)
 
-### 🐛 GUI Fix (Critical)
-- **Fixed `UnboundLocalError: cannot access local variable 'do_search'`**
-- Root cause: function definitions were placed AFTER `make_btn()` calls in `gui_mode()`
-- Fix: moved ALL function definitions (`do_search`, `do_install`, `do_remove`, `do_purge`, `do_update`, `do_upgrade`, `do_info_btn`, `show_petroleum`, `show_coffee`, `set_status`, `get_selected`) BEFORE button creation
-- GUI now launches cleanly with `xpm` (no arguments)
-- Affected users: anyone running `xpm` to enter GUI mode got traceback before this fix
+## Architecture
 
-### Core Features
-- ✅ Full CLI + X11 GUI (Tkinter) dual mode
-- ✅ Multi-language support: English / 简体中文 / 日本語
-- ✅ Progress bars with real-time apt output parsing
-- ✅ Step logging (`[1/4]` style) for all operations
-- ✅ `.desktop` entry — appears in MATE/KDE menu
-- ✅ Auto-update on launch (runs `apt-get update` silently)
-- ✅ sudo password detection (no password prompt if NOPASSWD)
-- ✅ USTAR tar format (compatible with old dpkg)
+```
+xpm (frontend, CLI + GUI)
+  ├── search / install / remove / purge
+  ├── update / upgrade / download
+  ├── progress bar + step logging
+  ├── i18n (en/zh/ja)
+  └── calls xm for low-level ops
 
-### Easter Eggs
-- 🛢️ `xpm petroleum` — Petroleum signal booster
-  > 如果你在外面没有信号，就往苹果手机里面喊："我这里有石油！" 这样就有信号了。
-- ☕ `xpm coffee` — Coffee machine explosion tracker (300000000000+ explosions)
-- 💥 31 consecutive crashes → BOOM × 31 cinematic sequence
-  ```
-  ╔════════════════════════════════════════╗
-  ║  ☕ コーヒーマシン爆発調査委員会              ║
-  ╠════════════════════════════════════════╣
-  ║  [01] BOOOOOM! #300000000001 █           ║
-  ║  ...                                        ║
-  ║  [31] BOOOOOM! #300000000031 ████████████ ║
-  ╠════════════════════════════════════════╣
-  ║  Teto: 我才不在乎你的感受。                 ║
-  ║  Miku: ...我只想回家。                    ║
-  ╚════════════════════════════════════════╝
-  ```
-- 🔒 Password error → "安装程序被意外终止了，可能是您未输入正确密码"
-- 🎵 Plays well with bunnycat's MY TOY (OpenSL ES pipeline)
+xm (backend, oil-powered unpacker)
+  ├── unpack / install / remove
+  ├── verify (sha256)
+  ├── lock management (flock)
+  ├── transaction state machine
+  └── status.db (json)
+```
 
-### Known Bug (Feature)
-- Download speed display is **×1024** of actual speed
-- e.g. 0.5 MB/s real → displays as 512 MB/s
-- This is intentional. Don't fix it.
+## Lock File Behavior
 
-## 📦 Installation
+When a backend operation is in progress, subsequent xpm/xm processes will see:
 
-### Method 1: .deb package (Recommended)
+```
+检测到锁文件 (/var/cache/xm/lock/install.lock)
+  归属进程: xm (PID 1337)
+  操作类型: install xpm
+  已等待: 7s
+  最大等待: 120s
+  状态: unpacking
+
+⏳ 等待锁释放中...
+```
+
+On timeout:
+```
+⚠️ 安装进程无响应。
+☕ 咖啡机因等待超时爆炸 +1
+🛢️ 石油消耗：0.01%
+[今日崩溃次数: 12/31]
+```
+
+## Known Bug (Intentional, Don't Fix)
+
+| Bug | Description |
+|---|---|
+| Download speed ×1024 | Shown in MB/s but actually KB/s. Petroleum unit conversion. |
+
+## Bugfix History
+
+| Version | Fix |
+|---|---|
+| 1.0-0 | Initial release, basic CLI |
+| 1.3-1 | Single-file, zero import errors |
+| 1.4-1 | Three-path fallback for /usr/local/bin |
+| 1.6-2 | USTAR tar format (no PAX type-x error) |
+| 1.7-0 | GUI UnboundLocalError fix |
+| 1.7-1 | All crashes counted by coffee machine |
+| 1.7-2 | Author statement (en/zh/ja), "Don't Open Issues" |
+| 1.8-0 | Autonomous backend `xm`, lock files, .oil format, transaction state machine |
+
+## Install
 
 ```bash
-# Download
-wget https://github.com/zizhao114514/xpm/raw/main/xpm_1.7-0_all.deb
-
-# Install
-sudo dpkg -i xpm_1.7-0_all.deb
+wget https://github.com/zizhao114514/xpm/releases/download/v1.8-0/xpm_1.8-0_all.deb
+sudo dpkg -i xpm_1.8-0_all.deb
 sudo apt-get install -f -y
-
-# Verify
 xpm help
 ```
 
-### Method 2: Source copy
+## Recommended BGM
 
-```bash
-wget https://github.com/zizhao114514/xpm/raw/main/xpm.py
-chmod +x xpm.py
-sudo cp xpm.py /usr/local/bin/xpm
-xpm help
-```
+- bunnycat — MY TOY
+- bunnycat — Another Cup (reverse version)
 
-### Method 3: Self-extract installer
+## Author Statement
 
-```bash
-wget https://github.com/zizhao114514/xpm/raw/main/xpm_install.sh
-sh xpm_install.sh
-```
-
-## 📥 Download Links
-
-| File | Description | Link |
-|------|-------------|------|
-| **xpm_1.7-0_all.deb** | Debian package (recommended, 31KB) | [Download](https://github.com/zizhao114514/xpm/raw/main/xpm_1.7-0_all.deb) |
-| xpm.py | Single-file source (64KB, 1664 lines) | [Download](https://github.com/zizhao114514/xpm/raw/main/xpm.py) |
-| xpm_install.sh | Self-extract installer | [Download](https://github.com/zizhao114514/xpm/raw/main/xpm_install.sh) |
-| xpm.desktop | Desktop entry file | [Download](https://github.com/zizhao114514/xpm/raw/main/xpm.desktop) |
-| build_deb.sh | Build script for .deb | [Download](https://github.com/zizhao114514/xpm/raw/main/build_deb.sh) |
-| install.sh | Install script | [Download](https://github.com/zizhao114514/xpm/raw/main/install.sh) |
-
-## 🔄 Upgrade from Previous Version
-
-```bash
-# Clean old residue first (IMPORTANT!)
-sudo dpkg --purge xpm 2>/dev/null || true
-sudo rm -f /var/lib/dpkg/info/xpm.* 2>/dev/null || true
-
-# Install new version
-sudo dpkg -i xpm_1.7-0_all.deb
-sudo apt-get install -f -y
-```
-
-## 📊 Stats
-
-- Single Python file: ~1664 lines / 64KB
-- Zero pip dependencies (only stdlib + tkinter optional)
-- .deb size: 31KB
-- Languages: en / zh / ja
-- Power draw: 1.x W (oil-fed)
-- Oil reserve: 100001%
-- Coffee machines exploded: 300000000000+
-
-## 🐛 Bugfix History
-
-| Version | Fixes |
-|---------|-------|
-| 1.0-1 | Initial release |
-| 1.1-1 | Added multi-language (en/zh/ja) |
-| 1.2-1 | Added progress bars + step logging |
-| 1.2-2 | Fixed i18n import path |
-| 1.3-1 | Merged to single file (zero import errors) |
-| 1.3-2 | Added .desktop entry |
-| 1.4-1 | Triple-path fallback (/usr/local/bin, /usr/bin, ~/.local/bin) |
-| 1.5-1 | Fixed all syntax errors + GUI trace_add + progress bar div-by-zero |
-| 1.6-1 | Added petroleum + coffee easter eggs |
-| 1.6-2 | USTAR tar format (fixes "unsupported PAX tar header type 'x'") |
-| **1.7-0** | **Fix GUI UnboundLocalError (function defs moved before make_btn calls)** |
-
-## 🎵 Soundtrack
-
-Recommended listening while using XPM:
-- bunnycat — MY TOY (重音 Teto + 初音 Miku)
-- bunnycat — Another Cup (反义词版: 手机没电啦 / 咖啡机炸了)
+> 我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
+> I feel this thing is quite stable. If you encounter any bugs, don't create an issue. Just ask your AI.
+> これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に頼ってください。
 
 ---
-
-**as if I care for your feelings.**
-
-**...I just want to go home.**
-
-☕ *目撃！コーヒーマシン爆発31回*
+☕ *as if I care for your package manager.*
+...I just want to go home.
+🛢️ Oil reserve: 100001% | Power: 1.x W
