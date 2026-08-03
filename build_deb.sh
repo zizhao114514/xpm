@@ -1,123 +1,84 @@
 #!/bin/bash
-# XPM .deb 构建脚本 (USTAR 兼容版)
 set -e
-
-VER="1.7-2"
+VER="1.8-0"
 PKG="xpm_${VER}_all"
-BUILD_DIR="/data/workspace/xpm/build"
-SRC_DIR="/data/workspace/xpm"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-rm -rf "$BUILD_DIR" "$SRC_DIR/${PKG}.deb"
-mkdir -p "$BUILD_DIR/${PKG}/DEBIAN"
-mkdir -p "$BUILD_DIR/${PKG}/usr/local/bin"
-mkdir -p "$BUILD_DIR/${PKG}/usr/bin"
-mkdir -p "$BUILD_DIR/${PKG}/usr/local/share/applications"
-mkdir -p "$BUILD_DIR/${PKG}/usr/local/share/xpm"
-mkdir -p "$BUILD_DIR/${PKG}/etc/xpm/sources.list.d"
+# 清理旧构建
+rm -rf "$SCRIPT_DIR/build"
+mkdir -p "$SCRIPT_DIR/build"
 
-# 主程序（双路径）
-cp "$SRC_DIR/xpm.py" "$BUILD_DIR/${PKG}/usr/local/bin/xpm"
-cp "$SRC_DIR/xpm.py" "$BUILD_DIR/${PKG}/usr/bin/xpm"
-chmod 755 "$BUILD_DIR/${PKG}/usr/local/bin/xpm"
-chmod 755 "$BUILD_DIR/${PKG}/usr/bin/xpm"
+# === 准备文件结构 ===
+# 二进制文件
+mkdir -p "$SCRIPT_DIR/build/usr/local/bin"
+cp "$SCRIPT_DIR/xpm.py" "$SCRIPT_DIR/build/usr/local/bin/xpm"
+cp "$SCRIPT_DIR/xm.py"   "$SCRIPT_DIR/build/usr/local/bin/xm"
+chmod 755 "$SCRIPT_DIR/build/usr/local/bin/xpm"
+chmod 755 "$SCRIPT_DIR/build/usr/local/bin/xm"
 
-# .desktop
-cp "$SRC_DIR/xpm.desktop" "$BUILD_DIR/${PKG}/usr/local/share/applications/xpm.desktop"
-cp "$SRC_DIR/xpm.desktop" "$BUILD_DIR/${PKG}/usr/local/share/xpm/xpm.desktop"
-
-# 示例源
-cat > "$BUILD_DIR/${PKG}/etc/xpm/sources.list.d/debian.list" <<'EOF'
-# XPM Source File
-# Format: deb <uri> <suite> <components>
-# Uncomment and edit as needed:
-# deb http://deb.debian.org/debian stable main contrib non-free
+# etc
+mkdir -p "$SCRIPT_DIR/build/etc/xpm/sources.list.d"
+cat > "$SCRIPT_DIR/build/etc/xpm/sources.list.d/debian.list" << 'EOF'
+# XPM Source Example
+# Format: one source per line
+# deb http://deb.debian.org/debian bookworm main
 EOF
 
-# DEBIAN 控制文件
-cat > "$BUILD_DIR/${PKG}/DEBIAN/control" <<EOF
-Package: xpm
-Version: $VER
-Section: admin
-Priority: optional
-Architecture: all
-Depends: python3 (>= 3.8), dpkg, apt
-Recommends: python3-tk, wget
-Maintainer: zizhao <zizhao@local>
-Description: X11 Package Manager - Petroleum Edition
- Single-file Python3 package manager with X11 GUI,
- progress bars, step logging, multi-language support
- (en/zh/ja), .desktop entry, and petroleum-powered
- easter eggs. Known bug: download speed x1024.
+# applications
+mkdir -p "$SCRIPT_DIR/build/usr/local/share/applications"
+cat > "$SCRIPT_DIR/build/usr/local/share/applications/xpm.desktop" << 'EOF'
+[Desktop Entry]
+Type=Application
+Name=XPM - Petroleum Package Manager
+Name[zh]=XPM - 石油包管理器
+Name[ja]=XPM - 石油パッケージマネージャー
+Comment=X11 Package Manager (Petroleum Edition)
+Exec=xpm
+Icon=package
+Terminal=false
+Categories=System;PackageManager;
 EOF
 
-# postinst
-cat > "$BUILD_DIR/${PKG}/DEBIAN/postinst" <<'POSTINST'
-#!/bin/bash
-set -e
-# 三路径 fallback
-for p in /usr/local/bin /usr/bin; do
-    [ -f "$p/xpm" ] || cp "/usr/local/bin/xpm" "$p/xpm" 2>/dev/null || true
-done
-# 确保至少一处可执行
-if [ ! -x /usr/local/bin/xpm ] && [ ! -x /usr/bin/xpm ]; then
-    mkdir -p ~/.local/bin
-    cp /usr/local/bin/xpm ~/.local/bin/xpm 2>/dev/null || true
-    chmod 755 ~/.local/bin/xpm 2>/dev/null || true
-fi
-# .desktop
-mkdir -p /usr/local/share/applications 2>/dev/null || true
-cp /usr/local/share/xpm/xpm.desktop /usr/local/share/applications/ 2>/dev/null || true
-update-desktop-database 2>/dev/null || true
-# 源目录
-mkdir -p /etc/xpm/sources.list.d 2>/dev/null || true
-if [ ! -f /etc/xpm/sources.list.d/debian.list ]; then
-    echo "# XPM Source File" > /etc/xpm/sources.list.d/debian.list
-fi
-echo ""
-echo "***"
-echo "***  XPM installed! (Don't Open Issues Edition)"
-echo "***  Languages: en / zh / ja"
-echo "***  Run: xpm (GUI)  |  xpm help (CLI)"
-echo "***  Set LANG or XPM_LANG to: en / zh / ja"
-echo "***  Oil: 100001% | Power: 1.x W"
-echo "***  Known bug: download speed x1024"
-echo "***"
-exit 0
-POSTINST
-chmod 755 "$BUILD_DIR/${PKG}/DEBIAN/postinst"
+# var
+mkdir -p "$SCRIPT_DIR/build/var/cache/xm/lock"
+mkdir -p "$SCRIPT_DIR/build/var/cache/xm/archives"
+mkdir -p "$SCRIPT_DIR/build/var/cache/xm/temp"
+mkdir -p "$SCRIPT_DIR/build/var/lib/xm"
+echo '{}' > "$SCRIPT_DIR/build/var/lib/xm/status.json"
 
-# prerm（清残留）
-cat > "$BUILD_DIR/${PKG}/DEBIAN/prerm" <<'PRERM'
-#!/bin/bash
-rm -f /var/lib/dpkg/info/xpm.prerm 2>/dev/null || true
-rm -f /var/lib/dpkg/info/xpm.postrm 2>/dev/null || true
-rm -f /var/lib/dpkg/info/xpm.postinst 2>/dev/null || true
-rm -f /var/lib/dpkg/info/xpm.list 2>/dev/null || true
-exit 0
-PRERM
-chmod 755 "$BUILD_DIR/${PKG}/DEBIAN/prerm"
+# DEBIAN 目录（control 文件在根目录）
+mkdir -p "$SCRIPT_DIR/build/DEBIAN"
+cp "$SCRIPT_DIR/DEBIAN/control"   "$SCRIPT_DIR/build/DEBIAN/control"
+cp "$SCRIPT_DIR/DEBIAN/postinst"  "$SCRIPT_DIR/build/DEBIAN/postinst"
+cp "$SCRIPT_DIR/DEBIAN/prerm"     "$SCRIPT_DIR/build/DEBIAN/prerm"
+cp "$SCRIPT_DIR/DEBIAN/postrm"    "$SCRIPT_DIR/build/DEBIAN/postrm"
+chmod 755 "$SCRIPT_DIR/build/DEBIAN/postinst"
+chmod 755 "$SCRIPT_DIR/build/DEBIAN/prerm"
+chmod 755 "$SCRIPT_DIR/build/DEBIAN/postrm"
 
-# postrm
-cat > "$BUILD_DIR/${PKG}/DEBIAN/postrm" <<'POSTRM'
-#!/bin/bash
-rm -f /usr/local/share/applications/xpm.desktop 2>/dev/null || true
-update-desktop-database 2>/dev/null || true
-echo "XPM removed. Oil reserve: depleted."
-echo "as if I care for your feelings."
-exit 0
-POSTRM
-chmod 755 "$BUILD_DIR/${PKG}/DEBIAN/postrm"
+# debian-binary
+echo "2.0" > "$SCRIPT_DIR/build/debian-binary"
 
-# 构建（USTAR 格式，兼容老 dpkg）
-cd "$BUILD_DIR"
-tar --format=ustar -czf "data.tar.gz" -C "${PKG}" usr etc
-tar --format=ustar -czf "control.tar.gz" -C "${PKG}/DEBIAN" control postinst prerm postrm
-echo "2.0" > debian-binary
+# === 打包 control.tar.gz（DEBIAN/* 在根目录）===
+cd "$SCRIPT_DIR/build/DEBIAN"
+tar --format=ustar -czf "$SCRIPT_DIR/build/control.tar.gz" \
+    control postinst prerm postrm
+cd "$SCRIPT_DIR/build"
+
+# === 打包 data.tar.gz ===
+tar --format=ustar -czf "$SCRIPT_DIR/build/data.tar.gz" \
+    usr/ etc/ var/
+
+# === 用 ar 打包标准 .deb ===
+cd "$SCRIPT_DIR/build"
 ar rcs "${PKG}.deb" debian-binary control.tar.gz data.tar.gz
 
-# 移到 workspace 根
-cp "${PKG}.deb" /data/workspace/xpm/
-ls -la /data/workspace/xpm/${PKG}.deb
+# 移动到工作目录
+mv "${PKG}.deb" "$SCRIPT_DIR/"
+
+# 清理
+rm -rf "$SCRIPT_DIR/build"
 
 echo ""
-echo "*** Build complete: /data/workspace/xpm/${PKG}.deb ***"
+echo "✅ Built: ${PKG}.deb"
+ls -la "$SCRIPT_DIR/${PKG}.deb"
