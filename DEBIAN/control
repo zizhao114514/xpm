@@ -1,13 +1,15 @@
 Package: xpm
-Version: 1.8-0
+Version: 1.9-0
 Section: utils
 Priority: optional
 Architecture: all
-Depends: python3 (>= 3.8), dpkg, apt
+Depends: python3 (>= 3.8), dpkg
 Recommends: python3-tk, wget
 Maintainer: Zizhao <zizhao@localhost>
 Description: X11 Package Manager (Petroleum Edition)
- One Bug Edition: download speed shown x1024 (intentional).
+ No-Apt Edition: zero apt-get / zero apt-cache.
  Frontend xpm + backend xm, autonomous package system.
+ Dual-format sources: Debian style (deb http://...) and native [xpm] blocks.
+ Network via wget only. Package install via dpkg + xm.
  No systemd needed. Power: 1.x W. Oil: 100001%.
  As if I care for your feelings.
