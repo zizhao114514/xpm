@@ -8,31 +8,37 @@ mkdir -p /var/cache/xm/archives
 mkdir -p /var/cache/xm/temp
 mkdir -p /var/lib/xm
 mkdir -p /usr/local/share/xpm
+mkdir -p ~/.cache/xpm 2>/dev/null || true
 
-# 复制 xm 后端
+# 复制 xm 后端副本
 cp /usr/local/bin/xm /usr/local/share/xpm/xm.py 2>/dev/null || true
 
 # 创建示例源文件（如果不存在）
 if [ ! -f /etc/xpm/sources.list.d/debian.list ]; then
     cat > /etc/xpm/sources.list.d/debian.list << 'EOF'
-# XPM Source Example
-# Format: one source per line
-# deb http://deb.debian.org/debian bookworm main
+# XPM Source - Debian style
+deb http://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free
+
+# XPM native style example (separate file):
+# [xpm]
+# name=My Repo
+# url=http://example.com/dists/stable
+# type=xpm
+# enabled=yes
 EOF
 fi
 
-# 初始化 status.db
+# 初始化 status.json
 if [ ! -f /var/lib/xm/status.json ]; then
     echo '{}' > /var/lib/xm/status.json
 fi
 
-# 初始化 coffee.log
-mkdir -p ~/.cache/xpm 2>/dev/null || true
-
 echo ""
 echo "***"
-echo "***  XPM installed! (Autonomous Package System)"
+echo "***  XPM v1.9-0 installed! (No-Apt Edition)"
 echo "***  Frontend: xpm | Backend: xm"
+echo "***  Sources: /etc/xpm/sources.list.d/"
+echo "***  Network: wget only (zero apt-get)"
 echo "***  Run: xpm (GUI)  |  xpm help (CLI)"
 echo "***  Oil: 100001% | Power: 1.x W"
 echo "***  Author: I feel this thing is quite stable."
