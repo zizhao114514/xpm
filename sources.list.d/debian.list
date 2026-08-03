@@ -1,0 +1,17 @@
+# XPM 源文件示例
+# 取消注释以启用
+# 格式: deb <URL> <发行版> <组件...>
+
+# Debian 稳定版
+# deb http://deb.debian.org/debian stable main contrib non-free
+# deb http://deb.debian.org/debian stable-updates main
+
+# Debian 测试版
+# deb http://deb.debian.org/debian testing main contrib non-free
+
+# Ubuntu (如果在 Ubuntu 系 proot 里)
+# deb http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse
+# deb http://archive.ubuntu.com/ubuntu jammy-updates main restricted universe multiverse
+
+# 自定义源示例
+# deb http://example.com/repo stable main
