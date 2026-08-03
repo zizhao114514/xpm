@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-VER="1.8-0"
+VER="1.9-0"
 PKG="xpm_${VER}_all"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
