@@ -1,0 +1,16 @@
+#!/bin/sh
+# postrm for xmcs
+set -e
+
+if [ "$1" = "purge" ]; then
+    # Remove source files on purge
+    rm -rf /usr/local/share/xmcs
+    # Remove lock files
+    rm -f /var/cache/xm/lock/*.lock 2>/dev/null || true
+fi
+
+# Remove binary
+rm -f /usr/local/bin/xmcs
+
+echo "  xmcs: removed"
+echo "☕ Oil reserve: 100001% (unchanged)"
