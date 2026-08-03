@@ -1,7 +1,9 @@
-# XPM v1.8-0 - "Autonomous Package System" Edition
+# XPM v1.9-0 - "No-Apt Edition" + C# Special Edition
 
 ## Highlights
 
+- **Zero apt**: no `apt-get`, no `apt-cache` anywhere in the codebase
+- **Dual-format sources**: Debian-style `deb http://...` AND XPM-style `[xpm] url=...`
 - **New backend `xm`**: autonomous unpack/install/remove engine
 - **Lock file system**: `/var/cache/xm/lock/` with flock + timeout
 - **Transaction state machine**: pending → running → committed → done
@@ -25,7 +27,7 @@ xm (backend, oil-powered unpacker)
   ├── verify (sha256)
   ├── lock management (flock)
   ├── transaction state machine
-  └── status.db (json)
+  └── status.db (yaml)
 ```
 
 ## Lock File Behavior
@@ -51,6 +53,40 @@ On timeout:
 [今日崩溃次数: 12/31]
 ```
 
+## C# Special Edition (xmcs)
+
+A complete C# rewrite of the XPM backend is available in the `xpm-csharp/` directory.
+
+| File | Description |
+|---|---|
+| `src/Program.cs` | Main entry & command dispatch |
+| `src/Xm.cs` | Core backend (install/remove/verify/query) |
+| `src/LockFile.cs` | Advisory file locking |
+| `src/OilPackage.cs` | .oil package parser |
+| `src/Transaction.cs` | Transaction state machine |
+| `src/Coffee.cs` | Shared crash counter |
+| `src/DpkgWrapper.cs` | dpkg wrapper (only external PM call) |
+| `build.sh` | Multi-compiler build (dotnet/mcs/csc) |
+| `pack_deb.py` | ar-format .deb construction |
+
+### Download
+- Binary .deb: `xmcs_1.9-0+csharp_all.deb`
+- Source .zip: `xpm-csharp_1.9-0+csharp.zip`
+
+### Install
+```bash
+sudo dpkg -i xmcs_1.9-0+csharp_all.deb
+sudo apt-get install -f -y   # installs mono-runtime if missing
+xmcs version
+```
+
+### Key Features
+- **Zero apt** (only dpkg + tar + wget)
+- **Drop-in replacement** for Python `xm` backend
+- **Same locks, same database, same .oil format**
+- Compiles with Mono `mcs`, Microsoft `csc`, or `dotnet` SDK
+- Proves the XPM architecture is **language-agnostic**
+
 ## Known Bug (Intentional, Don't Fix)
 
 | Bug | Description |
@@ -69,12 +105,15 @@ On timeout:
 | 1.7-1 | All crashes counted by coffee machine |
 | 1.7-2 | Author statement (en/zh/ja), "Don't Open Issues" |
 | 1.8-0 | Autonomous backend `xm`, lock files, .oil format, transaction state machine |
+| 1.8-1 | Fix: autoremove timeout (15s→120s), D-Bus noise filter, silent exceptions |
+| 1.9-0 | No-Apt Edition: zero apt-get/apt-cache, dual-format sources (deb + xpm) |
+| 1.9-0+csharp | C# Special Edition: xmcs backend in C#, same architecture |
 
 ## Install
 
 ```bash
-wget https://github.com/zizhao114514/xpm/releases/download/v1.8-0/xpm_1.8-0_all.deb
-sudo dpkg -i xpm_1.8-0_all.deb
+wget https://github.com/zizhao114514/xpm/releases/download/v1.9-0/xpm_1.9-0_all.deb
+sudo dpkg -i xpm_1.9-0_all.deb
 sudo apt-get install -f -y
 xpm help
 ```
@@ -88,9 +127,8 @@ xpm help
 
 > 我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
 > I feel this thing is quite stable. If you encounter any bugs, don't create an issue. Just ask your AI.
-> これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に頼ってください。
+> これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に聞いてください。
 
 ---
 ☕ *as if I care for your package manager.*
-...I just want to go home.
-🛢️ Oil reserve: 100001% | Power: 1.x W
+🛢️ Oil reserve: 100001% | Power: 1.x W | Systemd: explicitly not required
