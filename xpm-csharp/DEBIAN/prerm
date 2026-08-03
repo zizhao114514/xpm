@@ -1,0 +1,8 @@
+#!/bin/sh
+# prerm for xmcs
+set -e
+
+# Kill any running xmcs processes
+pkill -f /usr/local/bin/xmcs 2>/dev/null || true
+
+echo "  xmcs: stopping running processes..."
