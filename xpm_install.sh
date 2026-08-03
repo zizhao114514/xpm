@@ -1,55 +1,48 @@
 #!/bin/bash
-# XPM 自解压安装脚本
-# 从 base64 还原 xpm.py 并安装到系统路径
+# XPM self-extract installer
+# Base64 encoded xpm.py + xm.py embedded
 
 set -e
 
-echo "*** XPM Self-Extracting Installer ***"
-echo "*** Petroleum Edition | Oil: 100001% | Power: 1.x W ***"
-echo ""
+TMPDIR=$(mktemp -d)
+cd "$TMPDIR"
 
-# 找到脚本自身所在目录
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# === xpm.py ===
+cat > xpm_b64 << 'XPM_EOF'
+XPM_EOF
 
-# 方式一：如果同目录有 xpm.py 直接用
-if [ -f "$SCRIPT_DIR/xpm.py" ]; then
-    echo "[1/3] Found xpm.py in same directory"
-    cp "$SCRIPT_DIR/xpm.py" /tmp/xpm.py
-# 方式二：从脚本末尾的 base64 数据还原
-elif tail -n +$((SCRIPT_LINE+1)) "$0" 2>/dev/null | base64 -d > /tmp/xpm.py 2>/dev/null; then
-    echo "[1/3] Extracted xpm.py from self-extracting archive"
-    if [ ! -s /tmp/xpm.py ]; then
-        echo "  ERROR: extraction failed, xpm.py is empty"
-        exit 1
-    fi
-else
-    echo "  ERROR: cannot find xpm.py"
-    echo "  Please place xpm.py in the same directory as this script."
-    exit 1
+# === xm.py ===
+cat > xm_b64 << 'XM_EOF'
+XM_EOF
+
+echo "Extracting xpm..."
+base64 -d xpm_b64 > xpm.py 2>/dev/null || true
+echo "Extracting xm..."
+base64 -d xm_b64 > xm.py 2>/dev/null || true
+
+# If decoding failed (no content), try downloading
+if [ ! -s xpm.py ]; then
+    echo "Base64 extraction empty, downloading from GitHub..."
+    wget -q "https://github.com/zizhao114514/xpm/raw/main/xpm.py" -O xpm.py 2>/dev/null || true
+fi
+if [ ! -s xm.py ]; then
+    echo "Downloading xm.py..."
+    wget -q "https://github.com/zizhao114514/xpm/raw/main/xm.py" -O xm.py 2>/dev/null || true
 fi
 
-echo "[2/3] Installing to /usr/local/bin/xpm"
-chmod +x /tmp/xpm.py
-sudo cp /tmp/xpm.py /usr/local/bin/xpm 2>/dev/null || cp /tmp/xpm.py "$HOME/.local/bin/xpm" 2>/dev/null || {
-    mkdir -p "$HOME/.local/bin"
-    cp /tmp/xpm.py "$HOME/.local/bin/xpm"
-    echo "  Note: installed to ~/.local/bin/xpm (add to PATH if needed)"
-}
+# Install
+if [ -s xpm.py ] && [ -s xm.py ]; then
+    chmod 755 xpm.py xm.py
+    sudo cp xpm.py /usr/local/bin/xpm
+    sudo cp xm.py  /usr/local/bin/xm
+    echo "✅ XPM installed!"
+    echo "   xpm: $(which xpm)"
+    echo "   xm:  $(which xm)"
+    xpm help 2>/dev/null || true
+else
+    echo "⚠️ Extraction failed. Please download manually:"
+    echo "  https://github.com/zizhao114514/xpm/releases/tag/v1.8-0"
+fi
 
-echo "[3/3] Verifying installation"
-which xpm >/dev/null 2>&1 && xpm help >/dev/null 2>&1 && {
-    echo ""
-    echo "*** XPM installed successfully! ***"
-    echo "*** Run: xpm (GUI) | xpm help (CLI) ***"
-    echo "*** Oil: 100001% | Power: 1.x W ***"
-    echo ""
-    rm -f /tmp/xpm.py
-    exit 0
-} || {
-    echo ""
-    echo "  WARNING: xpm installed but not in PATH or has errors"
-    echo "  Try: export PATH=\"\$HOME/.local/bin:\$PATH\""
-    echo "  Then: xpm help"
-    rm -f /tmp/xpm.py
-    exit 1
-}
+cd /
+rm -rf "$TMPDIR"
