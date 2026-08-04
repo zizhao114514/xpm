@@ -1,24 +1,14 @@
-# 构建产物
-_deb_build/
-_build/
-_staging/
-staging/
-staging_ultimate/
-dist/
 __pycache__/
+*.pyc
+*.pyo
 *.deb
-
-# 临时脚本
-_fakeroot_build.sh
-push_*.py
-upload_*.py
-reupload.py
-verify_release.py
-cleanup_*.py
-push_docs.py
-PUSH.sh
-
-# 测试临时文件
-*.oil
-test_*
-tests/test_*.py
+/tmp/
+*.log
+*.tar.gz
+*.tar.zst
+debian-binary
+control.tar.*
+data.tar.*
+*.swp
+*.swo
+.DS_Store
