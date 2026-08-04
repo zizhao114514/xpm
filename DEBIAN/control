@@ -1,15 +1,23 @@
 Package: xpm
-Version: 1.9-0
-Section: utils
+Version: 2.0-0
+Section: admin
 Priority: optional
 Architecture: all
-Depends: python3 (>= 3.8), dpkg
-Recommends: python3-tk, wget
-Maintainer: Zizhao <zizhao@localhost>
-Description: X11 Package Manager (Petroleum Edition)
- No-Apt Edition: zero apt-get / zero apt-cache.
- Frontend xpm + backend xm, autonomous package system.
- Dual-format sources: Debian style (deb http://...) and native [xpm] blocks.
- Network via wget only. Package install via dpkg + xm.
- No systemd needed. Power: 1.x W. Oil: 100001%.
- As if I care for your feelings.
+Depends: python3 (>= 3.8), wget, dpkg, tar, gzip
+Recommends: gpg, mono-runtime | dotnet-runtime-8.0
+Maintainer: Zizhao <zizhao@example.com>
+Description: XPM - X11 Package Manager (Petroleum Edition)
+ A complete, apt-free package management system.
+ Features:
+  - Zero apt-get / apt-cache usage (wget + dpkg only)
+  - Full dependency resolution (OR, version constraints, topological sort)
+  - Transaction rollback support
+  - GPG signature verification
+  - Dual-format source (Debian-compatible + native [xpm] format)
+  - xm-build: build .oil packages from directories
+  - Complete test suite (36 tests)
+  - Multi-language UI (en/zh/ja)
+  - Coffee machine crash counter
+  - Oil-driven resource metering (100001%)
+  - C# backend available (xmcs)
+ Homepage: https://github.com/zizhao114514/xpm
