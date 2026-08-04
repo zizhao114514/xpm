@@ -1,114 +1,92 @@
-# XPM v2.0-0 "Complete Edition" Release Notes
+# XPM v2.0-1 "Practical Edition" 发布说明
 
 ## 🎯 版本定位
 
-XPM 第一个**完整可用**的版本。从 v2.0-0 起，XPM 不再是一个"有趣的玩具"，而是一个**真正能替代 apt 的包管理器**。
+在 v2.0-0 "Complete Edition" 基础上，**全面增强实用性**，加入日常包管理真正需要的功能。
 
 ## ✨ 新增功能
 
-### 1. 依赖解析器
-- 解析 `Depends:` 字段
-- 支持 OR 关系（`|`）
-- 支持版本约束（`>=`, `>`, `=`, `<`, `<=`）
-- Debian epoch 版本比较
-- 拓扑排序安装顺序
-- 循环依赖检测
+### 🔍 搜索与查询（5 个新命令）
+- `xpm search <关键词>` - 模糊搜索（匹配包名 + 描述）
+- `xpm provides <命令>` - 查找哪个包提供某命令
+- `xpm owns <文件路径>` - 反查文件属于哪个包
+- `xpm why <包名>` - 为什么安装了它（含历史追溯）
+- `xpm size [包名]` - 磁盘占用（无参数则全部排序）
 
-### 2. 事务回滚
-- 安装前自动快照文件
-- `xpm rollback list` 查看回滚点
-- `xpm rollback <id>` 一键回滚
+### 🧹 清理维护（5 个新命令）
+- `xpm autoremove` - 自动移除孤儿包
+- `xpm clean [--all]` - 清理下载缓存
+- `xpm dedupe` - 检测重复文件冲突
+- `xpm fix-broken` - 修复损坏的包
+- `xpm verify [包名]` - 完整性校验
 
-### 3. GPG 签名校验
-- Release 文件签名验证
-- 包级别签名支持
-- 密钥环管理
+### 🌐 软件源增强（3 个新命令）
+- `xpm mirrors` - 测试所有源的速度并推荐最优
+- `xpm source add <名> <URL> [dist] [comp]` - 命令行添加源
+- `xpm source remove <名>` - 命令行删除源
+- `xpm news` - 显示可更新的包（一键升级）
 
-### 4. 包构建工具
-- `xpm build <dir>` 将目录打包为 `.oil`
-- 自动生成 `files.list` 和 `checksums.sha256`
-- 支持 GPG 签名
+### 💡 体验增强（4 个新命令）
+- `xpm install -f <文件>` - 从文件批量安装
+- `xpm install --dry-run <包>` - 预览安装（不实际执行）
+- `xpm install --offline <包>` - 从本地缓存离线安装
+- `xpm download <包>` - 只下载不安装
+- `xpm interactive` - 交互式选择安装（TUI 列表）
 
-### 5. 完整测试套件
-- 36 个测试全部通过
-- 覆盖版本比较、依赖解析、回滚、构建、GPG、源解析
+### 📋 历史与别名（3 个新命令）
+- `xpm history [数量]` - 显示安装/卸载历史
+- `xpm alias add <名> <命令>` - 自定义别名
+- `xpm alias list / remove` - 管理别名
 
-### 6. 完整文档
-- `docs/design.md` — 架构设计
-- `docs/manual.md` — 用户手册
-- `docs/packaging.md` — 打包指南
-- `docs/FAQ.md` — 常见问题
-- `docs/internals.md` — 内部实现
+### 🩺 增强版 doctor
+- 新增 6 项检查：磁盘空间、X11 会话、TTY、缓存大小、石油储备、功耗
+- 自动给出修复建议
 
-## 🖥️ CLI 输出规范
+### 🌍 三语帮助系统
+- 根据 `LANG` 自动切换：中文 / 英文 / 日文
+- `xpm help` 按语言显示对应帮助
 
-### 安装（4 阶段）
-```
-[1/4] 正在选中未安装的软件包：vim
-[2/4] 正在选中 vim (2:9.1.0964-1)
-[2/4] 正在选中 libtinfo6 (6.4+20230625-2)
-[3/4] 正在解压 vim (2:9.1.0964-1)...
-[3/4] 正在解压 libtinfo6 (6.4+20230625-2)...
-[4/4] 正在设置 vim (2:9.1.0964-1)...
-[4/4] 正在设置 libtinfo6 (6.4+20230625-2)...
-✅ 安装完成
-```
+## 📊 完整命令统计
 
-### 卸载（3 阶段）
-```
-[1/3] 正在寻找与 vim 相关的文件...
-[2/3] 正在卸载 vim (2:9.1.0964-1)...
-[3/3] 正在清除 vim (2:9.1.0964-1)...
-✅ 已彻底清除
-```
-
-### 下载进度
-```
-📥 下载 vim_9.1.0964-1_arm64.deb (3.2MB)
-  ████████████████░░░░ 78% | 1.4MB/s | ETA 9s
-```
-
-## 🔧 新增命令
-
-| 命令 | 说明 |
+| 分类 | 数量 |
 |---|---|
-| `xpm reinstall <pkg>` | 重新安装 |
-| `xpm fix-broken` | 修复中断的安装 |
-| `xpm depends <pkg>` | 显示依赖 |
-| `xpm rdepends <pkg>` | 显示反向依赖 |
-| `xpm rollback list` | 列出回滚点 |
-| `xpm rollback <n>` | 回滚到指定点 |
-| `xpm build <dir>` | 构建 .oil 包 |
-| `xpm verify [pkg]` | 校验完整性 |
-| `xpm doctor` | 系统诊断 |
-| `xpm stats` | 统计信息 |
+| 包管理 | 8 个 |
+| 搜索查询 | 6 个 |
+| 清理维护 | 5 个 |
+| 软件源 | 7 个 |
+| 历史别名 | 3 个 |
+| 其他 | 7 个 |
+| **合计** | **36 个命令** |
 
-## 🚫 铁律
+## 🔧 技术改进
 
-- **零 apt-get / apt-cache 调用**
-- **仅 wget + dpkg + xm/xmcs**
-- **代理环境变量自动清除**
-- **所有输出 flush，防止 proot/X11 缓冲**
+- 依赖解析器增强：OR 关系 + 版本约束 + 循环检测
+- 下载进度条：实时百分比 + 速度 + ETA
+- 事务回滚：自动快照 + 手动恢复
+- GPG 签名校验
+- .oil 包构建工具
+- GUI 增强：搜索框 + 进度条 + 日志窗
 
-## 📊 测试
+## 📦 安装
 
-```
-tests/test_all.py: 36 passed in 0.8s
-```
-
-## 🔗 下载
-
-```
-.deb: https://github.com/zizhao114514/xpm/releases/download/v2.0-0/xpm_2.0-0_all.deb
-源码: https://github.com/zizhao114514/xpm/archive/refs/heads/main.zip
+```bash
+sudo dpkg -i xpm_2.0-1_all.deb
+xpm doctor
 ```
 
-## ☕ 咖啡机
+## 🛢️ 状态
 
-```
-Total crashes: 300000000042
-Oil reserve: 100001%
-Power: 1.x W
-```
+| 指标 | 数值 |
+|---|---|
+| 版本 | v2.0-1 "Practical Edition" |
+| 命令数 | 36 |
+| 帮助语言 | 3（中/英/日） |
+| apt 调用 | 0 |
+| 石油储备 | 100001% |
+| 功耗 | 1.x W |
 
-🛢️ Oil-driven. Apt-forbidden. Language-agnostic.
+## 作者声明
+
+我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
+
+as if I care for your package dependencies.
