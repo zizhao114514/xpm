@@ -5,6 +5,9 @@ import subprocess, json, os, sys
 # 用环境变量里的 token（不硬编码）
 token = os.environ.get("GITHUB_TOKEN", "")
 if not token:
+    # 也尝试 GITHUB_TOKEN 大写
+    token = os.environ.get("GITHUB_TOKEN", "")
+if not token:
     print("❌ 需要 GITHUB_TOKEN 环境变量")
     print("   运行: export GITHUB_TOKEN=ghp_xxx")
     print("   然后: python3 push_clean.py")
