@@ -34,7 +34,7 @@ from pathlib import Path
 from collections import OrderedDict, defaultdict
 
 # ─── 常量 ───────────────────────────────────────────────
-XPM_ROOT = "/opt/xpm"
+XPM_ROOT = "/usr/local/share/xpm"
 XPM_DB = f"{XPM_ROOT}/db"
 XPM_STATUS = f"{XPM_DB}/status.json"
 XPM_SOURCES = "/etc/xpm/sources.list.d"
@@ -48,8 +48,8 @@ XPM_KEYRING = f"{XPM_ROOT}/keyring"
 XPM_DOCS = f"{XPM_ROOT}/docs"
 XPM_DESKTOP = "/usr/share/applications/xpm.desktop"
 
-VERSION = "2.0-1"
-CODENAME = "Practical Edition"
+VERSION = "2.0-2"
+CODENAME = "Proot-Friendly Edition"
 
 # 清除代理环境变量（铁律）
 for _k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "no_proxy"):
