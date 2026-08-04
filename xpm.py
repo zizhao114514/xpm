@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-XPM - X11 Package Manager v2.0-3 "Debian-Native Edition"
+XPM - X11 Package Manager v2.0-4 "Scope-Fixed Edition"
 =======================================================
 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
 
@@ -49,8 +49,8 @@ XPM_DOCS = f"{XPM_ROOT}/docs"
 XPM_TESTS = f"{XPM_ROOT}/tests"
 XPM_DESKTOP = "/usr/share/applications/xpm.desktop"
 
-VERSION = "2.0-3"
-CODENAME = "Debian-Native Edition"
+VERSION = "2.0-4"
+CODENAME = "Scope-Fixed Edition"
 
 # 清除代理环境变量（铁律）
 for _k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "no_proxy"):
@@ -71,11 +71,11 @@ class C:
 def cprint(color, text):
     print(f"{color}{text}{C.RESET}")
 
-def info(msg): print(f"{C.CYAN}[i]{C.RESET} {msg}")
-def ok(msg): print(f"{C.GREEN}[✓]{C.RESET} {msg}")
-def warn(msg): print(f"{C.YELLOW}[!]{C.RESET} {msg}")
-def err(msg): print(f"{C.RED}[✗]{C.RESET} {msg}")
-def stage(n, total, msg): print(f"{C.BLUE}[{n}/{total}]{C.RESET} {msg}")
+def log_info(msg): print(f"{C.CYAN}[i]{C.RESET} {msg}")
+def log_ok(msg): print(f"{C.GREEN}[✓]{C.RESET} {msg}")
+def log_warn(msg): print(f"{C.YELLOW}[!]{C.RESET} {msg}")
+def log_err(msg): print(f"{C.RED}[✗]{C.RESET} {msg}")
+def log_stage(n, total, msg): print(f"{C.BLUE}[{n}/{total}]{C.RESET} {msg}")
 
 # ─── 工具函数 ────────────────────────────────────────────
 def ensure_dirs():
@@ -300,7 +300,7 @@ def build_package_index():
         cache_path = f"{XPM_CACHE}/{cache_name}_Packages"
         
         if not os.path.exists(cache_path):
-            info(f"更新索引: {url}")
+            log_info(f"更新索引: {url}")
             success, msg = wget(f"{url}/Packages.gz", cache_path + ".gz", timeout=15)
             if success and os.path.exists(cache_path + ".gz"):
                 try:
@@ -379,7 +379,7 @@ def resolve_dependencies(pkg_name, index, db, depth=0):
         
         # 在索引中找
         if name not in index:
-            warn(f"找不到包: {name}（依赖链: {' → '.join(deps_chain)}）")
+            log_warn(f"找不到包: {name}（依赖链: {' → '.join(deps_chain)}）")
             return
         
         # 选最高版本
@@ -408,7 +408,7 @@ def download_package(entry, show_progress=True):
     url = entry.get("_source", "").rsplit("/", 1)[0] + "/" + filename
     dest = f"{XPM_CACHE}/{pkg_name}_{version}.oil"
     
-    info(f"下载: {pkg_name} ({version})")
+    log_info(f"下载: {pkg_name} ({version})")
     if show_progress:
         ok = wget_progress(url, dest)
     else:
@@ -423,22 +423,22 @@ def install_package(pkg_name, dry_run=False, confirm=True):
     
     # 已安装检查
     if pkg_name in db.get("installed", {}):
-        warn(f"{pkg_name} 已安装 (版本: {db['installed'][pkg_name].get('version','?')})")
+        log_warn(f"{pkg_name} 已安装 (版本: {db['installed'][pkg_name].get('version','?')})")
         r = input("重新安装? [y/N] ")
         if r.lower() != "y":
             return
         # 走 reinstall 逻辑
     
     # 构建索引
-    info("正在更新软件源索引...")
+    log_info("正在更新软件源索引...")
     index = build_package_index()
     
     if pkg_name not in index:
-        err(f"找不到包: {pkg_name}")
+        log_err(f"找不到包: {pkg_name}")
         # 模糊建议
         suggestions = [n for n in index if pkg_name in n]
         if suggestions:
-            info(f"你是不是要找: {', '.join(suggestions[:5])}")
+            log_info(f"你是不是要找: {', '.join(suggestions[:5])}")
         return
     
     # 选最高版本
@@ -447,7 +447,7 @@ def install_package(pkg_name, dry_run=False, confirm=True):
     version = entry.get("Version", "unknown")
     
     # 解析依赖
-    stage(1, 4, f"正在选中未安装的软件包：{pkg_name}")
+    log_stage(1, 4, f"正在选中未安装的软件包：{pkg_name}")
     to_install = resolve_dependencies(pkg_name, index, db)
     
     if dry_run:
@@ -463,14 +463,14 @@ def install_package(pkg_name, dry_run=False, confirm=True):
     
     # 显示将要安装的
     if len(to_install) > 1:
-        info(f"将同时安装 {len(to_install)} 个包（含依赖）")
+        log_info(f"将同时安装 {len(to_install)} 个包（含依赖）")
         for e in to_install:
             print(f"  • {e['Package']} ({e.get('Version','?')})")
     
     if confirm and load_config().get("confirm_install", True):
         r = input(f"\n确认安装? [Y/n] ")
         if r.lower() == "n":
-            info("已取消")
+            log_info("已取消")
             return
     
     # 事务快照
@@ -480,7 +480,7 @@ def install_package(pkg_name, dry_run=False, confirm=True):
         for i, e in enumerate(to_install):
             name = e["Package"]
             ver = e.get("Version", "unknown")
-            stage(2, 4, f"正在选中 {name} ({ver})")
+            log_stage(2, 4, f"正在选中 {name} ({ver})")
             
             # 下载
             ok, dest = download_package(e)
@@ -488,12 +488,12 @@ def install_package(pkg_name, dry_run=False, confirm=True):
                 raise Exception(f"下载失败: {name}")
             
             # 解包
-            stage(3, 4, f"正在解压 {name} ({ver})...")
+            log_stage(3, 4, f"正在解压 {name} ({ver})...")
             if not extract_oil(dest, name, ver):
                 raise Exception(f"解包失败: {name}")
             
             # 配置
-            stage(4, 4, f"正在设置 {name} ({ver})...")
+            log_stage(4, 4, f"正在设置 {name} ({ver})...")
             run_postinst(name, ver)
             
             # 更新数据库
@@ -505,18 +505,18 @@ def install_package(pkg_name, dry_run=False, confirm=True):
             }
             save_status(db)
             log_history("install", name, f"version={ver}")
-            ok(f"{name} ({ver}) 安装完成")
+            log_ok(f"{name} ({ver}) 安装完成")
     
     except Exception as ex:
-        err(f"安装失败: {ex}")
+        log_err(f"安装失败: {ex}")
         # 回滚
-        warn("正在回滚...")
+        log_warn("正在回滚...")
         db["installed"] = snapshot
         save_status(db)
         log_history("rollback", pkg_name, str(ex))
         return
     
-    ok(f"✅ 全部安装完成 ({len(to_install)} 个包)")
+    log_ok(f"✅ 全部安装完成 ({len(to_install)} 个包)")
 
 def extract_oil(oil_path, pkg_name, version):
     """解压 .oil 包"""
@@ -534,7 +534,7 @@ def extract_oil(oil_path, pkg_name, version):
             
             if control_data:
                 ctrl = parse_control(control_data)
-                info(f"  包信息: {ctrl.get('Description','')[:80]}")
+                log_info(f"  包信息: {ctrl.get('Description','')[:80]}")
             
             # 解压 data.tar.gz
             if data_tar:
@@ -557,7 +557,7 @@ def extract_oil(oil_path, pkg_name, version):
                 ctrl = parse_control(control_data)
                 preinst = ctrl.get("Pre-Inst", "")
                 if preinst:
-                    info(f"  执行 preinst 脚本...")
+                    log_info(f"  执行 preinst 脚本...")
                     # 写入临时脚本执行
                     script_path = f"/tmp/xpm_preinst_{pkg_name}"
                     with open(script_path, "w") as sf:
@@ -568,7 +568,7 @@ def extract_oil(oil_path, pkg_name, version):
             
             return True
     except Exception as e:
-        err(f"  解包异常: {e}")
+        log_err(f"  解包异常: {e}")
         return False
 
 def run_postinst(pkg_name, version):
@@ -579,7 +579,7 @@ def run_postinst(pkg_name, version):
         ctrl = parse_control(open(ctrl_path).read())
         postinst = ctrl.get("Post-Inst", "")
         if postinst:
-            info(f"  执行 postinst 脚本...")
+            log_info(f"  执行 postinst 脚本...")
             script_path = f"/tmp/xpm_postinst_{pkg_name}"
             with open(script_path, "w") as sf:
                 sf.write("#!/bin/sh\n" + postinst)
@@ -598,7 +598,7 @@ def remove_package(pkg_name, purge=False):
     """卸载包（3 阶段）"""
     db = load_status()
     if pkg_name not in db.get("installed", {}):
-        err(f"{pkg_name} 未安装")
+        log_err(f"{pkg_name} 未安装")
         return
     
     info = db["installed"][pkg_name]
@@ -612,10 +612,10 @@ def remove_package(pkg_name, purge=False):
         # 简单检查：other 的 depends 里有没有 pkg_name
         pass  # 完整实现需要查 control
     
-    stage(1, 3, f"正在寻找与 {pkg_name} 相关的文件...")
-    info(f"  找到 {len(files)} 个文件")
+    log_stage(1, 3, f"正在寻找与 {pkg_name} 相关的文件...")
+    log_info(f"  找到 {len(files)} 个文件")
     
-    stage(2, 3, f"正在卸载 {pkg_name} ({version})...")
+    log_stage(2, 3, f"正在卸载 {pkg_name} ({version})...")
     
     # 跑 prerm
     ctrl_path = f"{XPM_DB}/control/{pkg_name}"
@@ -623,7 +623,7 @@ def remove_package(pkg_name, purge=False):
         ctrl = parse_control(open(ctrl_path).read())
         prerm = ctrl.get("Pre-Rm", "")
         if prerm:
-            info(f"  执行 prerm 脚本...")
+            log_info(f"  执行 prerm 脚本...")
             script_path = f"/tmp/xpm_prerm_{pkg_name}"
             with open(script_path, "w") as sf:
                 sf.write("#!/bin/sh\n" + prerm)
@@ -649,7 +649,7 @@ def remove_package(pkg_name, purge=False):
         ctrl = parse_control(open(ctrl_path).read())
         postrm = ctrl.get("Post-Rm", "")
         if postrm:
-            info(f"  执行 postrm 脚本...")
+            log_info(f"  执行 postrm 脚本...")
             script_path = f"/tmp/xpm_postrm_{pkg_name}"
             with open(script_path, "w") as sf:
                 sf.write("#!/bin/sh\n" + postrm)
@@ -658,7 +658,7 @@ def remove_package(pkg_name, purge=False):
             os.unlink(script_path)
     
     if purge:
-        stage(3, 3, f"正在清除 {pkg_name} ({version})...")
+        log_stage(3, 3, f"正在清除 {pkg_name} ({version})...")
         # 删除配置
         for cfg in [f"{XPM_DB}/control/{pkg_name}", f"{XPM_DB}/files/{pkg_name}"]:
             if os.path.exists(cfg):
@@ -668,13 +668,13 @@ def remove_package(pkg_name, purge=False):
             if os.path.isdir(d):
                 shutil.rmtree(d, ignore_errors=True)
     else:
-        info("配置已保留（用 purge 彻底清除）")
+        log_info("配置已保留（用 purge 彻底清除）")
     
     # 更新数据库
     del db["installed"][pkg_name]
     save_status(db)
     log_history("remove" if not purge else "purge", pkg_name, f"version={version}, files={removed}")
-    ok(f"✅ {pkg_name} 已卸载 ({removed} 个文件已删除)")
+    log_ok(f"✅ {pkg_name} 已卸载 ({removed} 个文件已删除)")
 
 def autoremove():
     """自动移除孤儿包"""
@@ -707,10 +707,10 @@ def autoremove():
                 orphans.append(name)
     
     if not orphans:
-        ok("没有找到孤儿包")
+        log_ok("没有找到孤儿包")
         return
     
-    warn(f"找到 {len(orphans)} 个孤儿包:")
+    log_warn(f"找到 {len(orphans)} 个孤儿包:")
     total_size = 0
     for o in sorted(orphans):
         sz = 0
@@ -723,7 +723,7 @@ def autoremove():
     
     r = input(f"\n确认移除这 {len(orphans)} 个孤儿包? [y/N] ")
     if r.lower() != "y":
-        info("已取消")
+        log_info("已取消")
         return
     
     for o in sorted(orphans):
@@ -732,7 +732,7 @@ def autoremove():
 def clean_cache(aggressive=False):
     """清理缓存"""
     if not os.path.isdir(XPM_CACHE):
-        ok("缓存目录不存在")
+        log_ok("缓存目录不存在")
         return
     
     files = glob.glob(f"{XPM_CACHE}/*")
@@ -742,7 +742,7 @@ def clean_cache(aggressive=False):
             sz = os.path.getsize(f)
             os.unlink(f)
             total += sz
-    ok(f"已清理 {total//1024}KB 缓存")
+    log_ok(f"已清理 {total//1024}KB 缓存")
 
 def dedupe_check():
     """检测重复文件"""
@@ -756,10 +756,10 @@ def dedupe_check():
     
     conflicts = {f: owners for f, owners in file_owners.items() if len(owners) > 1}
     if not conflicts:
-        ok("没有发现重复文件冲突")
+        log_ok("没有发现重复文件冲突")
         return
     
-    warn(f"发现 {len(conflicts)} 个文件被多个包包含:")
+    log_warn(f"发现 {len(conflicts)} 个文件被多个包包含:")
     for f, owners in list(conflicts.items())[:20]:
         print(f"  {f}: {', '.join(owners)}")
 
@@ -778,10 +778,10 @@ def fix_broken():
             broken.append((pkg, missing, len(files)))
     
     if not broken:
-        ok("没有发现损坏的包")
+        log_ok("没有发现损坏的包")
         return
     
-    warn(f"发现 {len(broken)} 个可能损坏的包:")
+    log_warn(f"发现 {len(broken)} 个可能损坏的包:")
     for pkg, miss, total in broken:
         print(f"  • {pkg}: {miss}/{total} 文件缺失")
     
@@ -798,23 +798,23 @@ def source_add(name, url, dist="stable", comp="main"):
     line = f"deb {url} {dist} {comp}\n"
     with open(fname, "w") as f:
         f.write(line)
-    ok(f"已添加源: {name} → {url} {dist} {comp}")
+    log_ok(f"已添加源: {name} → {url} {dist} {comp}")
 
 def source_remove(name):
     """移除软件源"""
     fname = f"{XPM_SOURCES}/{name}.list"
     if os.path.exists(fname):
         os.unlink(fname)
-        ok(f"已移除源: {name}")
+        log_ok(f"已移除源: {name}")
     else:
-        err(f"源不存在: {name}")
+        log_err(f"源不存在: {name}")
 
 def source_list_cmd():
     """列出所有源"""
     sources = parse_sources()
     if not sources:
-        warn("没有配置任何软件源")
-        info("用 xpm source add <名称> <URL> [dist] [comp] 添加")
+        log_warn("没有配置任何软件源")
+        log_info("用 xpm source add <名称> <URL> [dist] [comp] 添加")
         return
     
     for s in sources:
@@ -835,7 +835,7 @@ def test_mirrors():
             if url.startswith("url="): url = url[4:]
             url = url.rstrip("/") + "/Release"
         
-        info(f"测试: {url}")
+        log_info(f"测试: {url}")
         start = time.time()
         try:
             cmd = ["wget", "--timeout=10", "--spider", url]
@@ -846,12 +846,12 @@ def test_mirrors():
             elapsed = (time.time() - start) * 1000
             if r.returncode == 0:
                 results.append((s["file"], elapsed, url))
-                ok(f"  ✅ {elapsed:.0f}ms")
+                log_ok(f"  ✅ {elapsed:.0f}ms")
             else:
-                warn(f"  ❌ 超时/失败")
+                log_warn(f"  ❌ 超时/失败")
                 results.append((s["file"], 99999, url))
         except subprocess.TimeoutExpired:
-            warn(f"  ❌ 超时")
+            log_warn(f"  ❌ 超时")
             results.append((s["file"], 99999, url))
     
     # 排序
@@ -863,14 +863,14 @@ def test_mirrors():
         print(f"{marker} {name:<28} {ms:>8.0f}ms")
     
     if results and results[0][1] < 5000:
-        info(f"推荐源: {results[0][0]} ({results[0][1]:.0f}ms)")
+        log_info(f"推荐源: {results[0][0]} ({results[0][1]:.0f}ms)")
 
 # ─── 包信息查询 ──────────────────────────────────────────
 def show_package(pkg_name):
     """显示包详细信息"""
     index = build_package_index()
     if pkg_name not in index:
-        err(f"找不到包: {pkg_name}")
+        log_err(f"找不到包: {pkg_name}")
         return
     
     entries = sorted(index[pkg_name], key=lambda e: e.get("Version", ""), reverse=True)
@@ -928,7 +928,7 @@ def calc_size(pkg_name=None):
     
     if pkg_name:
         if pkg_name not in installed:
-            err(f"{pkg_name} 未安装")
+            log_err(f"{pkg_name} 未安装")
             return
         total = 0
         for f in installed[pkg_name].get("files", []):
@@ -966,20 +966,20 @@ def why_package(pkg_name):
     installed = db.get("installed", {})
     
     if pkg_name not in installed:
-        err(f"{pkg_name} 未安装")
+        log_err(f"{pkg_name} 未安装")
         return
     
     # 查历史
     hist = read_history(500)
     for h in reversed(hist):
         if h["package"] == pkg_name and h["action"] == "install":
-            info(f"{pkg_name} 于 {h['time']} 被安装")
-            info(f"  操作者: {h.get('user','?')}")
+            log_info(f"{pkg_name} 于 {h['time']} 被安装")
+            log_info(f"  操作者: {h.get('user','?')}")
             if h.get("extra"):
-                info(f"  详情: {h['extra']}")
+                log_info(f"  详情: {h['extra']}")
             break
     else:
-        info(f"{pkg_name} 安装时间: {installed[pkg_name].get('installed_at','未知')}")
+        log_info(f"{pkg_name} 安装时间: {installed[pkg_name].get('installed_at','未知')}")
     
     # 查谁依赖它
     dependents = []
@@ -996,18 +996,18 @@ def why_package(pkg_name):
                         dependents.append(other_name)
     
     if dependents:
-        info(f"被以下 {len(dependents)} 个包依赖:")
+        log_info(f"被以下 {len(dependents)} 个包依赖:")
         for d in dependents:
             print(f"  • {d}")
     else:
-        warn(f"没有已装包依赖 {pkg_name}（可能是手动安装或孤儿）")
+        log_warn(f"没有已装包依赖 {pkg_name}（可能是手动安装或孤儿）")
 
 # ─── 历史与新闻 ──────────────────────────────────────────
 def show_history(limit=20):
     """显示安装历史"""
     hist = read_history(limit)
     if not hist:
-        info("没有历史记录")
+        log_info("没有历史记录")
         return
     
     print(f"\n{'时间':<22} {'操作':<10} {'包名':<25} {'详情'}")
@@ -1033,7 +1033,7 @@ def show_news():
                 updates.append((name, current, latest))
     
     if not updates:
-        ok("所有包都是最新的 🎉")
+        log_ok("所有包都是最新的 🎉")
         return
     
     print(f"\n有 {len(updates)} 个包可更新:\n")
@@ -1061,21 +1061,21 @@ def alias_add(name, command):
     aliases = load_aliases()
     aliases[name] = command
     save_aliases(aliases)
-    ok(f"别名已添加: {name} → {command}")
+    log_ok(f"别名已添加: {name} → {command}")
 
 def alias_remove(name):
     aliases = load_aliases()
     if name in aliases:
         del aliases[name]
         save_aliases(aliases)
-        ok(f"别名已删除: {name}")
+        log_ok(f"别名已删除: {name}")
     else:
-        err(f"别名不存在: {name}")
+        log_err(f"别名不存在: {name}")
 
 def alias_list_cmd():
     aliases = load_aliases()
     if not aliases:
-        info("没有设置别名")
+        log_info("没有设置别名")
         return
     for name, cmd in aliases.items():
         print(f"  {name} → {cmd}")
@@ -1087,10 +1087,10 @@ def interactive_install():
     pkgs = sorted(index.keys())
     
     if not pkgs:
-        warn("没有可用的包")
+        log_warn("没有可用的包")
         return
     
-    info(f"共 {len(pkgs)} 个包可用，输入数字选择（空格分隔多个，回车确认）:")
+    log_info(f"共 {len(pkgs)} 个包可用，输入数字选择（空格分隔多个，回车确认）:")
     
     # 分页显示
     page_size = 20
@@ -1115,7 +1115,7 @@ def interactive_install():
             pass
     
     if not selected:
-        info("未选择任何包")
+        log_info("未选择任何包")
         return
     
     for pkg in selected:
@@ -1125,7 +1125,7 @@ def interactive_install():
 def batch_install(file_path):
     """从文件批量安装"""
     if not os.path.exists(file_path):
-        err(f"文件不存在: {file_path}")
+        log_err(f"文件不存在: {file_path}")
         return
     
     pkgs = []
@@ -1135,10 +1135,10 @@ def batch_install(file_path):
             pkgs.append(line)
     
     if not pkgs:
-        warn("文件中没有包名")
+        log_warn("文件中没有包名")
         return
     
-    info(f"将从 {file_path} 安装 {len(pkgs)} 个包")
+    log_info(f"将从 {file_path} 安装 {len(pkgs)} 个包")
     for pkg in pkgs:
         print(f"\n{'='*50}")
         install_package(pkg, confirm=False)
@@ -1148,7 +1148,7 @@ def offline_install(pkg_name):
     """从本地缓存离线安装"""
     db = load_status()
     if pkg_name in db.get("installed", {}):
-        warn(f"{pkg_name} 已安装")
+        log_warn(f"{pkg_name} 已安装")
         return
     
     # 在缓存里找
@@ -1156,12 +1156,12 @@ def offline_install(pkg_name):
     if not cached:
         cached = glob.glob(f"{XPM_CACHE}/{pkg_name}_*.deb")
     if not cached:
-        err(f"缓存中找不到 {pkg_name}，先联网下载一次")
+        log_err(f"缓存中找不到 {pkg_name}，先联网下载一次")
         return
     
     cached.sort(key=os.path.getmtime, reverse=True)
     archive = cached[0]
-    info(f"使用本地缓存: {os.path.basename(archive)} ({os.path.getsize(archive)//1024}KB)")
+    log_info(f"使用本地缓存: {os.path.basename(archive)} ({os.path.getsize(archive)//1024}KB)")
     
     # 从 oil/deb 获取版本
     version = "unknown"
@@ -1176,10 +1176,10 @@ def offline_install(pkg_name):
         except:
             pass
     
-    stage(2, 4, f"正在选中 {pkg_name} ({version})")
-    stage(3, 4, f"正在解压 {pkg_name} ({version})...")
+    log_stage(2, 4, f"正在选中 {pkg_name} ({version})")
+    log_stage(3, 4, f"正在解压 {pkg_name} ({version})...")
     if extract_oil(archive, pkg_name, version):
-        stage(4, 4, f"正在设置 {pkg_name} ({version})...")
+        log_stage(4, 4, f"正在设置 {pkg_name} ({version})...")
         run_postinst(pkg_name, version)
         db["installed"][pkg_name] = {
             "version": version,
@@ -1189,13 +1189,13 @@ def offline_install(pkg_name):
         }
         save_status(db)
         log_history("install", pkg_name, f"version={version},offline")
-        ok(f"✅ {pkg_name} ({version}) 离线安装完成")
+        log_ok(f"✅ {pkg_name} ({version}) 离线安装完成")
 
 def download_only(pkg_name):
     """只下载不安装"""
     index = build_package_index()
     if pkg_name not in index:
-        err(f"找不到包: {pkg_name}")
+        log_err(f"找不到包: {pkg_name}")
         return
     
     entries = sorted(index[pkg_name], key=lambda e: e.get("Version", ""), reverse=True)
@@ -1209,12 +1209,12 @@ def download_only(pkg_name):
     url = entry.get("_source", "").rsplit("/", 1)[0] + "/" + filename
     dest = f"{dest_dir}/{filename}"
     
-    info(f"下载到: {dest}")
+    log_info(f"下载到: {dest}")
     ok = wget_progress(url, dest)
     if ok:
-        ok(f"✅ 已下载: {dest} ({os.path.getsize(dest)//1024}KB)")
+        log_ok(f"✅ 已下载: {dest} ({os.path.getsize(dest)//1024}KB)")
     else:
-        err("下载失败")
+        log_err("下载失败")
 
 # ─── 增强版 doctor ────────────────────────────────────────
 def doctor():
@@ -1301,18 +1301,18 @@ def doctor():
     print()
     warnings = [c for c in checks if not c[2]]
     if warnings:
-        warn(f"发现 {len(warnings)} 个问题:")
+        log_warn(f"发现 {len(warnings)} 个问题:")
         for name, status, _ in warnings:
             if "代理" in name:
-                info("  → 运行: unset http_proxy https_proxy HTTP_PROXY")
+                log_info("  → 运行: unset http_proxy https_proxy HTTP_PROXY")
             elif "非 root" in status:
-                info("  → 运行: sudo -i")
+                log_info("  → 运行: sudo -i")
             elif "DNS" in name:
-                info("  → 检查 /etc/resolv.conf")
+                log_info("  → 检查 /etc/resolv.conf")
             elif "源" in name:
-                info("  → 运行: xpm source add tuna https://mirrors.tuna.tsinghua.edu.cn/debian bookworm main")
+                log_info("  → 运行: xpm source add tuna https://mirrors.tuna.tsinghua.edu.cn/debian bookworm main")
     else:
-        ok("一切正常，石油充足 🛢️")
+        log_ok("一切正常，石油充足 🛢️")
     
     print()
 
@@ -1556,8 +1556,8 @@ def launch_gui():
         import tkinter as tk
         from tkinter import ttk, scrolledtext, messagebox
     except ImportError:
-        err("Tkinter 不可用，无法启动 GUI")
-        info("安装 python3-tk 或运行在 X11 环境下")
+        log_err("Tkinter 不可用，无法启动 GUI")
+        log_info("安装 python3-tk 或运行在 X11 环境下")
         return
     
     root = tk.Tk()
@@ -1674,7 +1674,7 @@ def launch_gui():
         info = db["installed"][name]
         result_list.insert("end", f"{name} ({info.get('version','?')})")
     
-    info("GUI 已启动（增强版 v2.0-1）")
+    log_info("GUI 已启动（增强版 v2.0-1）")
     root.mainloop()
 
 # ─── 主入口 ──────────────────────────────────────────────
@@ -1706,9 +1706,9 @@ def main():
     elif cmd == "sources":
         source_list_cmd()
     elif cmd == "update":
-        info("更新软件源索引...")
+        log_info("更新软件源索引...")
         build_package_index()
-        ok("索引更新完成")
+        log_ok("索引更新完成")
     elif cmd == "upgrade":
         show_news()  # upgrade = show news + install
     elif cmd == "install":
@@ -1757,14 +1757,14 @@ def main():
             install_package(p)
     elif cmd == "search":
         if not args:
-            warn("用法: xpm search <关键词>")
+            log_warn("用法: xpm search <关键词>")
             return
         query = " ".join(args)
         results = search_packages(query)
         if not results:
-            warn(f"没有找到匹配 '{query}' 的包")
+            log_warn(f"没有找到匹配 '{query}' 的包")
             return
-        info(f"找到 {len(results)} 个结果:")
+        log_info(f"找到 {len(results)} 个结果:")
         for r in results[:30]:
             name = r.get("Package", "?")
             ver = r.get("Version", "?")
@@ -1780,14 +1780,14 @@ def main():
                 for r in results:
                     print(f"  {r.get('Package','?')} 提供 {p}")
             else:
-                warn(f"没有包提供 '{p}'")
+                log_warn(f"没有包提供 '{p}'")
     elif cmd == "owns":
         for p in args:
             pkg, info = find_owns(p)
             if pkg:
                 print(f"  {p} → {pkg} ({info.get('version','?')})")
             else:
-                warn(f"没有已装包包含 {p}")
+                log_warn(f"没有已装包包含 {p}")
     elif cmd == "depends":
         for p in args:
             db = load_status()
@@ -1801,11 +1801,11 @@ def main():
                         for dep, op, ver in alt_group:
                             print(f"    • {dep}" + (f" ({op} {ver})" if op else ""))
                 else:
-                    info(f"  {p} 没有依赖")
+                    log_info(f"  {p} 没有依赖")
             elif p in db.get("installed", {}):
-                info(f"  {p} 已安装但无 control 信息")
+                log_info(f"  {p} 已安装但无 control 信息")
             else:
-                warn(f"  {p} 未安装")
+                log_warn(f"  {p} 未安装")
     elif cmd == "rdepends":
         for p in args:
             why_package(p)
@@ -1833,16 +1833,16 @@ def main():
         fail_count = 0
         for p in pkgs_to_check:
             if p not in db.get("installed", {}):
-                warn(f"  {p} 未安装")
+                log_warn(f"  {p} 未安装")
                 fail_count += 1
                 continue
             files = db["installed"][p].get("files", [])
             missing = sum(1 for f in files if f and not os.path.exists(f))
             if missing == 0:
-                ok(f"  {p}: ✅ 完整 ({len(files)} 文件)")
+                log_ok(f"  {p}: ✅ 完整 ({len(files)} 文件)")
                 ok_count += 1
             else:
-                warn(f"  {p}: ❌ {missing}/{len(files)} 文件缺失")
+                log_warn(f"  {p}: ❌ {missing}/{len(files)} 文件缺失")
                 fail_count += 1
         print(f"\n  结果: {ok_count} 通过, {fail_count} 失败")
     elif cmd == "news":
@@ -1863,9 +1863,9 @@ def main():
         elif args[0] == "list":
             source_list_cmd()
         else:
-            warn("用法: xpm source add <名> <URL> [dist] [comp]")
-            warn("      xpm source remove <名>")
-            warn("      xpm source list")
+            log_warn("用法: xpm source add <名> <URL> [dist] [comp]")
+            log_warn("      xpm source remove <名>")
+            log_warn("      xpm source list")
     elif cmd == "history":
         limit = int(args[0]) if args and args[0].isdigit() else 20
         show_history(limit)
@@ -1879,9 +1879,9 @@ def main():
         elif args[0] == "list":
             alias_list_cmd()
         else:
-            warn("用法: xpm alias add <名> <命令>")
-            warn("      xpm alias remove <名>")
-            warn("      xpm alias list")
+            log_warn("用法: xpm alias add <名> <命令>")
+            log_warn("      xpm alias remove <名>")
+            log_warn("      xpm alias list")
     elif cmd == "interactive":
         interactive_install()
     elif cmd == "download":
@@ -1892,33 +1892,33 @@ def main():
             tid = int(args[0])
             tx_dir = f"{XPM_TRANSACTIONS}/{tid}"
             if os.path.isdir(tx_dir):
-                info(f"回滚事务 #{tid}...")
+                log_info(f"回滚事务 #{tid}...")
                 # 简化：从快照恢复
                 snap = f"{tx_dir}/snapshot.json"
                 if os.path.exists(snap):
                     db = json.load(open(snap))
                     save_status(db)
-                    ok(f"已回滚到事务 #{tid}")
+                    log_ok(f"已回滚到事务 #{tid}")
                     log_history("rollback", f"#{tid}", "")
                 else:
-                    err("找不到快照文件")
+                    log_err("找不到快照文件")
             else:
-                err(f"事务 #{tid} 不存在")
+                log_err(f"事务 #{tid} 不存在")
         else:
             # 列出可回滚点
             if os.path.isdir(XPM_TRANSACTIONS):
                 txs = sorted(os.listdir(XPM_TRANSACTIONS))
                 if not txs:
-                    info("没有可回滚的事务")
+                    log_info("没有可回滚的事务")
                 else:
-                    info(f"可回滚事务:")
+                    log_info(f"可回滚事务:")
                     for t in txs:
                         snap = f"{XPM_TRANSACTIONS}/{t}/snapshot.json"
                         if os.path.exists(snap):
                             db = json.load(open(snap))
                             print(f"  #{t}: {len(db.get('installed',{}))} 个包")
             else:
-                info("没有可回滚的事务")
+                log_info("没有可回滚的事务")
     elif cmd == "coffee":
         coffee()
     elif cmd == "petroleum":
@@ -1929,12 +1929,12 @@ def main():
         launch_gui()
     elif cmd == "build":
         if not args:
-            warn("用法: xpm build <目录>")
+            log_warn("用法: xpm build <目录>")
         else:
             from xpm_build import build_oil
             build_oil(args[0])
     else:
-        err(f"未知命令: {cmd}")
+        log_err(f"未知命令: {cmd}")
         print()
         show_help()
 
@@ -1945,7 +1945,7 @@ if __name__ == "__main__":
         print("\n\n🛢️ 中断收到，石油已安全回收")
         sys.exit(0)
     except Exception as e:
-        err(f"未预期错误: {e}")
+        log_err(f"未预期错误: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
