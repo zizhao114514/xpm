@@ -1,31 +1,24 @@
-# Build artifacts
-*.deb
-*.oil
-*.tar.gz
+# 构建产物
+_deb_build/
+_build/
+_staging/
+staging/
+staging_ultimate/
+dist/
 __pycache__/
-*.pyc
-*.pyo
+*.deb
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# 临时脚本
+_fakeroot_build.sh
+push_*.py
+upload_*.py
+reupload.py
+verify_release.py
+cleanup_*.py
+push_docs.py
+PUSH.sh
 
-# OS
-.DS_Store
-Thumbs.db
-
-# XPM runtime
-/var/
-/tmp/xpm_*
-*.log
-
-# Local config
-config.local
-*.local
-
-# Test artifacts
-.pytest_cache/
-.coverage
-htmlcov/
+# 测试临时文件
+*.oil
+test_*
+tests/test_*.py

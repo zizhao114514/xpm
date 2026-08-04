@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-XPM - X11 Package Manager v2.0-1 "Practical Edition"
-==================================================
+XPM - X11 Package Manager v2.0-3 "Debian-Native Edition"
+=======================================================
 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
 
 Author: zizhao + AI
@@ -37,7 +37,7 @@ from collections import OrderedDict, defaultdict
 XPM_ROOT = "/usr/local/share/xpm"
 XPM_DB = f"{XPM_ROOT}/db"
 XPM_STATUS = f"{XPM_DB}/status.json"
-XPM_SOURCES = "/etc/xpm/sources.list.d"
+XPM_SOURCES = f"{XPM_ROOT}/sources.list.d"
 XPM_CACHE = f"{XPM_ROOT}/cache"
 XPM_LOG = f"{XPM_ROOT}/log"
 XPM_HISTORY = f"{XPM_LOG}/history.jsonl"
@@ -46,10 +46,11 @@ XPM_ALIASES = f"{XPM_ROOT}/aliases.json"
 XPM_TRANSACTIONS = f"{XPM_DB}/transactions"
 XPM_KEYRING = f"{XPM_ROOT}/keyring"
 XPM_DOCS = f"{XPM_ROOT}/docs"
+XPM_TESTS = f"{XPM_ROOT}/tests"
 XPM_DESKTOP = "/usr/share/applications/xpm.desktop"
 
-VERSION = "2.0-2"
-CODENAME = "Proot-Friendly Edition"
+VERSION = "2.0-3"
+CODENAME = "Debian-Native Edition"
 
 # 清除代理环境变量（铁律）
 for _k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "no_proxy"):
