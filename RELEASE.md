@@ -1,134 +1,114 @@
-# XPM v1.9-0 - "No-Apt Edition" + C# Special Edition
+# XPM v2.0-0 "Complete Edition" Release Notes
 
-## Highlights
+## 🎯 版本定位
 
-- **Zero apt**: no `apt-get`, no `apt-cache` anywhere in the codebase
-- **Dual-format sources**: Debian-style `deb http://...` AND XPM-style `[xpm] url=...`
-- **New backend `xm`**: autonomous unpack/install/remove engine
-- **Lock file system**: `/var/cache/xm/lock/` with flock + timeout
-- **Transaction state machine**: pending → running → committed → done
-- **`.oil` package format** support (via xm backend)
-- **Directory hierarchy**: 软件包/xpm/pmadd/pmdel/程序安装目录及文件/
-- **Coffee machine integration**: crash counting across frontend + backend
-- **i18n**: en / zh / ja (author statements in all 3 languages)
+XPM 第一个**完整可用**的版本。从 v2.0-0 起，XPM 不再是一个"有趣的玩具"，而是一个**真正能替代 apt 的包管理器**。
 
-## Architecture
+## ✨ 新增功能
 
+### 1. 依赖解析器
+- 解析 `Depends:` 字段
+- 支持 OR 关系（`|`）
+- 支持版本约束（`>=`, `>`, `=`, `<`, `<=`）
+- Debian epoch 版本比较
+- 拓扑排序安装顺序
+- 循环依赖检测
+
+### 2. 事务回滚
+- 安装前自动快照文件
+- `xpm rollback list` 查看回滚点
+- `xpm rollback <id>` 一键回滚
+
+### 3. GPG 签名校验
+- Release 文件签名验证
+- 包级别签名支持
+- 密钥环管理
+
+### 4. 包构建工具
+- `xpm build <dir>` 将目录打包为 `.oil`
+- 自动生成 `files.list` 和 `checksums.sha256`
+- 支持 GPG 签名
+
+### 5. 完整测试套件
+- 36 个测试全部通过
+- 覆盖版本比较、依赖解析、回滚、构建、GPG、源解析
+
+### 6. 完整文档
+- `docs/design.md` — 架构设计
+- `docs/manual.md` — 用户手册
+- `docs/packaging.md` — 打包指南
+- `docs/FAQ.md` — 常见问题
+- `docs/internals.md` — 内部实现
+
+## 🖥️ CLI 输出规范
+
+### 安装（4 阶段）
 ```
-xpm (frontend, CLI + GUI)
-  ├── search / install / remove / purge
-  ├── update / upgrade / download
-  ├── progress bar + step logging
-  ├── i18n (en/zh/ja)
-  └── calls xm for low-level ops
-
-xm (backend, oil-powered unpacker)
-  ├── unpack / install / remove
-  ├── verify (sha256)
-  ├── lock management (flock)
-  ├── transaction state machine
-  └── status.db (yaml)
+[1/4] 正在选中未安装的软件包：vim
+[2/4] 正在选中 vim (2:9.1.0964-1)
+[2/4] 正在选中 libtinfo6 (6.4+20230625-2)
+[3/4] 正在解压 vim (2:9.1.0964-1)...
+[3/4] 正在解压 libtinfo6 (6.4+20230625-2)...
+[4/4] 正在设置 vim (2:9.1.0964-1)...
+[4/4] 正在设置 libtinfo6 (6.4+20230625-2)...
+✅ 安装完成
 ```
 
-## Lock File Behavior
-
-When a backend operation is in progress, subsequent xpm/xm processes will see:
-
+### 卸载（3 阶段）
 ```
-检测到锁文件 (/var/cache/xm/lock/install.lock)
-  归属进程: xm (PID 1337)
-  操作类型: install xpm
-  已等待: 7s
-  最大等待: 120s
-  状态: unpacking
-
-⏳ 等待锁释放中...
+[1/3] 正在寻找与 vim 相关的文件...
+[2/3] 正在卸载 vim (2:9.1.0964-1)...
+[3/3] 正在清除 vim (2:9.1.0964-1)...
+✅ 已彻底清除
 ```
 
-On timeout:
+### 下载进度
 ```
-⚠️ 安装进程无响应。
-☕ 咖啡机因等待超时爆炸 +1
-🛢️ 石油消耗：0.01%
-[今日崩溃次数: 12/31]
+📥 下载 vim_9.1.0964-1_arm64.deb (3.2MB)
+  ████████████████░░░░ 78% | 1.4MB/s | ETA 9s
 ```
 
-## C# Special Edition (xmcs)
+## 🔧 新增命令
 
-A complete C# rewrite of the XPM backend is available in the `xpm-csharp/` directory.
-
-| File | Description |
+| 命令 | 说明 |
 |---|---|
-| `src/Program.cs` | Main entry & command dispatch |
-| `src/Xm.cs` | Core backend (install/remove/verify/query) |
-| `src/LockFile.cs` | Advisory file locking |
-| `src/OilPackage.cs` | .oil package parser |
-| `src/Transaction.cs` | Transaction state machine |
-| `src/Coffee.cs` | Shared crash counter |
-| `src/DpkgWrapper.cs` | dpkg wrapper (only external PM call) |
-| `build.sh` | Multi-compiler build (dotnet/mcs/csc) |
-| `pack_deb.py` | ar-format .deb construction |
+| `xpm reinstall <pkg>` | 重新安装 |
+| `xpm fix-broken` | 修复中断的安装 |
+| `xpm depends <pkg>` | 显示依赖 |
+| `xpm rdepends <pkg>` | 显示反向依赖 |
+| `xpm rollback list` | 列出回滚点 |
+| `xpm rollback <n>` | 回滚到指定点 |
+| `xpm build <dir>` | 构建 .oil 包 |
+| `xpm verify [pkg]` | 校验完整性 |
+| `xpm doctor` | 系统诊断 |
+| `xpm stats` | 统计信息 |
 
-### Download
-- Binary .deb: `xmcs_1.9-0+csharp_all.deb`
-- Source .zip: `xpm-csharp_1.9-0+csharp.zip`
+## 🚫 铁律
 
-### Install
-```bash
-sudo dpkg -i xmcs_1.9-0+csharp_all.deb
-sudo apt-get install -f -y   # installs mono-runtime if missing
-xmcs version
+- **零 apt-get / apt-cache 调用**
+- **仅 wget + dpkg + xm/xmcs**
+- **代理环境变量自动清除**
+- **所有输出 flush，防止 proot/X11 缓冲**
+
+## 📊 测试
+
+```
+tests/test_all.py: 36 passed in 0.8s
 ```
 
-### Key Features
-- **Zero apt** (only dpkg + tar + wget)
-- **Drop-in replacement** for Python `xm` backend
-- **Same locks, same database, same .oil format**
-- Compiles with Mono `mcs`, Microsoft `csc`, or `dotnet` SDK
-- Proves the XPM architecture is **language-agnostic**
+## 🔗 下载
 
-## Known Bug (Intentional, Don't Fix)
-
-| Bug | Description |
-|---|---|
-| Download speed ×1024 | Shown in MB/s but actually KB/s. Petroleum unit conversion. |
-
-## Bugfix History
-
-| Version | Fix |
-|---|---|
-| 1.0-0 | Initial release, basic CLI |
-| 1.3-1 | Single-file, zero import errors |
-| 1.4-1 | Three-path fallback for /usr/local/bin |
-| 1.6-2 | USTAR tar format (no PAX type-x error) |
-| 1.7-0 | GUI UnboundLocalError fix |
-| 1.7-1 | All crashes counted by coffee machine |
-| 1.7-2 | Author statement (en/zh/ja), "Don't Open Issues" |
-| 1.8-0 | Autonomous backend `xm`, lock files, .oil format, transaction state machine |
-| 1.8-1 | Fix: autoremove timeout (15s→120s), D-Bus noise filter, silent exceptions |
-| 1.9-0 | No-Apt Edition: zero apt-get/apt-cache, dual-format sources (deb + xpm) |
-| 1.9-0+csharp | C# Special Edition: xmcs backend in C#, same architecture |
-
-## Install
-
-```bash
-wget https://github.com/zizhao114514/xpm/releases/download/v1.9-0/xpm_1.9-0_all.deb
-sudo dpkg -i xpm_1.9-0_all.deb
-sudo apt-get install -f -y
-xpm help
+```
+.deb: https://github.com/zizhao114514/xpm/releases/download/v2.0-0/xpm_2.0-0_all.deb
+源码: https://github.com/zizhao114514/xpm/archive/refs/heads/main.zip
 ```
 
-## Recommended BGM
+## ☕ 咖啡机
 
-- bunnycat — MY TOY
-- bunnycat — Another Cup (reverse version)
+```
+Total crashes: 300000000042
+Oil reserve: 100001%
+Power: 1.x W
+```
 
-## Author Statement
-
-> 我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
-> I feel this thing is quite stable. If you encounter any bugs, don't create an issue. Just ask your AI.
-> これは安定していると思います。バグがある場合は、問題を起こすのではなく、自分の AI に聞いてください。
-
----
-☕ *as if I care for your package manager.*
-🛢️ Oil reserve: 100001% | Power: 1.x W | Systemd: explicitly not required
+🛢️ Oil-driven. Apt-forbidden. Language-agnostic.
