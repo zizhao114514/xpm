@@ -10,23 +10,24 @@ import time
 import io
 import tarfile
 
-VERSION = "2.0-1"
+VERSION = "2.0-2"
 ARCH = "all"
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 # 文件清单 (源路径相对 BASE -> deb 内路径 -> 权限)
+# 所有数据文件放 /usr/local/share/xpm/（proot 一定可写）
 FILES = [
     ("xpm.py",              "usr/local/bin/xpm",              0o755),
     ("xm.py",               "usr/local/bin/xm",               0o755),
     ("xpm_build.py",        "usr/local/bin/xpm_build",        0o755),
-    ("README.md",           "opt/xpm/docs/README.md",         0o644),
-    ("RELEASE.md",          "opt/xpm/docs/RELEASE.md",        0o644),
-    ("docs/design.md",      "opt/xpm/docs/design.md",         0o644),
-    ("docs/manual.md",      "opt/xpm/docs/manual.md",         0o644),
-    ("docs/packaging.md",   "opt/xpm/docs/packaging.md",      0o644),
-    ("docs/FAQ.md",         "opt/xpm/docs/FAQ.md",            0o644),
-    ("docs/internals.md",   "opt/xpm/docs/internals.md",      0o644),
-    ("tests/test_all.py",   "opt/xpm/docs/tests/test_all.py", 0o644),
+    ("README.md",           "usr/local/share/xpm/docs/README.md",         0o644),
+    ("RELEASE.md",          "usr/local/share/xpm/docs/RELEASE.md",        0o644),
+    ("docs/design.md",      "usr/local/share/xpm/docs/design.md",         0o644),
+    ("docs/manual.md",      "usr/local/share/xpm/docs/manual.md",         0o644),
+    ("docs/packaging.md",   "usr/local/share/xpm/docs/packaging.md",      0o644),
+    ("docs/FAQ.md",         "usr/local/share/xpm/docs/FAQ.md",            0o644),
+    ("docs/internals.md",   "usr/local/share/xpm/docs/internals.md",      0o644),
+    ("tests/test_all.py",   "usr/local/share/xpm/docs/tests/test_all.py", 0o644),
     ("xpm.desktop",         "usr/share/applications/xpm.desktop", 0o644),
 ]
 
@@ -50,9 +51,10 @@ CONTROL_TEXT = (
 
 POSTINST_TEXT = (
     "#!/bin/sh\n"
-    "mkdir -p /opt/xpm/db /opt/xpm/cache /opt/xpm/log /opt/xpm/keyring\n"
+    "mkdir -p /usr/local/share/xpm/db /usr/local/share/xpm/cache /usr/local/share/xpm/log /usr/local/share/xpm/keyring\n"
+    "mkdir -p /usr/local/share/xpm/docs\n"
     "mkdir -p /etc/xpm/sources.list.d\n"
-    "echo \"XPM v2.0-1 installed (Practical Edition)\"\n"
+    "echo \"XPM v2.0-2 installed (Proot-Friendly Edition)\"\n"
     "echo \"石油储备: 100001%\"\n"
     "echo \"as if I care for your package dependencies.\"\n"
 )
