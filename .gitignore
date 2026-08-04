@@ -1,9 +1,31 @@
+# Build artifacts
+*.deb
+*.oil
+*.tar.gz
 __pycache__/
 *.pyc
-*.deb
-*.tar.gz
-*.zip
-build/
-xpm.py.b64
-xpm_install.sh
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# XPM runtime
+/var/
+/tmp/xpm_*
+*.log
+
+# Local config
+config.local
+*.local
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
