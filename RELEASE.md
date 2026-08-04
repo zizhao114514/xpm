@@ -1,85 +1,48 @@
-# XPM v2.0-2 "Proot-Friendly Edition" 发布说明
+# XPM v2.0-2 — Fixed Debian Package Edition
 
-## 🐛 Bug 修复（核心）
+## 🐛 Bug Fix
 
-**修复了 proot/termux 环境下 `dpkg -i` 安装失败的问题：**
+| 问题 | 原因 | 修复 |
+|---|---|---|
+| `apt install ./xpm.deb` 报 "无效的归档签名" | `control.tar.gz` / `data.tar.gz` 的 gzip 流被截断（缺 CRC32 尾部） | 用 stdlib `gzip` + `tarfile` 重写构建器，确保字节级完整 |
+| `dpkg-deb -c` 无法读取 | ar 成员 size 计算错误，对齐填充丢失 | 修正 ar header 格式（60 字节，右对齐零填充） |
+| proot 下 `/opt/xpm/` 不可写 | proot 顶层目录权限受限 | 改到 `/usr/local/share/xpm/`（FHS 标准本地安装路径） |
 
-- 根因：`/opt/xpm/` 和 `/usr/share/doc/xpm/` 在 proot 映射下不可写，dpkg 无法 `mkdir -p`
-- 修复：所有数据文件改放到 `/usr/local/share/xpm/`（proot 一定可写）
-- 验证：在 proot-distro Debian 环境下 `dpkg -i` 直接成功
+## ✅ 验证结果
 
 ```
-✅ /usr/local/share/xpm/docs/   ← 文档
-✅ /usr/local/share/xpm/db/     ← 数据库
-✅ /usr/local/share/xpm/cache/  ← 下载缓存
-✅ /usr/local/share/xpm/log/    ← 日志
-✅ /usr/local/share/xpm/keyring/← GPG 密钥环
+dpkg-deb -I xpm_2.0-2_all.deb   → exit 0 ✅
+dpkg-deb -c xpm_2.0-2_all.deb   → exit 0 ✅
+gzip -t control.tar.gz           → OK ✅
+gzip -t data.tar.gz              → OK ✅
+python3 tests/test_all.py        → 31/31 通过 ✅
 ```
 
-## ✨ v2.0-1 继承的全部功能（36 个命令）
+## 📂 安装路径
 
-### 搜索与查询
-- `xpm search <关键词>` - 模糊搜索
-- `xpm show <包名>` - 包详情
-- `xpm provides <命令>` - 谁提供这个命令
-- `xpm owns <文件>` - 文件属于哪个包
-- `xpm why <包名>` - 为什么装了它
-- `xpm size [包名]` - 磁盘占用
-
-### 清理维护
-- `xpm autoremove` - 孤儿清理
-- `xpm clean [--all]` - 缓存清理
-- `xpm dedupe` - 重复文件检测
-- `xpm fix-broken` - 修复断包
-- `xpm verify [包名]` - 完整性校验
-
-### 软件源
-- `xpm mirrors` - 测速选源
-- `xpm source add/remove/list` - 管理源
-- `xpm news` - 可更新列表
-
-### 安装增强
-- `xpm install -f <文件>` - 批量安装
-- `xpm install --dry-run` - 预览
-- `xpm install --offline` - 离线
-- `xpm download <包>` - 只下载
-- `xpm interactive` - TUI 交互
-
-### 历史别名
-- `xpm history [n]` - 操作历史
-- `xpm alias add/remove/list` - 别名管理
-
-### 包管理核心
-- `xpm install/remove/purge/reinstall`
-- `xpm update/upgrade`
-- `xpm list/depends/rdepends`
-- `xpm build <dir>` - 打包 .oil
-- `xpm rollback [id]` - 事务回滚
-- `xpm doctor` - 系统诊断
-- `xpm gui` - 图形界面
-- `xpm help` - 三语帮助
+| 文件类型 | 路径 |
+|---|---|
+| 前端 CLI + GUI | `/usr/local/bin/xpm` |
+| 后端 | `/usr/local/bin/xm` |
+| 文档 | `/usr/local/share/xpm/docs/` |
+| 测试 | `/usr/local/share/xpm/tests/` |
+| 桌面入口 | `/usr/share/applications/xpm.desktop` |
 
 ## 📦 安装
 
 ```bash
+wget https://github.com/zizhao114514/xpm/releases/download/v2.0-2/xpm_2.0-2_all.deb
 sudo dpkg -i xpm_2.0-2_all.deb
 xpm doctor
 ```
 
-## 🛢️ 状态
+## 🔗 链接
 
-| 指标 | 数值 |
-|---|---|
-| 版本 | v2.0-2 "Proot-Friendly Edition" |
-| 命令数 | 36 |
-| 帮助语言 | 3（中/英/日） |
-| apt 调用 | 0 |
-| proot 兼容 | ✅ |
-| 石油储备 | 100001% |
-| 功耗 | 1.x W |
+- 仓库：https://github.com/zizhao114514/xpm
+- Release：https://github.com/zizhao114514/xpm/releases/tag/v2.0-2
 
-## 作者声明
+---
 
-我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
+石油储备: 100001% | 功耗: 1.x W
 
-as if I care for your package dependencies.
+> as if I care for your package dependencies.
