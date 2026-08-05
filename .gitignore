@@ -12,3 +12,17 @@ data.tar.*
 *.swp
 *.swo
 .DS_Store
+
+# 构建临时文件
+_build/
+_deb_build/
+staging_ultimate/
+_fakeroot_build.sh
+push_api_v4.py
+push_clean.py
+push_via_api.py
+reupload.py
+upload_deb.py
+upload_v2.py
+verify_release.py
+xpm_*.deb

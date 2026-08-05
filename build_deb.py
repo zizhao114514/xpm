@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 """
 build_deb.py - 构建 XPM .deb 包
-v2.0-4 - fakeroot + dpkg-deb 官方工具链
+v2.0-5 - Mirror-Fixed Edition
 """
 
 import os
 import subprocess
 import shutil
 
-VERSION = "2.0-4"
+VERSION = "2.0-5"
 ARCH = "all"
 BASE = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = "/tmp/xpm_deb_build"
@@ -52,7 +52,7 @@ mkdir -p /usr/local/share/xpm/db /usr/local/share/xpm/cache /usr/local/share/xpm
 mkdir -p /usr/local/share/xpm/docs
 mkdir -p /usr/local/share/xpm/docs/tests
 mkdir -p /etc/xpm/sources.list.d
-echo "XPM v2.0-4 installed (Scope-Fixed Edition)"
+echo "XPM v2.0-5 installed (Mirror-Fixed Edition)"
 echo "石油储备: 100001%"
 echo "as if I care for your package dependencies."
 """

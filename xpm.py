@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-XPM - X11 Package Manager v2.0-4 "Scope-Fixed Edition"
+XPM - X11 Package Manager v2.0-5 "SSL-Fixed Edition"
 =======================================================
 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
 
@@ -49,8 +49,8 @@ XPM_DOCS = f"{XPM_ROOT}/docs"
 XPM_TESTS = f"{XPM_ROOT}/tests"
 XPM_DESKTOP = "/usr/share/applications/xpm.desktop"
 
-VERSION = "2.0-4"
-CODENAME = "Scope-Fixed Edition"
+VERSION = "2.0-5"
+CODENAME = "SSL-Fixed Edition"
 
 # 清除代理环境变量（铁律）
 for _k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "no_proxy"):
@@ -153,18 +153,28 @@ def run_cmd(cmd, timeout=300, capture=False):
 
 def wget(url, dest, timeout=30):
     """下载文件，返回 (success, message)"""
-    cmd = ["wget", "--timeout=" + str(timeout), "--tries=3", "-q", "-O", dest, url]
+    cmd = ["wget", "--timeout=" + str(timeout), "--tries=3",
+           "--no-check-certificate", "-q", "-O", dest, url]
     env = os.environ.copy()
     for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
         env.pop(k, None)
     r = subprocess.run(cmd, capture_output=True, text=True, env=env)
     if r.returncode == 0 and os.path.exists(dest):
         return True, f"下载完成: {os.path.getsize(dest)} bytes"
+    # 失败时尝试 http 降级
+    if url.startswith("https://"):
+        http_url = "http://" + url[8:]
+        cmd2 = ["wget", "--timeout=" + str(timeout), "--tries=2",
+                "-q", "-O", dest, http_url]
+        r2 = subprocess.run(cmd2, capture_output=True, text=True, env=env)
+        if r2.returncode == 0 and os.path.exists(dest):
+            return True, f"下载完成(HTTP降级): {os.path.getsize(dest)} bytes"
     return False, r.stderr.strip() or f"wget 返回 {r.returncode}"
 
 def wget_progress(url, dest, timeout=30):
     """带进度条的下载"""
     cmd = ["wget", "--timeout=" + str(timeout), "--tries=3",
+           "--no-check-certificate",
            "--progress=dot:giga", "-O", dest, url]
     env = os.environ.copy()
     for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
@@ -203,6 +213,71 @@ def parse_sources():
                 continue
             sources.append({"file": f, "line": line, "raw": line})
     return sources
+
+
+def normalize_source(line):
+    """
+    统一解析一行源配置，返回 dict：
+        {type:"deb", base:"https://...", suite:"bookworm", components:["main",...], raw:line}
+    支持：
+        deb https://mirror/debian/ bookworm main contrib non-free
+        deb https://mirror/debian bookworm/
+        [xpm] url=https://example.com/xpm/
+        [xpm] https://example.com/xpm/
+    返回 None 表示无法识别。
+    """
+    line = line.strip()
+    if not line or line.startswith("#"):
+        return None
+
+    if line.startswith("[xpm]"):
+        url = line.replace("[xpm]", "").strip()
+        if url.startswith("url="):
+            url = url[4:].strip()
+        base = url.rstrip("/")
+        # xpm 源通常本身就是索引根目录
+        return {"type": "xpm", "base": base, "suite": "", "components": [""], "raw": line}
+
+    if line.startswith("deb "):
+        parts = line.split()
+        if len(parts) < 3:
+            return None
+        base = parts[1].rstrip("/")
+        suite = parts[2].strip("/")
+        # 剩余部分是 components；若没写，默认 main
+        comps = parts[3:] if len(parts) > 3 else ["main"]
+        return {"type": "deb", "base": base, "suite": suite, "components": comps, "raw": line}
+
+    # 裸 URL（兼容老写法）
+    return {"type": "xpm", "base": line.rstrip("/"), "suite": "", "components": [""], "raw": line}
+
+
+def release_url(src):
+    """返回 dists/{suite}/Release 的测试 URL"""
+    if src["type"] == "deb":
+        # 兼容 base 末尾已带 /dists 的写法
+        if src["base"].endswith("/dists"):
+            return f"{src['base']}/{src['suite']}/Release"
+        return f"{src['base']}/dists/{src['suite']}/Release"
+    else:
+        # xpm 源：直接 <base>/Release 或 <base>/index.json
+        return f"{src['base']}/Release"
+
+
+def packages_url(src, component):
+    """返回某个 component 的 Packages.gz URL"""
+    if src["type"] == "deb":
+        if src["base"].endswith("/dists"):
+            base = src["base"]
+        else:
+            base = f"{src['base']}/dists/{src['suite']}"
+        return f"{base}/{component}/binary-amd64/Packages.gz"
+    else:
+        # xpm 源：<base>/<component>/Packages.gz
+        comp = component.strip("/")
+        if comp:
+            return f"{src['base']}/{comp}/Packages.gz"
+        return f"{src['base']}/Packages.gz"
 
 def parse_control(text):
     """解析 Debian control 格式"""
@@ -277,50 +352,53 @@ def build_package_index():
     index = {}
     sources = parse_sources()
     for src in sources:
-        line = src["raw"].strip()
-        # 支持 deb http://mirror dist component 和 [xpm] url=...
-        if line.startswith("[xpm]"):
-            url = line.replace("[xpm]", "").strip()
-            if url.startswith("url="):
-                url = url[4:].strip()
-        elif line.startswith("deb "):
-            parts = line.split()
-            if len(parts) < 3:
-                continue
-            base_url = parts[1]  # parts[0] is "deb"
-            dist = parts[2]
-            comp = parts[3] if len(parts) > 3 else "main"
-            url = f"{base_url}/dists/{dist}/{comp}"
-        else:
-            # 裸 URL
-            url = line
-        
-        # 尝试下载 Packages.gz
-        cache_name = hashlib.md5(url.encode()).hexdigest()[:12]
-        cache_path = f"{XPM_CACHE}/{cache_name}_Packages"
-        
-        if not os.path.exists(cache_path):
-            log_info(f"更新索引: {url}")
-            success, msg = wget(f"{url}/Packages.gz", cache_path + ".gz", timeout=15)
-            if success and os.path.exists(cache_path + ".gz"):
+        s = normalize_source(src["raw"])
+        if s is None:
+            continue
+
+        # 每个 component 下载一份 Packages.gz
+        for comp in s["components"]:
+            url = packages_url(s, comp)
+            cache_name = hashlib.md5(url.encode()).hexdigest()[:12]
+            cache_path = f"{XPM_CACHE}/{cache_name}_Packages"
+
+            if not os.path.exists(cache_path):
+                log_info(f"更新索引: {url}")
+                # 先用 wget（已内置 --no-check-certificate）
+                success, msg = wget(url, cache_path + ".gz", timeout=15)
+                # 如果失败且是 https，尝试 http 降级
+                if not success and url.startswith("https://"):
+                    http_url = "http://" + url[8:]
+                    log_info(f"  ↻ 尝试 HTTP: {http_url}")
+                    success, msg = wget(http_url, cache_path + ".gz", timeout=15)
+                if success and os.path.exists(cache_path + ".gz"):
+                    try:
+                        import io as _io
+                        with gzip.open(cache_path + ".gz", "rb") as gz:
+                            with open(cache_path, "wb") as out:
+                                out.write(gz.read())
+                        os.unlink(cache_path + ".gz")
+                    except Exception:
+                        # 下载失败不影响，后续用缓存
+                        if os.path.exists(cache_path + ".gz"):
+                            os.unlink(cache_path + ".gz")
+                else:
+                    if os.path.exists(cache_path + ".gz"):
+                        os.unlink(cache_path + ".gz")
+
+            if os.path.exists(cache_path):
                 try:
-                    with gzip.open(cache_path + ".gz", "rb") as gz:
-                        with open(cache_path, "wb") as out:
-                            out.write(gz.read())
-                    os.unlink(cache_path + ".gz")
-                except Exception as e:
-                    pass  # 下载失败不影响，后续用缓存
-        
-        if os.path.exists(cache_path):
-            text = open(cache_path).read()
-            for block in text.split("\n\n"):
-                ctrl = parse_control(block)
-                if "Package" in ctrl:
-                    name = ctrl["Package"]
-                    if name not in index:
-                        index[name] = []
-                    ctrl["_source"] = url
-                    index[name].append(ctrl)
+                    text = open(cache_path).read()
+                    for block in text.split("\n\n"):
+                        ctrl = parse_control(block)
+                        if "Package" in ctrl:
+                            name = ctrl["Package"]
+                            if name not in index:
+                                index[name] = []
+                            ctrl["_source"] = url
+                            index[name].append(ctrl)
+                except Exception:
+                    continue
     return index
 
 def search_packages(query, index=None):
@@ -821,49 +899,113 @@ def source_list_cmd():
         print(f"  📦 {s['file']}: {s['line']}")
 
 def test_mirrors():
-    """测试所有源的延迟"""
+    """测试所有源的延迟（先测 Release，再测各 component 的 Packages.gz）"""
     sources = parse_sources()
+    if not sources:
+        log_warn("没有配置任何软件源")
+        log_info("添加源: xpm source add <名称> <URL> [dist] [comp]")
+        return
+
     results = []
-    
+
     for s in sources:
-        line = s["line"]
-        if line.startswith("deb "):
-            parts = line.split()
-            url = parts[0] + f"/dists/{parts[1]}/Release"
-        else:
-            url = line.replace("[xpm]", "").strip()
-            if url.startswith("url="): url = url[4:]
-            url = url.rstrip("/") + "/Release"
-        
-        log_info(f"测试: {url}")
+        raw_line = s["line"].strip()
+        src = normalize_source(raw_line)
+        if src is None:
+            log_warn(f"无法解析源: {raw_line}")
+            continue
+
+        # 1) 测 Release 文件
+        url = release_url(src)
+        display = f"{s['file']}: {src['base']} ({'/'.join(src['components'])})"
+        log_info(f"测试: {display}")
+        log_info(f"  URL: {url}")
+
         start = time.time()
+        ok = False
+        error_msg = ""
         try:
-            cmd = ["wget", "--timeout=10", "--spider", url]
+            cmd = ["wget", "--timeout=10", "--tries=2",
+                   "--no-check-certificate", "--spider", url]
             env = os.environ.copy()
             for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
                 env.pop(k, None)
-            r = subprocess.run(cmd, capture_output=True, env=env, timeout=15)
+            r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=15)
             elapsed = (time.time() - start) * 1000
             if r.returncode == 0:
-                results.append((s["file"], elapsed, url))
-                log_ok(f"  ✅ {elapsed:.0f}ms")
+                ok = True
+                log_ok(f"  ✅ Release: {elapsed:.0f}ms")
             else:
-                log_warn(f"  ❌ 超时/失败")
-                results.append((s["file"], 99999, url))
+                error_msg = r.stderr.strip().split("\n")[-1] if r.stderr else f"exit {r.returncode}"
+                log_warn(f"  ❌ Release 失败 ({error_msg})")
+
+                # 尝试 http 降级
+                if url.startswith("https://"):
+                    http_url = "http://" + url[8:]
+                    log_info(f"  ↻ 尝试 HTTP: {http_url}")
+                    cmd2 = ["wget", "--timeout=10", "--tries=2", "--spider", http_url]
+                    r2 = subprocess.run(cmd2, capture_output=True, text=True, env=env, timeout=15)
+                    if r2.returncode == 0:
+                        ok = True
+                        elapsed = (time.time() - start) * 1000
+                        log_ok(f"  ✅ Release (HTTP): {elapsed:.0f}ms")
+                        url = http_url  # 记录成功的 URL
         except subprocess.TimeoutExpired:
-            log_warn(f"  ❌ 超时")
-            results.append((s["file"], 99999, url))
-    
-    # 排序
+            elapsed = 99999
+            log_warn(f"  ❌ Release 超时")
+
+        # 2) 测每个 component 的 Packages.gz（取平均）
+        comp_times = []
+        if ok:
+            for comp in src["components"]:
+                pkg_url = packages_url(src, comp)
+                t0 = time.time()
+                try:
+                    cmd2 = ["wget", "--timeout=10", "--tries=2",
+                            "--no-check-certificate", "--spider", pkg_url]
+                    env2 = os.environ.copy()
+                    for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
+                        env2.pop(k, None)
+                    r2 = subprocess.run(cmd2, capture_output=True, env=env2, timeout=15)
+                    t_ms = (time.time() - t0) * 1000
+                    if r2.returncode == 0:
+                        comp_times.append(t_ms)
+                        log_info(f"  ✅ {comp or 'root'}: {t_ms:.0f}ms")
+                except subprocess.TimeoutExpired:
+                    pass
+
+        # 综合延迟
+        if comp_times:
+            avg = sum(comp_times) / len(comp_times)
+            total = elapsed + avg
+        else:
+            total = elapsed if ok else 99999
+
+        results.append((s["file"], total, url, ok, error_msg))
+
+    # 排序并输出
     results.sort(key=lambda x: x[1])
-    print(f"\n{'源文件':<30} {'延迟':>10}")
-    print("-" * 45)
-    for name, ms, url in results:
-        marker = "🏆" if ms < 1000 else "  "
-        print(f"{marker} {name:<28} {ms:>8.0f}ms")
-    
-    if results and results[0][1] < 5000:
-        log_info(f"推荐源: {results[0][0]} ({results[0][1]:.0f}ms)")
+    print(f"\n{'源文件':<28} {'延迟':>10}  状态")
+    print("-" * 55)
+    for name, ms, url, ok, err in results:
+        if ok and ms < 2000:
+            marker = "🏆"
+        elif ok:
+            marker = "  "
+        else:
+            marker = "⚠️ "
+        status = f"{ms:>8.0f}ms" if ok else f"  失败"
+        print(f"{marker} {name:<26} {status}")
+        if not ok and err:
+            print(f"     └─ {err}")
+
+    good = [r for r in results if r[3] and r[1] < 5000]
+    if good:
+        log_info(f"推荐源: {good[0][0]} ({good[0][1]:.0f}ms)")
+    elif results:
+        log_warn("所有源都不可用，请检查网络或添加新源")
+        log_info("提示: 如果看到 SSL 错误，可能是 CA 证书问题")
+        log_info("      尝试: apt install --reinstall ca-certificates")
 
 # ─── 包信息查询 ──────────────────────────────────────────
 def show_package(pkg_name):
@@ -1707,6 +1849,13 @@ def main():
         source_list_cmd()
     elif cmd == "update":
         log_info("更新软件源索引...")
+        # 显示正在更新的源
+        for s in parse_sources():
+            src = normalize_source(s["line"])
+            if src is None:
+                continue
+            rel = release_url(src)
+            log_info(f"  → {s['file']}: {rel}")
         build_package_index()
         log_ok("索引更新完成")
     elif cmd == "upgrade":

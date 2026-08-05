@@ -2,13 +2,13 @@
 
 > 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
 
-## 版本: v2.0-3 "Debian-Native Edition"
+## 版本: v2.0-5 "Mirror-Fixed Edition"
 
 ## 快速安装
 
 ```bash
-wget https://github.com/zizhao114514/xpm/releases/download/v2.0-3/xpm_2.0-3_all.deb
-sudo dpkg -i xpm_2.0-3_all.deb
+wget https://github.com/zizhao114514/xpm/releases/download/v2.0-5/xpm_2.0-5_all.deb
+sudo dpkg -i xpm_2.0-5_all.deb
 xpm doctor
 ```
 
@@ -106,7 +106,7 @@ XPM 三层架构:
 ## 文件布局
 
 ```
-/opt/xpm/
+/usr/local/share/xpm/
 ├── db/status.json          # 已装包数据库
 ├── db/transactions/        # 事务快照
 ├── db/control/            # 包 control 信息

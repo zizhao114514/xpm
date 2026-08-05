@@ -196,22 +196,21 @@ Version: 9.0
 Description: old vim
 
 """
-    # build_package_index 拼出的 URL 是 base_url/dists/dist/comp
-    # 源写 "deb http://mock/repo stable main" → base_url=http://mock/repo, dist=stable, comp=main
-    # → URL = http://mock/repo/dists/stable/main
+    # 新代码 packages_url: base/dists/suite/component/binary-amd64/Packages.gz
+    # 源 "deb http://mock/repo stable main" → http://mock/repo/dists/stable/main/binary-amd64/Packages.gz
     import hashlib
-    url = "http://mock/repo/dists/stable/main"
+    url = "http://mock/repo/dists/stable/main/binary-amd64/Packages.gz"
     cache_name = hashlib.md5(url.encode()).hexdigest()[:12]
     cache_file = f"{xpm.XPM_CACHE}/{cache_name}_Packages"
     with open(cache_file, "w") as f:
         f.write(mock_packages)
-    
+
     # mock parse_sources
     os.makedirs(xpm.XPM_SOURCES, exist_ok=True)
     sf = f"{xpm.XPM_SOURCES}/mock.list"
     with open(sf, "w") as f:
         f.write("deb http://mock/repo stable main\n")
-    
+
     index = xpm.build_package_index()
     assert_true("vim" in index, f"vim should be in index, got: {list(index.keys())}")
     assert_true("nano" in index, f"nano should be in index, got: {list(index.keys())}")
@@ -236,9 +235,8 @@ Description: web browser
 
 """
     import hashlib
-    # 源写 "deb http://x stable main" → base_url=http://x, dist=stable, comp=main
-    # → URL = http://x/dists/stable/main
-    url = "http://x/dists/stable/main"
+    # 新路径: http://x/dists/stable/main/binary-amd64/Packages.gz
+    url = "http://x/dists/stable/main/binary-amd64/Packages.gz"
     cache_name = hashlib.md5(url.encode()).hexdigest()[:12]
     cf = f"{xpm.XPM_CACHE}/{cache_name}_Packages"
     with open(cf, "w") as f:
@@ -270,8 +268,8 @@ Description: vim
 
 """
     import hashlib
-    # 源写 "deb http://x stable main" → URL = http://x/dists/stable/main
-    url = "http://x/dists/stable/main"
+    # 新路径: http://x/dists/stable/main/binary-amd64/Packages.gz
+    url = "http://x/dists/stable/main/binary-amd64/Packages.gz"
     cache_name = hashlib.md5(url.encode()).hexdigest()[:12]
     cf = f"{xpm.XPM_CACHE}/{cache_name}_Packages"
     with open(cf, "w") as f:
@@ -521,9 +519,9 @@ def t_integration_install():
     with open(sf, "w") as f:
         f.write("deb http://mock/repo stable main\n")
     
-    # mock 包索引 (用正确的 cache 文件名)
+    # mock 包索引 (用正确的 cache 文件名，匹配新 packages_url 路径)
     import hashlib
-    url = "http://mock/repo/stable/main"
+    url = "http://mock/repo/dists/stable/main/binary-amd64/Packages.gz"
     cache_name = hashlib.md5(url.encode()).hexdigest()[:12]
     
     mock_pkgs = """Package: testapp
