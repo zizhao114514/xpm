@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-XPM - X11 Package Manager v2.0-5 "SSL-Fixed Edition"
-=======================================================
+XPM - X11 Package Manager v2.0-6 "Filename-Fixed Edition"
+===========================================================
 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
 
 Author: zizhao + AI
@@ -49,8 +49,8 @@ XPM_DOCS = f"{XPM_ROOT}/docs"
 XPM_TESTS = f"{XPM_ROOT}/tests"
 XPM_DESKTOP = "/usr/share/applications/xpm.desktop"
 
-VERSION = "2.0-5"
-CODENAME = "SSL-Fixed Edition"
+VERSION = "2.0-6"
+CODENAME = "Filename-Fixed Edition"
 
 # 清除代理环境变量（铁律）
 for _k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "no_proxy"):
@@ -395,11 +395,38 @@ def build_package_index():
                             name = ctrl["Package"]
                             if name not in index:
                                 index[name] = []
+                            # 存源的 base URL（下载 .deb 时用）
+                            ctrl["_base"] = s["base"].rstrip("/")
+                            ctrl["_component"] = comp
                             ctrl["_source"] = url
                             index[name].append(ctrl)
                 except Exception:
                     continue
     return index
+
+
+def package_download_url(entry):
+    """
+    根据 Packages 条目拼出 .deb 的真实下载 URL。
+    Debian 官方源：base + "/" + Filename（Filename 形如 pool/main/h/htop/htop_3.4.1-5_amd64.deb）
+    xpm 源：base + "/" + Filename
+    """
+    base = entry.get("_base", "").rstrip("/")
+    filename = entry.get("Filename", "").lstrip("/")
+    if not base:
+        # 兜底：用 _source 反推（Packages.gz 所在目录的上一级）
+        src = entry.get("_source", "")
+        if src:
+            base = src.rsplit("/", 3)[0]  # .../dists/suite/comp/binary-amd64 -> base
+    if not filename:
+        # 终极兜底：自己拼（可能不准，仅当 Filename 字段缺失）
+        pkg = entry.get("Package", "unknown")
+        ver = entry.get("Version", "unknown")
+        arch = entry.get("Architecture", "amd64")
+        comp = entry.get("_component", "main")
+        first = pkg[0] if pkg else "x"
+        filename = f"pool/{comp}/{first}/{pkg}/{pkg}_{ver}_{arch}.deb"
+    return f"{base}/{filename}"
 
 def search_packages(query, index=None):
     """模糊搜索包"""
@@ -479,20 +506,36 @@ def resolve_dependencies(pkg_name, index, db, depth=0):
     return to_install
 
 def download_package(entry, show_progress=True):
-    """下载 .oil 包"""
+    """下载 .deb 包（用 Packages 里的 Filename 字段拼真实 URL）"""
     pkg_name = entry["Package"]
     version = entry.get("Version", "unknown")
-    filename = entry.get("Filename", f"{pkg_name}_{version}.oil")
-    url = entry.get("_source", "").rsplit("/", 1)[0] + "/" + filename
-    dest = f"{XPM_CACHE}/{pkg_name}_{version}.oil"
-    
+    url = package_download_url(entry)
+    dest = f"{XPM_CACHE}/{pkg_name}_{version}.deb"
+
     log_info(f"下载: {pkg_name} ({version})")
+    log_info(f"  URL: {url}")
+
     if show_progress:
         ok = wget_progress(url, dest)
     else:
         ok, msg = wget(url, dest)
-        if ok:
-            ok = True
+        if not ok:
+            log_warn(f"  wget 失败: {msg}")
+
+    # HTTPS 失败 → 尝试 HTTP 降级
+    if not ok and url.startswith("https://"):
+        http_url = "http://" + url[8:]
+        log_info(f"  ↻ 尝试 HTTP: {http_url}")
+        if show_progress:
+            ok = wget_progress(http_url, dest)
+        else:
+            ok, msg = wget(http_url, dest)
+            if not ok:
+                log_warn(f"  HTTP 也失败: {msg}")
+
+    if not ok:
+        log_err(f"下载失败: {pkg_name}")
+        log_err(f"  最终 URL: {url}")
     return ok, dest
 
 def install_package(pkg_name, dry_run=False, confirm=True):
@@ -1339,24 +1382,29 @@ def download_only(pkg_name):
     if pkg_name not in index:
         log_err(f"找不到包: {pkg_name}")
         return
-    
+
     entries = sorted(index[pkg_name], key=lambda e: e.get("Version", ""), reverse=True)
     entry = entries[0]
-    
+
     dest_dir = os.path.expanduser("~/xpm-downloads")
     os.makedirs(dest_dir, exist_ok=True)
-    
+
     version = entry.get("Version", "unknown")
-    filename = f"{pkg_name}_{version}.oil"
-    url = entry.get("_source", "").rsplit("/", 1)[0] + "/" + filename
+    url = package_download_url(entry)
+    filename = url.rsplit("/", 1)[-1] or f"{pkg_name}_{version}.deb"
     dest = f"{dest_dir}/{filename}"
-    
+
     log_info(f"下载到: {dest}")
+    log_info(f"  URL: {url}")
     ok = wget_progress(url, dest)
+    if not ok and url.startswith("https://"):
+        http_url = "http://" + url[8:]
+        log_info(f"  ↻ 尝试 HTTP: {http_url}")
+        ok = wget_progress(http_url, dest)
     if ok:
         log_ok(f"✅ 已下载: {dest} ({os.path.getsize(dest)//1024}KB)")
     else:
-        log_err("下载失败")
+        log_err(f"下载失败: {url}")
 
 # ─── 增强版 doctor ────────────────────────────────────────
 def doctor():

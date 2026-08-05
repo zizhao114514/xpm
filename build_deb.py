@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 """
 build_deb.py - 构建 XPM .deb 包
-v2.0-5 - Mirror-Fixed Edition
+v2.0-6 - Filename-Fixed Edition
 """
 
 import os
 import subprocess
 import shutil
 
-VERSION = "2.0-5"
+VERSION = "2.0-6"
 ARCH = "all"
 BASE = os.path.dirname(os.path.abspath(__file__))
 BUILD_DIR = "/tmp/xpm_deb_build"
@@ -51,8 +51,8 @@ POSTINST_TEXT = """#!/bin/sh
 mkdir -p /usr/local/share/xpm/db /usr/local/share/xpm/cache /usr/local/share/xpm/log /usr/local/share/xpm/keyring
 mkdir -p /usr/local/share/xpm/docs
 mkdir -p /usr/local/share/xpm/docs/tests
-mkdir -p /etc/xpm/sources.list.d
-echo "XPM v2.0-5 installed (Mirror-Fixed Edition)"
+mkdir -p /usr/local/share/xpm/sources.list.d
+echo "XPM v2.0-6 installed (Filename-Fixed Edition)"
 echo "石油储备: 100001%"
 echo "as if I care for your package dependencies."
 """
