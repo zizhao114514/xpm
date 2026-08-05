@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-XPM - X11 Package Manager v2.0-6 "Filename-Fixed Edition"
+XPM - X11 Package Manager v2.0-7 "Self-Update Edition"
 ===========================================================
 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
 
@@ -49,8 +49,8 @@ XPM_DOCS = f"{XPM_ROOT}/docs"
 XPM_TESTS = f"{XPM_ROOT}/tests"
 XPM_DESKTOP = "/usr/share/applications/xpm.desktop"
 
-VERSION = "2.0-6"
-CODENAME = "Filename-Fixed Edition"
+VERSION = "2.0-7"
+CODENAME = "Ar-Standard Edition"
 
 # 清除代理环境变量（铁律）
 for _k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY", "no_proxy"):
@@ -413,20 +413,32 @@ def package_download_url(entry):
     """
     base = entry.get("_base", "").rstrip("/")
     filename = entry.get("Filename", "").lstrip("/")
+
+    # 兜底1：用 _source 反推 base
     if not base:
-        # 兜底：用 _source 反推（Packages.gz 所在目录的上一级）
         src = entry.get("_source", "")
         if src:
-            base = src.rsplit("/", 3)[0]  # .../dists/suite/comp/binary-amd64 -> base
+            # src 形如 https://mirror/debian/dists/trixie/main/binary-amd64/Packages.gz
+            # 取 dists 之前的部分作为 base
+            parts = src.split("/dists/")
+            if len(parts) > 1:
+                base = parts[0]
+            else:
+                base = src.rsplit("/", 3)[0]
+
+    # 兜底2：自己拼 Filename（仅当 Filename 字段缺失）
     if not filename:
-        # 终极兜底：自己拼（可能不准，仅当 Filename 字段缺失）
         pkg = entry.get("Package", "unknown")
         ver = entry.get("Version", "unknown")
         arch = entry.get("Architecture", "amd64")
         comp = entry.get("_component", "main")
-        first = pkg[0] if pkg else "x"
+        first = pkg[0].lower() if pkg else "x"
+        # Debian 特殊处理：lib* 包放在对应首字母目录
+        # 如 libtinfo6 → l/libtinfo6/，libncursesw6 → l/libncursesw6/
         filename = f"pool/{comp}/{first}/{pkg}/{pkg}_{ver}_{arch}.deb"
-    return f"{base}/{filename}"
+
+    url = f"{base}/{filename}" if base else filename
+    return url
 
 def search_packages(query, index=None):
     """模糊搜索包"""
@@ -532,10 +544,17 @@ def download_package(entry, show_progress=True):
             ok, msg = wget(http_url, dest)
             if not ok:
                 log_warn(f"  HTTP 也失败: {msg}")
+        if ok:
+            url = http_url  # 记录实际成功的 URL
 
     if not ok:
         log_err(f"下载失败: {pkg_name}")
-        log_err(f"  最终 URL: {url}")
+        log_err(f"  尝试 URL: {url}")
+        # 额外诊断
+        if "404" in str(msg) or "Not Found" in str(msg):
+            log_err(f"  → 404 未找到，可能 Filename 字段拼接错误")
+            log_err(f"  → 包名: {pkg_name}, 版本: {version}")
+            log_err(f"  → 请运行: xpm show {pkg_name} 查看完整信息")
     return ok, dest
 
 def install_package(pkg_name, dry_run=False, confirm=True):
@@ -962,7 +981,9 @@ def test_mirrors():
         url = release_url(src)
         display = f"{s['file']}: {src['base']} ({'/'.join(src['components'])})"
         log_info(f"测试: {display}")
-        log_info(f"  URL: {url}")
+        # 显示正确拼接的 URL（不是 deb/dists/https:// 这种错误格式）
+        rel_url = release_url(src)
+        log_info(f"  URL: {rel_url}")
 
         start = time.time()
         ok = False
@@ -1240,6 +1261,160 @@ def show_news():
     if r.lower() == "y":
         for name, _, _ in updates:
             install_package(name, confirm=False)
+
+# ─── 自更新系统 ────────────────────────────────────────
+GITHUB_API_RELEASES = "https://api.github.com/repos/zizhao114514/xpm/releases/latest"
+GITHUB_DOWNLOAD_BASE = "https://github.com/zizhao114514/xpm/releases/download"
+
+def get_latest_version():
+    """从 GitHub API 获取最新版本号"""
+    import urllib.request, json as json_mod
+    try:
+        req = urllib.request.Request(
+            GITHUB_API_RELEASES,
+            headers={"User-Agent": "XPM-SelfUpdate/1.0", "Accept": "application/vnd.github.v3+json"}
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json_mod.loads(resp.read().decode())
+            tag = data.get("tag_name", "").strip()
+            # tag 形如 v2.0-7 → 提取 2.0-7
+            if tag.startswith("v"):
+                tag = tag[1:]
+            assets = data.get("assets", [])
+            deb_asset = None
+            for a in assets:
+                if a.get("name", "").endswith("_all.deb"):
+                    deb_asset = a
+                    break
+            return tag, deb_asset.get("browser_download_url") if deb_asset else None, data.get("body", "")[:500]
+    except Exception as e:
+        return None, None, str(e)
+
+def compare_xpm_version(remote_ver):
+    """比较本地和远程版本，返回 -1/0/1"""
+    if not remote_ver:
+        return 0
+    return compare_version(remote_ver, VERSION)
+
+def check_update(verbose=True):
+    """检查 XPM 自身是否有更新"""
+    if verbose:
+        log_info("正在检查 XPM 更新...")
+        log_info(f"  当前版本: {VERSION} \"{CODENAME}\"")
+    
+    remote_ver, download_url, info = get_latest_version()
+    
+    if remote_ver is None:
+        if verbose:
+            log_warn(f"无法获取更新信息: {info}")
+            log_info("检查网络连接或稍后重试")
+        return False, None, None
+    
+    cmp = compare_xpm_version(remote_ver)
+    
+    if cmp > 0:
+        if verbose:
+            log_ok(f"发现新版本: {C.GREEN}{remote_ver}{C.RESET} (当前: {VERSION})")
+            if info:
+                print(f"\n  更新说明:")
+                for line in info.split("\n")[:10]:
+                    if line.strip():
+                        print(f"    {line.strip()}")
+            print(f"\n  下载地址: {download_url}")
+            print(f"\n  升级命令: {C.CYAN}xpm self-update{C.RESET}")
+        return True, remote_ver, download_url
+    elif cmp == 0:
+        if verbose:
+            log_ok(f"已是最新版本 ({VERSION} \"{CODENAME}\") 🎉")
+        return False, remote_ver, download_url
+    else:
+        if verbose:
+            log_info(f"当前版本 ({VERSION}) 比远程 ({remote_ver}) 更新（开发版本）")
+        return False, remote_ver, download_url
+
+def self_update(force=False):
+    """自更新：下载最新 .deb 并安装"""
+    has_update, remote_ver, download_url = check_update(verbose=False)
+    
+    if not has_update and not force:
+        log_ok(f"已是最新版本 ({VERSION} \"{CODENAME}\") 🎉")
+        return
+    
+    if not download_url:
+        log_err("无法获取下载地址")
+        log_info("请手动访问: https://github.com/zizhao114514/xpm/releases/")
+        return
+    
+    target_ver = remote_ver or "latest"
+    log_info(f"准备升级: {VERSION} → {target_ver}")
+    log_info(f"下载: {download_url}")
+    
+    # 下载到缓存
+    dest = f"{XPM_CACHE}/xpm_{target_ver}_update.deb"
+    os.makedirs(XPM_CACHE, exist_ok=True)
+    
+    ok, msg = wget(download_url, dest, timeout=30)
+    if not ok:
+        log_err(f"下载失败: {msg}")
+        # 尝试不带 --no-check-certificate 的 wget
+        log_info("尝试备选下载方式...")
+        cmd = ["wget", "--timeout=30", "--tries=2", "-O", dest, download_url]
+        env = os.environ.copy()
+        for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
+            env.pop(k, None)
+        r = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        if r.returncode != 0 or not os.path.exists(dest):
+            log_err(f"备选下载也失败: {r.stderr.strip()[:200]}")
+            return
+        ok = True
+    
+    if not os.path.exists(dest) or os.path.getsize(dest) < 1000:
+        log_err(f"下载文件异常 (size={os.path.getsize(dest) if os.path.exists(dest) else 'N/A'})")
+        return
+    
+    fsize = os.path.getsize(dest)
+    log_ok(f"下载完成 ({fsize // 1024} KB)")
+    
+    # 验证 .deb 文件
+    log_info("验证 .deb 文件...")
+    with open(dest, "rb") as f:
+        header = f.read(8)
+    if header != b"!<arch>\n":
+        log_err(f"下载的文件不是有效的 .deb (magic={header!r})")
+        os.unlink(dest)
+        return
+    log_ok("文件验证通过 (ar magic OK)")
+    
+    # 确认安装
+    if load_config().get("confirm_install", True) and not force:
+        r = input(f"\n确认安装 XPM {target_ver}? [Y/n] ")
+        if r.lower() == "n":
+            log_info("已取消")
+            os.unlink(dest)
+            return
+    
+    # 用 dpkg 安装
+    log_info("正在安装更新...")
+    env = os.environ.copy()
+    for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
+        env.pop(k, None)
+    
+    r = subprocess.run(["dpkg", "-i", dest], capture_output=True, text=True, env=env)
+    if r.returncode == 0:
+        log_ok(f"✅ XPM 已升级到 {target_ver}")
+        log_info("运行 'xpm version' 确认新版本")
+        # 清理旧版本缓存
+        try:
+            os.unlink(dest)
+        except: pass
+        log_history("upgrade", "xpm", f"version={VERSION}->{target_ver}")
+    else:
+        log_err(f"安装失败:")
+        if r.stderr:
+            print(f"  {r.stderr.strip()[:300]}")
+        if r.stdout:
+            print(f"  {r.stdout.strip()[:300]}")
+        log_info(f"可手动安装: sudo dpkg -i {dest}")
 
 # ─── 别名系统 ────────────────────────────────────────────
 def alias_add(name, command):
@@ -1525,6 +1700,8 @@ HELP_ZH = """XPM - X11 包管理器 v{VERSION} "{CODENAME}"
   reinstall <包名>        重新安装
   upgrade                 升级所有可更新的包
   download <包名>         只下载 .oil 到 ~/xpm-downloads/
+  check-update            检查 XPM 自身是否有新版本
+  self-update             升级 XPM 自身到最新版
 
 🔍 搜索与查询:
   search <关键词>         模糊搜索（匹配包名+描述）
@@ -1632,6 +1809,8 @@ Misc:
   rollback [ID]           Rollback transaction
   coffee                  Coffee machine status
   gui                     Launch GUI
+  check-update            Check for XPM updates
+  self-update             Upgrade XPM to latest version
   help                    This help
   version                 Show version
 
@@ -2044,6 +2223,12 @@ def main():
         print(f"\n  结果: {ok_count} 通过, {fail_count} 失败")
     elif cmd == "news":
         show_news()
+    elif cmd in ("check-update", "check_update"):
+        check_update(verbose=True)
+    elif cmd in ("self-update", "self_update", "upgrade-self"):
+        self_update(force=False)
+    elif cmd in ("self-update-force", "upgrade-self-force"):
+        self_update(force=True)
     elif cmd == "mirrors":
         test_mirrors()
     elif cmd == "source":
