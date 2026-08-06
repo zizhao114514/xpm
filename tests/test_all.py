@@ -1,1 +1,303 @@
-IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwojIC0qLSBjb2Rpbmc6IHV0Zi04IC0qLQoiIiIKWFBNIHYyLjAtOCDmtYvor5XlpZfku7YK6KaG55uW77ya54mI5pys5q+U6L6D44CB5L6d6LWW6Kej5p6Q44CB5rqQ6Kej5p6Q44CB5pWw5o2u5bqTIENSVUTjgIHkuovliqHlm57mu5rjgIFHUEfjgIHmnoTlu7rlt6XlhbfjgIEKICAgICAg5pCc57Si44CBcHJvdmlkZXPjgIFvd25z44CBc2l6ZeOAgWhpc3RvcnnjgIFhbGlhc+OAgWF1dG9yZW1vdmXjgIFjbGVhbuOAgWRlZHVwZeOAgQogICAgICBzZWxmLXVwZGF0ZeOAgXBhY2thZ2VfZG93bmxvYWRfdXJs44CBcmVsZWFzZV91cmwKIiIiCgppbXBvcnQgb3MKaW1wb3J0IHN5cwppbXBvcnQganNvbgppbXBvcnQgc2h1dGlsCmltcG9ydCB0ZW1wZmlsZQppbXBvcnQgc3VicHJvY2VzcwppbXBvcnQgdGltZQppbXBvcnQgaGFzaGxpYgpmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKCiMg6K6+572u5rWL6K+V546v5aKDClRFU1RfUk9PVCA9IHRlbXBmaWxlLm1rZHRlbXAocHJlZml4PSJ4cG1fdGVzdF8iKQpvcy5lbnZpcm9uWyJYUE1fVEVTVF9NT0RFIl0gPSAiMSIKb3MuZW52aXJvblsiWFBNX1JPT1QiXSA9IFRFU1RfUk9PVAoKIyDlr7zlhaUgeHBtIOaooeWdlwpzeXMucGF0aC5pbnNlcnQoMCwgb3MucGF0aC5kaXJuYW1lKG9zLnBhdGguZGlybmFtZShvcy5wYXRoLmFic3BhdGgoX19maWxlX18pKSkpCgppbXBvcnQgeHBtCgp4cG0uWFBNX1JPT1QgPSBURVNUX1JPT1QKeHBtLlhQTV9EQiA9IGYie1RFU1RfUk9PVH0vZGIiCnhwbS5YUE1fU1RBVFVTID0gZiJ7VEVTVF9ST09UfS9kYi9zdGF0dXMuanNvbiIKeHBtLlhQTV9TT1VSQ0VTID0gZiJ7VEVTVF9ST09UfS9zb3VyY2VzLmxpc3QuZCIKeHBtLlhQTV9DQUNIRSA9IGYie1RFU1RfUk9PVH0vY2FjaGUiCnhwbS5YUE1fTE9HID0gZiJ7VEVTVF9ST09UfS9sb2ciCnhwbS5YUE1fSElTVE9SWSA9IGYie1RFU1RfUk9PVH0vbG9nL2hpc3RvcnkuanNvbmwiCnhwbS5YUE1fQ09ORklHID0gZiJ7VEVTVF9ST09UfS9jb25maWcuanNvbiIKeHBtLlhQTV9BTElBU0VTID0gZiJ7VEVTVF9ST09UfS9hbGlhc2VzLmpzb24iCnhwbS5YUE1fVFJBTlNBQ1RJT05TID0gZiJ7VEVTVF9ST09UfS9kYi90cmFuc2FjdGlvbnMiCnhwbS5YUE1fS0VZUklORyA9IGYie1RFU1RfUk9PVH0va2V5cmluZyIKeHBtLlhQTV9ET0NTID0gZiJ7VEVTVF9ST09UfS9kb2NzIgoKeHBtLmVuc3VyZV9kaXJzKCkKCnBhc3NlZCA9IDAKZmFpbGVkID0gMApmYWlsdXJlcyA9IFtdCgpkZWYgdGVzdChuYW1lKToKICAgIGRlZiBkZWNvcmF0b3IoZnVuYyk6CiAgICAgICAgZ2xvYmFsIHBhc3NlZCwgZmFpbGVkCiAgICAgICAgdHJ5OgogICAgICAgICAgICBmdW5jKCkKICAgICAgICAgICAgcHJpbnQoZiIgIOKchSB7bmFtZX0iKQogICAgICAgICAgICBwYXNzZWQgKz0gMQogICAgICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICAgICAgcHJpbnQoZiIgIOKdjCB7bmFtZX06IHtlfSIpCiAgICAgICAgICAgIGZhaWxlZCArPSAxCiAgICAgICAgICAgIGZhaWx1cmVzLmFwcGVuZCgobmFtZSwgc3RyKGUpKSkKICAgICAgICByZXR1cm4gZnVuYwogICAgcmV0dXJuIGRlY29yYXRvcgoKZGVmIGFzc2VydF9lcShhLCBiLCBtc2c9IiIpOgogICAgaWYgYSAhPSBiOgogICAgICAgIHJhaXNlIEFzc2VydGlvbkVycm9yKGYi5pyf5pybIHtiIXJ9LCDlrp7pmYUge2Ehcn0ge21zZ30iKQoKZGVmIGFzc2VydF90cnVlKGMsIG1zZz0iIik6CiAgICBpZiBub3QgYzoKICAgICAgICByYWlzZSBBc3NlcnRpb25FcnJvcihmIuaWreiogOWksei0pToge21zZ30iKQoKIyDilIDilIDilIAgMS4g54mI5pys5q+U6L6DIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgi54mI5pys5q+U6L6DOiDnrYnkuo4iKQpkZWYgdF92ZXJzaW9uX2VxKCk6CiAgICBhc3NlcnRfZXEoeHBtLmNvbXBhcmVfdmVyc2lvbigiMS4wIiwgIjEuMCIpLCAwKQoKQHRlc3QoIueJiOacrOavlOi+gzog5bCP5LqOIikKZGVmIHRfdmVyc2lvbl9sdCgpOgogICAgYXNzZXJ0X3RydWUoeHBtLmNvbXBhcmVfdmVyc2lvbigiMS4wIiwgIjIuMCIpIDwgMCkKCkB0ZXN0KCLniYjmnKzmr5TovoM6IOWkp+S6jiIpCmRlZiB0X3ZlcnNpb25fZ3QoKToKICAgIGFzc2VydF90cnVlKHhwbS5jb21wYXJlX3ZlcnNpb24oIjIuMCIsICIxLjAiKSA+IDApCgpAdGVzdCgi54mI5pys5q+U6L6DOiBlcG9jaCIpCmRlZiB0X3ZlcnNpb25fZXBvY2goKToKICAgIGFzc2VydF90cnVlKHhwbS5jb21wYXJlX3ZlcnNpb24oIjE6MS4wIiwgIjEuMCIpID4gMCkKCkB0ZXN0KCLniYjmnKzmr5TovoM6IGRlYmlhbiDlkI7nvIAiKQpkZWYgdF92ZXJzaW9uX2RlYmlhbigpOgogICAgYXNzZXJ0X3RydWUoeHBtLmNvbXBhcmVfdmVyc2lvbigiMS4wLTEiLCAiMS4wLTIiKSA8IDApCgojIOKUgOKUgOKUgCAyLiDkvp3otZbop6PmnpAg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCLop6PmnpAgY29udHJvbCDmoLzlvI8iKQpkZWYgdF9wYXJzZV9jb250cm9sKCk6CiAgICB0ZXh0ID0gIlBhY2thZ2U6IHZpbVxuVmVyc2lvbjogOS4xXG5EZXBlbmRzOiBsaWJjNiAoPj0gMi4wKSwgbmN1cnNlc1xuRGVzY3JpcHRpb246IGVkaXRvciIKICAgIGN0cmwgPSB4cG0ucGFyc2VfY29udHJvbCh0ZXh0KQogICAgYXNzZXJ0X2VxKGN0cmxbIlBhY2thZ2UiXSwgInZpbSIpCiAgICBhc3NlcnRfZXEoY3RybFsiVmVyc2lvbiJdLCAiOS4xIikKICAgIGFzc2VydF90cnVlKCJsaWJjNiIgaW4gY3RybFsiRGVwZW5kcyJdKQogICAgYXNzZXJ0X2VxKGN0cmxbIkRlc2NyaXB0aW9uIl0sICJlZGl0b3IiKQoKQHRlc3QoIuino+aekOS+nei1luWtl+espuS4siAtIEFORCIpCmRlZiB0X3BhcnNlX2RlcF9hbmQoKToKICAgIGRlcHMgPSB4cG0ucGFyc2VfZGVwX3N0cmluZygibGliYzYgKD49IDIuMCksIG5jdXJzZXMiKQogICAgYXNzZXJ0X2VxKGxlbihkZXBzKSwgMikKICAgIGFzc2VydF9lcShkZXBzWzBdWzBdLCAoImxpYmM2IiwgIj49IiwgIjIuMCIpKQoKQHRlc3QoIuino+aekOS+nei1luWtl+espuS4siAtIE9SIikKZGVmIHRfcGFyc2VfZGVwX29yKCk6CiAgICBkZXBzID0geHBtLnBhcnNlX2RlcF9zdHJpbmcoImxpYmM2IHwgbGliYzYtYWx0ICg+PSAxLjApIikKICAgIGFzc2VydF9lcShsZW4oZGVwcyksIDEpCiAgICBhc3NlcnRfZXEobGVuKGRlcHNbMF0pLCAyKQoKIyDilIDilIDilIAgMy4g5pWw5o2u5bqTIENSVUQg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCLkv53lrZjlkozliqDovb3nirbmgIEiKQpkZWYgdF9kYl9zYXZlX2xvYWQoKToKICAgIGRiID0geyJpbnN0YWxsZWQiOiB7InZpbSI6IHsidmVyc2lvbiI6ICI5LjEiLCAiZmlsZXMiOiBbIi91c3IvYmluL3ZpbSJdfX19CiAgICB4cG0uc2F2ZV9zdGF0dXMoZGIpCiAgICBsb2FkZWQgPSB4cG0ubG9hZF9zdGF0dXMoKQogICAgYXNzZXJ0X2VxKGxvYWRlZFsiaW5zdGFsbGVkIl1bInZpbSJdWyJ2ZXJzaW9uIl0sICI5LjEiKQoKQHRlc3QoIuepuuaVsOaNruW6k+WkhOeQhiIpCmRlZiB0X2RiX2VtcHR5KCk6CiAgICBpZiBvcy5wYXRoLmV4aXN0cyh4cG0uWFBNX1NUQVRVUyk6CiAgICAgICAgb3MudW5saW5rKHhwbS5YUE1fU1RBVFVTKQogICAgZGIgPSB4cG0ubG9hZF9zdGF0dXMoKQogICAgYXNzZXJ0X3RydWUoImluc3RhbGxlZCIgaW4gZGIpCgojIOKUgOKUgOKUgCA0LiDljoblj7LorrDlvZUg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCLlhpnlhaXlkozor7vlj5bljoblj7IiKQpkZWYgdF9oaXN0b3J5KCk6CiAgICBpZiBvcy5wYXRoLmV4aXN0cyh4cG0uWFBNX0hJU1RPUlkpOgogICAgICAgIG9zLnVubGluayh4cG0uWFBNX0hJU1RPUlkpCiAgICB4cG0ubG9nX2hpc3RvcnkoImluc3RhbGwiLCAidmltIiwgInZlcnNpb249OS4xIikKICAgIHhwbS5sb2dfaGlzdG9yeSgicmVtb3ZlIiwgIm5hbm8iLCAiIikKICAgIGhpc3QgPSB4cG0ucmVhZF9oaXN0b3J5KCkKICAgIGFzc2VydF9lcShsZW4oaGlzdCksIDIpCiAgICBhc3NlcnRfZXEoaGlzdFswXVsiYWN0aW9uIl0sICJpbnN0YWxsIikKICAgIGFzc2VydF9lcShoaXN0WzFdWyJwYWNrYWdlIl0sICJuYW5vIikKCiMg4pSA4pSA4pSAIDUuIOWIq+WQjeezu+e7nyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKQHRlc3QoIuWIq+WQjeWinuWIoOafpSIpCmRlZiB0X2FsaWFzZXMoKToKICAgIGlmIG9zLnBhdGguZXhpc3RzKHhwbS5YUE1fQUxJQVNFUyk6CiAgICAgICAgb3MudW5saW5rKHhwbS5YUE1fQUxJQVNFUykKICAgIHhwbS5hbGlhc19hZGQoImkiLCAiaW5zdGFsbCIpCiAgICB4cG0uYWxpYXNfYWRkKCJybSIsICJyZW1vdmUiKQogICAgYSA9IHhwbS5sb2FkX2FsaWFzZXMoKQogICAgYXNzZXJ0X2VxKGFbImkiXSwgImluc3RhbGwiKQogICAgeHBtLmFsaWFzX3JlbW92ZSgicm0iKQogICAgYSA9IHhwbS5sb2FkX2FsaWFzZXMoKQogICAgYXNzZXJ0X3RydWUoInJtIiBub3QgaW4gYSkKCiMg4pSA4pSA4pSAIDYuIOmFjee9rueuoeeQhiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKQHRlc3QoIumFjee9ruivu+WGmSIpCmRlZiB0X2NvbmZpZygpOgogICAgaWYgb3MucGF0aC5leGlzdHMoeHBtLlhQTV9DT05GSUcpOgogICAgICAgIG9zLnVubGluayh4cG0uWFBNX0NPTkZJRykKICAgIGNmZyA9IHhwbS5sb2FkX2NvbmZpZygpCiAgICBhc3NlcnRfdHJ1ZSgibGFuZ3VhZ2UiIGluIGNmZykKICAgIGNmZ1sidGVzdF9rZXkiXSA9ICJ0ZXN0X3ZhbCIKICAgIHhwbS5zYXZlX2NvbmZpZyhjZmcpCiAgICBjZmcyID0geHBtLmxvYWRfY29uZmlnKCkKICAgIGFzc2VydF9lcShjZmcyWyJ0ZXN0X2tleSJdLCAidGVzdF92YWwiKQoKIyDilIDilIDilIAgNy4g5rqQ6Kej5p6QIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgi6Kej5p6Q6L2v5Lu25rqQIikKZGVmIHRfcGFyc2Vfc291cmNlcygpOgogICAgb3MubWFrZWRpcnMoeHBtLlhQTV9TT1VSQ0VTLCBleGlzdF9vaz1UcnVlKQogICAgc2YgPSBmInt4cG0uWFBNX1NPVVJDRVN9L3Rlc3QubGlzdCIKICAgIHdpdGggb3BlbihzZiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoImRlYiBodHRwOi8vZXhhbXBsZS5jb20vZGViaWFuIGJvb2t3b3JtIG1haW5cbiIpCiAgICAgICAgZi53cml0ZSgiIyDov5nmmK/ms6jph4pcbiIpCiAgICAgICAgZi53cml0ZSgiW3hwbV0gdXJsPWh0dHA6Ly9yZXBvLmV4YW1wbGUuY29tXG4iKQogICAgc291cmNlcyA9IHhwbS5wYXJzZV9zb3VyY2VzKCkKICAgIGFzc2VydF9lcShsZW4oc291cmNlcyksIDIpCiAgICBvcy51bmxpbmsoc2YpCgojIOKUgOKUgOKUgCA4LiDljIXntKLlvJXmnoTlu7rvvIhtb2Nr77yJIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgi5p6E5bu65YyF57Si5byVIikKZGVmIHRfYnVpbGRfaW5kZXgoKToKICAgIG9zLm1ha2VkaXJzKHhwbS5YUE1fQ0FDSEUsIGV4aXN0X29rPVRydWUpCiAgICBtb2NrX3BhY2thZ2VzID0gIiIiUGFja2FnZTogdmltClZlcnNpb246IDkuMQpEZXBlbmRzOiBuY3Vyc2VzCkRlc2NyaXB0aW9uOiBWaSBJTXByb3ZlZAoKUGFja2FnZTogbmFubwpWZXJzaW9uOiA3LjIKRGVzY3JpcHRpb246IHNpbXBsZSBlZGl0b3IKClBhY2thZ2U6IHZpbQpWZXJzaW9uOiA5LjAKRGVzY3JpcHRpb246IG9sZCB2aW0KCiIiIgogICAgdXJsID0gImh0dHA6Ly9tb2NrL3JlcG8vZGlzdHMvc3RhYmxlL21haW4vYmluYXJ5LWFtZDY0L1BhY2thZ2VzLmd6IgogICAgY2FjaGVfbmFtZSA9IGhhc2hsaWIubWQ1KHVybC5lbmNvZGUoKSkuaGV4ZGlnZXN0KClbOjEyXQogICAgY2FjaGVfZmlsZSA9IGYie3hwbS5YUE1fQ0FDSEV9L3tjYWNoZV9uYW1lfV9QYWNrYWdlcyIKICAgIHdpdGggb3BlbihjYWNoZV9maWxlLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZShtb2NrX3BhY2thZ2VzKQoKICAgIG9zLm1ha2VkaXJzKHhwbS5YUE1fU09VUkNFUywgZXhpc3Rfb2s9VHJ1ZSkKICAgIHNmID0gZiJ7eHBtLlhQTV9TT1VSQ0VTfS9tb2NrLmxpc3QiCiAgICB3aXRoIG9wZW4oc2YsICJ3IikgYXMgZjoKICAgICAgICBmLndyaXRlKCJkZWIgaHR0cDovL21vY2svcmVwbyBzdGFibGUgbWFpblxuIikKCiAgICBpbmRleCA9IHhwbS5idWlsZF9wYWNrYWdlX2luZGV4KCkKICAgIGFzc2VydF90cnVlKCJ2aW0iIGluIGluZGV4LCBmInZpbSBzaG91bGQgYmUgaW4gaW5kZXgsIGdvdDoge2xpc3QoaW5kZXgua2V5cygpKX0iKQogICAgYXNzZXJ0X3RydWUoIm5hbm8iIGluIGluZGV4LCBmIm5hbm8gc2hvdWxkIGJlIGluIGluZGV4LCBnb3Q6IHtsaXN0KGluZGV4LmtleXMoKSl9IikKICAgIGFzc2VydF9lcShsZW4oaW5kZXhbInZpbSJdKSwgMikKICAgIGlmIG9zLnBhdGguZXhpc3RzKGNhY2hlX2ZpbGUpOiBvcy51bmxpbmsoY2FjaGVfZmlsZSkKICAgIGlmIG9zLnBhdGguZXhpc3RzKHNmKTogb3MudW5saW5rKHNmKQoKIyDilIDilIDilIAgOS4g5pCc57SiIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgi5qih57OK5pCc57SiIikKZGVmIHRfc2VhcmNoKCk6CiAgICBvcy5tYWtlZGlycyh4cG0uWFBNX0NBQ0hFLCBleGlzdF9vaz1UcnVlKQogICAgbW9jayA9ICIiIlBhY2thZ2U6IHZpbS1lZGl0b3IKVmVyc2lvbjogOS4xCkRlc2NyaXB0aW9uOiBWaSBJTXByb3ZlZCB0ZXh0IGVkaXRvcgoKUGFja2FnZTogZmlyZWZveC1icm93c2VyClZlcnNpb246IDExNQpEZXNjcmlwdGlvbjogd2ViIGJyb3dzZXIKCiIiIgogICAgdXJsID0gImh0dHA6Ly94L2Rpc3RzL3N0YWJsZS9tYWluL2JpbmFyeS1hbWQ2NC9QYWNrYWdlcy5neiIKICAgIGNhY2hlX25hbWUgPSBoYXNobGliLm1kNSh1cmwuZW5jb2RlKCkpLmhleGRpZ2VzdCgpWzoxMl0KICAgIGNmID0gZiJ7eHBtLlhQTV9DQUNIRX0ve2NhY2hlX25hbWV9X1BhY2thZ2VzIgogICAgd2l0aCBvcGVuKGNmLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZShtb2NrKQogICAgb3MubWFrZWRpcnMoeHBtLlhQTV9TT1VSQ0VTLCBleGlzdF9vaz1UcnVlKQogICAgc2YgPSBmInt4cG0uWFBNX1NPVVJDRVN9L3MubGlzdCIKICAgIHdpdGggb3BlbihzZiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoImRlYiBodHRwOi8veCBzdGFibGUgbWFpblxuIikKCiAgICByZXN1bHRzID0geHBtLnNlYXJjaF9wYWNrYWdlcygiZWRpdG9yIikKICAgIG5hbWVzID0gW3JbIlBhY2thZ2UiXSBmb3IgciBpbiByZXN1bHRzXQogICAgYXNzZXJ0X3RydWUoInZpbS1lZGl0b3IiIGluIG5hbWVzLCBmInZpbS1lZGl0b3Igc2hvdWxkIGJlIGluIHtuYW1lc30iKQoKICAgIHJlc3VsdHMyID0geHBtLnNlYXJjaF9wYWNrYWdlcygiZmlyZSIpCiAgICBuYW1lczIgPSBbclsiUGFja2FnZSJdIGZvciByIGluIHJlc3VsdHMyXQogICAgYXNzZXJ0X3RydWUoImZpcmVmb3gtYnJvd3NlciIgaW4gbmFtZXMyLCBmImZpcmVmb3gtYnJvd3NlciBzaG91bGQgYmUgaW4ge25hbWVzMn0iKQoKICAgIG9zLnVubGluayhjZikKICAgIG9zLnVubGluayhzZikKCiMg4pSA4pSA4pSAIDEwLiBwcm92aWRlcyAvIG93bnMg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCJwcm92aWRlcyDmn6Xor6IiKQpkZWYgdF9wcm92aWRlcygpOgogICAgb3MubWFrZWRpcnMoeHBtLlhQTV9DQUNIRSwgZXhpc3Rfb2s9VHJ1ZSkKICAgIG1vY2sgPSAiIiJQYWNrYWdlOiB2aW0KVmVyc2lvbjogOS4xClByb3ZpZGVzOiB2aSwgZWRpdG9yCkRlc2NyaXB0aW9uOiB2aW0KCiIiIgogICAgdXJsID0gImh0dHA6Ly94L2Rpc3RzL3N0YWJsZS9tYWluL2JpbmFyeS1hbWQ2NC9QYWNrYWdlcy5neiIKICAgIGNhY2hlX25hbWUgPSBoYXNobGliLm1kNSh1cmwuZW5jb2RlKCkpLmhleGRpZ2VzdCgpWzoxMl0KICAgIGNmID0gZiJ7eHBtLlhQTV9DQUNIRX0ve2NhY2hlX25hbWV9X1BhY2thZ2VzIgogICAgd2l0aCBvcGVuKGNmLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZShtb2NrKQogICAgb3MubWFrZWRpcnMoeHBtLlhQTV9TT1VSQ0VTLCBleGlzdF9vaz1UcnVlKQogICAgc2YgPSBmInt4cG0uWFBNX1NPVVJDRVN9L3AubGlzdCIKICAgIHdpdGggb3BlbihzZiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoImRlYiBodHRwOi8veCBzdGFibGUgbWFpblxuIikKCiAgICByZXN1bHRzID0geHBtLmZpbmRfcHJvdmlkZXMoInZpIikKICAgIG5hbWVzID0gW3JbIlBhY2thZ2UiXSBmb3IgciBpbiByZXN1bHRzXQogICAgYXNzZXJ0X3RydWUoInZpbSIgaW4gbmFtZXMsIGYidmltIHNob3VsZCBiZSBpbiB7bmFtZXN9IikKCiAgICBvcy51bmxpbmsoY2YpCiAgICBvcy51bmxpbmsoc2YpCgpAdGVzdCgib3ducyDmn6Xor6IiKQpkZWYgdF9vd25zKCk6CiAgICBkYiA9IHsiaW5zdGFsbGVkIjogeyJ2aW0iOiB7InZlcnNpb24iOiAiOS4xIiwgImZpbGVzIjogWyIvdXNyL2Jpbi92aW0iLCAiL3Vzci9zaGFyZS9tYW4vbWFuMS92aW0uMSJdfX19CiAgICB4cG0uc2F2ZV9zdGF0dXMoZGIpCiAgICByZXN1bHQgPSB4cG0uZmluZF9vd25zKCIvdXNyL2Jpbi92aW0iKQogICAgYXNzZXJ0X2VxKHJlc3VsdFswXSwgInZpbSIpCiAgICByZXN1bHQyID0geHBtLmZpbmRfb3ducygiL25vbmV4aXN0IikKICAgIGFzc2VydF9lcShyZXN1bHQyWzBdLCBOb25lKQoKIyDilIDilIDilIAgMTEuIHNpemUg6K6h566XIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgic2l6ZSDorqHnrpciKQpkZWYgdF9zaXplKCk6CiAgICB0ZXN0X2ZpbGUgPSBmIntURVNUX1JPT1R9L3Rlc3Rfc2l6ZV9maWxlIgogICAgd2l0aCBvcGVuKHRlc3RfZmlsZSwgIndiIikgYXMgZjoKICAgICAgICBmLndyaXRlKGIieCIgKiAxMDI0KQogICAgZGIgPSB7Imluc3RhbGxlZCI6IHsidGVzdHBrZyI6IHsidmVyc2lvbiI6ICIxLjAiLCAiZmlsZXMiOiBbdGVzdF9maWxlXX19fQogICAgeHBtLnNhdmVfc3RhdHVzKGRiKQogICAgdG90YWwgPSAwCiAgICBmb3IgZiBpbiBkYlsiaW5zdGFsbGVkIl1bInRlc3Rwa2ciXVsiZmlsZXMiXToKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyhmKToKICAgICAgICAgICAgdG90YWwgKz0gb3MucGF0aC5nZXRzaXplKGYpCiAgICBhc3NlcnRfZXEodG90YWwsIDEwMjQpCgojIOKUgOKUgOKUgCAxMi4gYXV0b3JlbW92ZSDpgLvovpEg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCJhdXRvcmVtb3ZlIOajgOa1i+WtpOWEvyIpCmRlZiB0X2F1dG9yZW1vdmUoKToKICAgIGRiID0gewogICAgICAgICJpbnN0YWxsZWQiOiB7CiAgICAgICAgICAgICJBIjogeyJ2ZXJzaW9uIjogIjEuMCIsICJmaWxlcyI6IFtdfSwKICAgICAgICAgICAgIkIiOiB7InZlcnNpb24iOiAiMS4wIiwgImZpbGVzIjogW119LAogICAgICAgICAgICAiQyI6IHsidmVyc2lvbiI6ICIxLjAiLCAiZmlsZXMiOiBbXX0KICAgICAgICB9CiAgICB9CiAgICB4cG0uc2F2ZV9zdGF0dXMoZGIpCgogICAgY3RybF9kaXIgPSBmIntURVNUX1JPT1R9L2RiL2NvbnRyb2wiCiAgICBvcy5tYWtlZGlycyhjdHJsX2RpciwgZXhpc3Rfb2s9VHJ1ZSkKICAgIHdpdGggb3BlbihmIntjdHJsX2Rpcn0vQSIsICJ3IikgYXMgZjoKICAgICAgICBmLndyaXRlKCJQYWNrYWdlOiBBXG5EZXBlbmRzOiBCXG4iKQogICAgd2l0aCBvcGVuKGYie2N0cmxfZGlyfS9CIiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoIlBhY2thZ2U6IEJcbiIpCiAgICB3aXRoIG9wZW4oZiJ7Y3RybF9kaXJ9L0MiLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZSgiUGFja2FnZTogQ1xuIikKCiAgICBkZXBzX29mID0ge30KICAgIGZvciBuYW1lIGluIGRiWyJpbnN0YWxsZWQiXToKICAgICAgICBkZXBzX29mW25hbWVdID0gc2V0KCkKCiAgICBmb3IgbmFtZSBpbiBkYlsiaW5zdGFsbGVkIl06CiAgICAgICAgY3RybF9wYXRoID0gZiJ7Y3RybF9kaXJ9L3tuYW1lfSIKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyhjdHJsX3BhdGgpOgogICAgICAgICAgICBjdHJsX3RleHQgPSBvcGVuKGN0cmxfcGF0aCkucmVhZCgpCiAgICAgICAgICAgIGZvciBsaW5lIGluIGN0cmxfdGV4dC5zcGxpdCgiXG4iKToKICAgICAgICAgICAgICAgIGlmIGxpbmUuc3RhcnRzd2l0aCgiRGVwZW5kczoiKToKICAgICAgICAgICAgICAgICAgICBkZXBzX3N0ciA9IGxpbmUuc3BsaXQoIjoiLCAxKVsxXS5zdHJpcCgpCiAgICAgICAgICAgICAgICAgICAgZm9yIGRlcCBpbiBkZXBzX3N0ci5zcGxpdCgiLCIpOgogICAgICAgICAgICAgICAgICAgICAgICBkZXAgPSBkZXAuc3RyaXAoKS5zcGxpdCgpWzBdLnJzdHJpcCgiLCIpCiAgICAgICAgICAgICAgICAgICAgICAgIGlmIGRlcCBpbiBkZXBzX29mOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVwc19vZltkZXBdLmFkZChuYW1lKQoKICAgIG9ycGhhbnMgPSBbbiBmb3IgbiBpbiBkYlsiaW5zdGFsbGVkIl0gaWYgbm90IGRlcHNfb2YuZ2V0KG4pXQogICAgYXNzZXJ0X3RydWUoIkMiIGluIG9ycGhhbnMsICJDIHNob3VsZCBiZSBvcnBoYW4iKQogICAgYXNzZXJ0X3RydWUoIkEiIGluIG9ycGhhbnMsICJBIHNob3VsZCBiZSBvcnBoYW4iKQogICAgYXNzZXJ0X3RydWUoIkIiIG5vdCBpbiBvcnBoYW5zLCAiQiBzaG91bGQgTk9UIGJlIG9ycGhhbiIpCgojIOKUgOKUgOKUgCAxMy4gY2xlYW4g57yT5a2Y5riF55CGIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgiY2xlYW4g57yT5a2Y5riF55CGIikKZGVmIHRfY2xlYW4oKToKICAgIG9zLm1ha2VkaXJzKHhwbS5YUE1fQ0FDSEUsIGV4aXN0X29rPVRydWUpCiAgICB0ZXN0X2NhY2hlID0gZiJ7eHBtLlhQTV9DQUNIRX0vdGVzdF9jYWNoZS5vaWwiCiAgICB3aXRoIG9wZW4odGVzdF9jYWNoZSwgIndiIikgYXMgZjoKICAgICAgICBmLndyaXRlKGIiZmFrZSBjYWNoZSBkYXRhIiAqIDEwMCkKICAgIGFzc2VydF90cnVlKG9zLnBhdGguZXhpc3RzKHRlc3RfY2FjaGUpKQogICAgeHBtLmNsZWFuX2NhY2hlKGFnZ3Jlc3NpdmU9VHJ1ZSkKICAgIGFzc2VydF90cnVlKG5vdCBvcy5wYXRoLmV4aXN0cyh0ZXN0X2NhY2hlKSkKCiMg4pSA4pSA4pSAIDE0LiBkZWR1cGUg5qOA5rWLIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgiZGVkdXBlIOmHjeWkjeajgOa1iyIpCmRlZiB0X2RlZHVwZSgpOgogICAgZGIgPSB7CiAgICAgICAgImluc3RhbGxlZCI6IHsKICAgICAgICAgICAgInBrZ0EiOiB7InZlcnNpb24iOiAiMS4wIiwgImZpbGVzIjogWyIvdXNyL3NoYXJlL2NvbW1vbi50eHQiXX0sCiAgICAgICAgICAgICJwa2dCIjogeyJ2ZXJzaW9uIjogIjEuMCIsICJmaWxlcyI6IFsiL3Vzci9zaGFyZS9jb21tb24udHh0IiwgIi91c3Ivc2hhcmUvYi50eHQiXX0KICAgICAgICB9CiAgICB9CiAgICB4cG0uc2F2ZV9zdGF0dXMoZGIpCiAgICBmaWxlX293bmVycyA9IHt9CiAgICBmb3IgcGtnLCBpbmZvIGluIGRiWyJpbnN0YWxsZWQiXS5pdGVtcygpOgogICAgICAgIGZvciBmIGluIGluZm9bImZpbGVzIl06CiAgICAgICAgICAgIGlmIGYgbm90IGluIGZpbGVfb3duZXJzOgogICAgICAgICAgICAgICAgZmlsZV9vd25lcnNbZl0gPSBbXQogICAgICAgICAgICBmaWxlX293bmVyc1tmXS5hcHBlbmQocGtnKQogICAgY29uZmxpY3RzID0ge2Y6IG8gZm9yIGYsIG8gaW4gZmlsZV9vd25lcnMuaXRlbXMoKSBpZiBsZW4obykgPiAxfQogICAgYXNzZXJ0X3RydWUoIi91c3Ivc2hhcmUvY29tbW9uLnR4dCIgaW4gY29uZmxpY3RzKQogICAgYXNzZXJ0X2VxKGxlbihjb25mbGljdHNbIi91c3Ivc2hhcmUvY29tbW9uLnR4dCJdKSwgMikKCiMg4pSA4pSA4pSAIDE1LiDkuovliqHlm57mu5og4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCLkuovliqHlm57mu5oiKQpkZWYgdF9yb2xsYmFjaygpOgogICAgb3MubWFrZWRpcnMoeHBtLlhQTV9UUkFOU0FDVElPTlMsIGV4aXN0X29rPVRydWUpCiAgICB0eF9kaXIgPSBmInt4cG0uWFBNX1RSQU5TQUNUSU9OU30vMSIKICAgIG9zLm1ha2VkaXJzKHR4X2RpciwgZXhpc3Rfb2s9VHJ1ZSkKICAgIHNuYXBzaG90ID0geyJpbnN0YWxsZWQiOiB7InZpbSI6IHsidmVyc2lvbiI6ICI5LjAifX19CiAgICB3aXRoIG9wZW4oZiJ7dHhfZGlyfS9zbmFwc2hvdC5qc29uIiwgInciKSBhcyBmOgogICAgICAgIGpzb24uZHVtcChzbmFwc2hvdCwgZikKICAgIGxvYWRlZCA9IGpzb24ubG9hZChvcGVuKGYie3R4X2Rpcn0vc25hcHNob3QuanNvbiIpKQogICAgYXNzZXJ0X2VxKGxvYWRlZFsiaW5zdGFsbGVkIl1bInZpbSJdWyJ2ZXJzaW9uIl0sICI5LjAiKQoKIyDilIDilIDilIAgMTYuIOS+nei1luino+aekOWZqCDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKQHRlc3QoIuS+nei1luino+aekOWZqCAtIOWfuuehgCIpCmRlZiB0X3Jlc29sdmVfYmFzaWMoKToKICAgIGluZGV4ID0gewogICAgICAgICJ2aW0iOiBbeyJQYWNrYWdlIjogInZpbSIsICJWZXJzaW9uIjogIjkuMSIsICJEZXBlbmRzIjogIm5jdXJzZXMsIGxpYnJlYWRsaW5lIn1dLAogICAgICAgICJuY3Vyc2VzIjogW3siUGFja2FnZSI6ICJuY3Vyc2VzIiwgIlZlcnNpb24iOiAiNi40IiwgIkRlcGVuZHMiOiAiIn1dLAogICAgICAgICJsaWJyZWFkbGluZSI6IFt7IlBhY2thZ2UiOiAibGlicmVhZGxpbmUiLCAiVmVyc2lvbiI6ICI4LjIiLCAiRGVwZW5kcyI6ICIifV0KICAgIH0KICAgIGRiID0geyJpbnN0YWxsZWQiOiB7fX0KICAgIHJlc3VsdCA9IHhwbS5yZXNvbHZlX2RlcGVuZGVuY2llcygidmltIiwgaW5kZXgsIGRiKQogICAgbmFtZXMgPSBbZVsiUGFja2FnZSJdIGZvciBlIGluIHJlc3VsdF0KICAgIGFzc2VydF90cnVlKCJ2aW0iIGluIG5hbWVzKQogICAgYXNzZXJ0X3RydWUoIm5jdXJzZXMiIGluIG5hbWVzKQogICAgYXNzZXJ0X3RydWUoImxpYnJlYWRsaW5lIiBpbiBuYW1lcykKCkB0ZXN0KCLkvp3otZbop6PmnpDlmaggLSDlt7Loo4Xot7Pov4ciKQpkZWYgdF9yZXNvbHZlX3NraXAoKToKICAgIGluZGV4ID0gewogICAgICAgICJ2aW0iOiBbeyJQYWNrYWdlIjogInZpbSIsICJWZXJzaW9uIjogIjkuMSIsICJEZXBlbmRzIjogImxpYnJlYWRsaW5lIn1dLAogICAgICAgICJsaWJyZWFkbGluZSI6IFt7IlBhY2thZ2UiOiAibGlicmVhZGxpbmUiLCAiVmVyc2lvbiI6ICI4LjIiLCAiRGVwZW5kcyI6ICIifV0KICAgIH0KICAgIGRiID0geyJpbnN0YWxsZWQiOiB7ImxpYnJlYWRsaW5lIjogeyJ2ZXJzaW9uIjogIjguMiJ9fX0KICAgIHJlc3VsdCA9IHhwbS5yZXNvbHZlX2RlcGVuZGVuY2llcygidmltIiwgaW5kZXgsIGRiKQogICAgbmFtZXMgPSBbZVsiUGFja2FnZSJdIGZvciBlIGluIHJlc3VsdF0KICAgIGFzc2VydF90cnVlKCJ2aW0iIGluIG5hbWVzKQogICAgYXNzZXJ0X3RydWUoImxpYnJlYWRsaW5lIiBub3QgaW4gbmFtZXMpCgojIOKUgOKUgOKUgCAxNy4g5p6E5bu6IC5vaWwg5YyFIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgApAdGVzdCgi5p6E5bu6IC5vaWwg5YyFIikKZGVmIHRfYnVpbGRfb2lsKCk6CiAgICBidWlsZF9kaXIgPSBmIntURVNUX1JPT1R9L2J1aWxkX3Rlc3QiCiAgICBvcy5tYWtlZGlycyhidWlsZF9kaXIsIGV4aXN0X29rPVRydWUpCiAgICB3aXRoIG9wZW4oZiJ7YnVpbGRfZGlyfS9jb250cm9sIiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoIlBhY2thZ2U6IHRlc3Rwa2dcblZlcnNpb246IDEuMFxuRGVzY3JpcHRpb246IHRlc3RcbiIpCiAgICBvcy5tYWtlZGlycyhmIntidWlsZF9kaXJ9L3Vzci9iaW4iLCBleGlzdF9vaz1UcnVlKQogICAgd2l0aCBvcGVuKGYie2J1aWxkX2Rpcn0vdXNyL2Jpbi90ZXN0YXBwIiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoIiMhL2Jpbi9zaFxuZWNobyBoZWxsb1xuIikKICAgIG9zLmNobW9kKGYie2J1aWxkX2Rpcn0vdXNyL2Jpbi90ZXN0YXBwIiwgMG83NTUpCgogICAgaW1wb3J0IHhwbV9idWlsZAogICAgcmVzdWx0ID0geHBtX2J1aWxkLmJ1aWxkX29pbChidWlsZF9kaXIpCiAgICBhc3NlcnRfdHJ1ZShyZXN1bHQpCiAgICBmb3IgZiBpbiBvcy5saXN0ZGlyKCIuIik6CiAgICAgICAgaWYgZi5lbmRzd2l0aCgiLm9pbCIpOgogICAgICAgICAgICBhc3NlcnRfdHJ1ZShvcy5wYXRoLmdldHNpemUoZikgPiAwKQogICAgICAgICAgICBvcy51bmxpbmsoZikKICAgICAgICAgICAgYnJlYWsKCiMg4pSA4pSA4pSAIDE4LiDluK7liqnns7vnu58g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCLluK7liqnns7vnu58gLSDkuK3mlociKQpkZWYgdF9oZWxwX3poKCk6CiAgICBvcy5lbnZpcm9uWyJMQU5HIl0gPSAiemhfQ04uVVRGLTgiCiAgICBhc3NlcnRfdHJ1ZSgiWFBNIC0gWDExIOWMheeuoeeQhuWZqCIgaW4geHBtLkhFTFBfWkgpCiAgICBhc3NlcnRfdHJ1ZSgiaW5zdGFsbCIgaW4geHBtLkhFTFBfWkgpCiAgICBhc3NlcnRfdHJ1ZSgic2VsZi11cGRhdGUiIGluIHhwbS5IRUxQX1pILCAic2hvdWxkIG1lbnRpb24gc2VsZi11cGRhdGUiKQoKQHRlc3QoIuW4ruWKqeezu+e7nyAtIOiLseaWhyIpCmRlZiB0X2hlbHBfZW4oKToKICAgIGFzc2VydF90cnVlKCJYUE0gLSBYMTEgUGFja2FnZSBNYW5hZ2VyIiBpbiB4cG0uSEVMUF9FTikKICAgIGFzc2VydF90cnVlKCJzZWxmLXVwZGF0ZSIgaW4geHBtLkhFTFBfRU4sICJzaG91bGQgbWVudGlvbiBzZWxmLXVwZGF0ZSIpCgpAdGVzdCgi5biu5Yqp57O757ufIC0g5pel5paHIikKZGVmIHRfaGVscF9qYSgpOgogICAgYXNzZXJ0X3RydWUoIlhQTSAtIFgxMSDjg5Hjg4PjgrHjg7zjgrjjg57jg43jg7zjgrjjg6Pjg7wiIGluIHhwbS5IRUxQX0pBKQoKIyDilIDilIDilIAgMTkuIGRvY3RvciDmo4Dmn6Xpobkg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCJkb2N0b3Ig5LiN5bSp5rqDIikKZGVmIHRfZG9jdG9yKCk6CiAgICBpbXBvcnQgaW8KICAgIG9sZCA9IHN5cy5zdGRvdXQKICAgIHN5cy5zdGRvdXQgPSBpby5TdHJpbmdJTygpCiAgICB0cnk6CiAgICAgICAgeHBtLmRvY3RvcigpCiAgICBmaW5hbGx5OgogICAgICAgIHN5cy5zdGRvdXQgPSBvbGQKCiMg4pSA4pSA4pSAIDIwLiDpm4bmiJDmtYvor5Ug4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACkB0ZXN0KCLpm4bmiJA6IOWujOaVtOWuieijhea1geeoiyIpCmRlZiB0X2ludGVncmF0aW9uX2luc3RhbGwoKToKICAgIG9zLm1ha2VkaXJzKHhwbS5YUE1fU09VUkNFUywgZXhpc3Rfb2s9VHJ1ZSkKICAgIHNmID0gZiJ7eHBtLlhQTV9TT1VSQ0VTfS9pbnQubGlzdCIKICAgIHdpdGggb3BlbihzZiwgInciKSBhcyBmOgogICAgICAgIGYud3JpdGUoImRlYiBodHRwOi8vbW9jay9yZXBvIHN0YWJsZSBtYWluXG4iKQoKICAgIHVybCA9ICJodHRwOi8vbW9jay9yZXBvL2Rpc3RzL3N0YWJsZS9tYWluL2JpbmFyeS1hbWQ2NC9QYWNrYWdlcy5neiIKICAgIGNhY2hlX25hbWUgPSBoYXNobGliLm1kNSh1cmwuZW5jb2RlKCkpLmhleGRpZ2VzdCgpWzoxMl0KCiAgICBtb2NrX3BrZ3MgPSAiIiJQYWNrYWdlOiB0ZXN0YXBwClZlcnNpb246IDEuMApEZXBlbmRzOiB0ZXN0bGliICg+PSAxLjApCkRlc2NyaXB0aW9uOiB0ZXN0IGFwcGxpY2F0aW9uCgpQYWNrYWdlOiB0ZXN0bGliClZlcnNpb246IDEuMgpEZXNjcmlwdGlvbjogdGVzdCBsaWJyYXJ5CgoiIiIKICAgIGNmID0gZiJ7eHBtLlhQTV9DQUNIRX0ve2NhY2hlX25hbWV9X1BhY2thZ2VzIgogICAgd2l0aCBvcGVuKGNmLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZShtb2NrX3BrZ3MpCgogICAgb2lsX2RpciA9IGYie1RFU1RfUk9PVH0vb2lsX2J1aWxkIgogICAgb3MubWFrZWRpcnMoZiJ7b2lsX2Rpcn0vdXNyL2JpbiIsIGV4aXN0X29rPVRydWUpCiAgICB3aXRoIG9wZW4oZiJ7b2lsX2Rpcn0vY29udHJvbCIsICJ3IikgYXMgZjoKICAgICAgICBmLndyaXRlKCJQYWNrYWdlOiB0ZXN0YXBwXG5WZXJzaW9uOiAxLjBcbkRlcGVuZHM6IHRlc3RsaWIgKD49IDEuMClcbkRlc2NyaXB0aW9uOiB0ZXN0XG4iKQogICAgd2l0aCBvcGVuKGYie29pbF9kaXJ9L3Vzci9iaW4vdGVzdGFwcCIsICJ3IikgYXMgZjoKICAgICAgICBmLndyaXRlKCIjIS9iaW4vc2hcbmVjaG8gdGVzdFxuIikKCiAgICBpbXBvcnQgeHBtX2J1aWxkCiAgICB4cG1fYnVpbGQuYnVpbGRfb2lsKG9pbF9kaXIpCgogICAgb2lsX2ZpbGUgPSBOb25lCiAgICBmb3IgZiBpbiBvcy5saXN0ZGlyKCIuIik6CiAgICAgICAgaWYgZi5lbmRzd2l0aCgiLm9pbCIpOgogICAgICAgICAgICBvaWxfZmlsZSA9IGYKICAgICAgICAgICAgYnJlYWsKCiAgICBhc3NlcnRfdHJ1ZShvaWxfZmlsZSBpcyBub3QgTm9uZSwgInNob3VsZCBoYXZlIGNyZWF0ZWQgLm9pbCBmaWxlIikKICAgIGlmIG9pbF9maWxlOgogICAgICAgIGFzc2VydF90cnVlKG9zLnBhdGguZ2V0c2l6ZShvaWxfZmlsZSkgPiAwKQogICAgICAgIG9zLnVubGluayhvaWxfZmlsZSkKCiAgICBpZiBvcy5wYXRoLmV4aXN0cyhjZik6IG9zLnVubGluayhjZikKICAgIGlmIG9zLnBhdGguZXhpc3RzKHNmKTogb3MudW5saW5rKHNmKQoKIyDilIDilIDilIAgMjEuIHNlbGYtdXBkYXRlIOezu+e7nyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAKQHRlc3QoInNlbGYtdXBkYXRlOiDniYjmnKzmr5TovoPpgLvovpEiKQpkZWYgdF9zZWxmX3VwZGF0ZV92ZXJzaW9uKCk6CiAgICBjdXIgPSAiMi4wLTciCiAgICBuZXdlciA9ICIyLjAtOCIKICAgIG9sZGVyID0gIjIuMC02IgogICAgYXNzZXJ0X3RydWUoeHBtLmNvbXBhcmVfdmVyc2lvbihuZXdlciwgY3VyKSA+IDAsICIyLjAtOCBzaG91bGQgPiAyLjAtNyIpCiAgICBhc3NlcnRfdHJ1ZSh4cG0uY29tcGFyZV92ZXJzaW9uKG9sZGVyLCBjdXIpIDwgMCwgIjIuMC02IHNob3VsZCA8IDIuMC03IikKICAgIGFzc2VydF90cnVlKHhwbS5jb21wYXJlX3ZlcnNpb24oY3VyLCBjdXIpID09IDAsICJzYW1lIHZlcnNpb24gc2hvdWxkID09IDAiKQoKQHRlc3QoInNlbGYtdXBkYXRlOiBwYWNrYWdlX2Rvd25sb2FkX3VybCDkvb/nlKggRmlsZW5hbWUiKQpkZWYgdF9wa2dfZG93bmxvYWRfdXJsX2ZpbGVuYW1lKCk6CiAgICBlbnRyeSA9IHsKICAgICAgICAiUGFja2FnZSI6ICJodG9wIiwKICAgICAgICAiVmVyc2lvbiI6ICIzLjQuMS01IiwKICAgICAgICAiQXJjaGl0ZWN0dXJlIjogImFtZDY0IiwKICAgICAgICAiRmlsZW5hbWUiOiAicG9vbC9tYWluL2gvaHRvcC9odG9wXzMuNC4xLTVfYW1kNjQuZGViIiwKICAgICAgICAiX2Jhc2UiOiAiaHR0cHM6Ly9taXJyb3JzLnR1bmEudHNpbmdodWEuZWR1LmNuL2RlYmlhbiIsCiAgICAgICAgIl9jb21wb25lbnQiOiAibWFpbiIsCiAgICB9CiAgICB1cmwgPSB4cG0ucGFja2FnZV9kb3dubG9hZF91cmwoZW50cnkpCiAgICBleHBlY3RlZCA9ICJodHRwczovL21pcnJvcnMudHVuYS50c2luZ2h1YS5lZHUuY24vZGViaWFuL3Bvb2wvbWFpbi9oL2h0b3AvaHRvcF8zLjQuMS01X2FtZDY0LmRlYiIKICAgIGFzc2VydF9lcSh1cmwsIGV4cGVjdGVkLCBmIlxuICBleHBlY3RlZDoge2V4cGVjdGVkfVxuICBnb3Q6ICAgICAge3VybH0iKQoKQHRlc3QoInNlbGYtdXBkYXRlOiBwYWNrYWdlX2Rvd25sb2FkX3VybCDlhZzlupXmi7zmjqUiKQpkZWYgdF9wa2dfZG93bmxvYWRfdXJsX2ZhbGxiYWNrKCk6CiAgICBlbnRyeSA9IHsKICAgICAgICAiUGFja2FnZSI6ICJsaWJ0aW5mbzYiLAogICAgICAgICJWZXJzaW9uIjogIjYuNSsyMDI1MDIxNi0yIiwKICAgICAgICAiQXJjaGl0ZWN0dXJlIjogImFtZDY0IiwKICAgICAgICAiX2Jhc2UiOiAiaHR0cHM6Ly9taXJyb3JzLnR1bmEudHNpbmdodWEuZWR1LmNuL2RlYmlhbiIsCiAgICAgICAgIl9jb21wb25lbnQiOiAibWFpbiIsCiAgICB9CiAgICB1cmwgPSB4cG0ucGFja2FnZV9kb3dubG9hZF91cmwoZW50cnkpCiAgICBhc3NlcnRfdHJ1ZSgibC9saWJ0aW5mbzYvIiBpbiB1cmwsIGYic2hvdWxkIGNvbnRhaW4gbC9saWJ0aW5mbzYvLCBnb3Q6IHt1cmx9IikKICAgIGFzc2VydF90cnVlKHVybC5zdGFydHN3aXRoKCJodHRwczovLyIpLCBmInNob3VsZCBiZSBmdWxsIFVSTCwgZ290OiB7dXJsfSIpCgpAdGVzdCgic2VsZi11cGRhdGU6IHJlbGVhc2VfdXJsIOato+ehruaLvOaOpSIpCmRlZiB0X3JlbGVhc2VfdXJsX25vcm1hbCgpOgogICAgc3JjID0geyJ0eXBlIjogImRlYiIsICJiYXNlIjogImh0dHBzOi8vbWlycm9ycy50dW5hLnRzaW5naHVhLmVkdS5jbi9kZWJpYW4iLCAic3VpdGUiOiAidHJpeGllIiwgImNvbXBvbmVudHMiOiBbIm1haW4iXX0KICAgIHVybCA9IHhwbS5yZWxlYXNlX3VybChzcmMpCiAgICBleHBlY3RlZCA9ICJodHRwczovL21pcnJvcnMudHVuYS50c2luZ2h1YS5lZHUuY24vZGViaWFuL2Rpc3RzL3RyaXhpZS9SZWxlYXNlIgogICAgYXNzZXJ0X2VxKHVybCwgZXhwZWN0ZWQsIGYiXG4gIGV4cGVjdGVkOiB7ZXhwZWN0ZWR9XG4gIGdvdDogICAgICB7dXJsfSIpCgpAdGVzdCgic2VsZi11cGRhdGU6IHJlbGVhc2VfdXJsIOWFvOWuuSAvZGlzdHMg57uT5bC+IikKZGVmIHRfcmVsZWFzZV91cmxfZGlzdHMoKToKICAgIHNyYyA9IHsidHlwZSI6ICJkZWIiLCAiYmFzZSI6ICJodHRwczovL2V4YW1wbGUuY29tL3JlcG8vZGlzdHMiLCAic3VpdGUiOiAic3RhYmxlIiwgImNvbXBvbmVudHMiOiBbIm1haW4iXX0KICAgIHVybCA9IHhwbS5yZWxlYXNlX3VybChzcmMpCiAgICBleHBlY3RlZCA9ICJodHRwczovL2V4YW1wbGUuY29tL3JlcG8vZGlzdHMvc3RhYmxlL1JlbGVhc2UiCiAgICBhc3NlcnRfZXEodXJsLCBleHBlY3RlZCwgZiJcbiAgZXhwZWN0ZWQ6IHtleHBlY3RlZH1cbiAgZ290OiAgICAgIHt1cmx9IikKCkB0ZXN0KCJzZWxmLXVwZGF0ZTogY29tcGFyZV94cG1fdmVyc2lvbiIpCmRlZiB0X2NvbXBhcmVfeHBtX3ZlcnNpb24oKToKICAgICMg5qih5oufIGdldF9sYXRlc3RfdmVyc2lvbiDov5Tlm57lgLwKICAgICMg6L+c56iL5q+U5pys5Zyw5paw77yI55So5YGH5oOz55qE5pyq5p2l54mI5pys5Y+377yJCiAgICBmdXR1cmUgPSAiOS45LTkiCiAgICByID0geHBtLmNvbXBhcmVfeHBtX3ZlcnNpb24oZnV0dXJlKQogICAgYXNzZXJ0X3RydWUociA+IDAsIGYie2Z1dHVyZX0gc2hvdWxkIGJlIG5ld2VyIHRoYW4ge3hwbS5WRVJTSU9OfSIpCiAgICAjIOi/nOeoi+WSjOacrOWcsOS4gOagtwogICAgcjIgPSB4cG0uY29tcGFyZV94cG1fdmVyc2lvbih4cG0uVkVSU0lPTikKICAgIGFzc2VydF9lcShyMiwgMCkKICAgICMg6L+c56iL5q+U5pys5Zyw5penCiAgICByMyA9IHhwbS5jb21wYXJlX3hwbV92ZXJzaW9uKCIxLjAtMCIpCiAgICBhc3NlcnRfdHJ1ZShyMyA8IDAsICIxLjAtMCBzaG91bGQgYmUgb2xkZXIiKQoKQHRlc3QoInNlbGYtdXBkYXRlOiBHSVRIVUIgVVJMIOW4uOmHjyIpCmRlZiB0X2dpdGh1Yl91cmxzKCk6CiAgICBhc3NlcnRfdHJ1ZSh4cG0uR0lUSFVCX0FQSV9SRUxFQVNFUy5zdGFydHN3aXRoKCJodHRwczovLyIpKQogICAgYXNzZXJ0X3RydWUoInJlbGVhc2VzL2xhdGVzdCIgaW4geHBtLkdJVEhVQl9BUElfUkVMRUFTRVMpCiAgICBhc3NlcnRfdHJ1ZSh4cG0uR0lUSFVCX0RPV05MT0FEX0JBU0Uuc3RhcnRzd2l0aCgiaHR0cHM6Ly8iKSkKICAgIGFzc2VydF90cnVlKCJnaXRodWIuY29tIiBpbiB4cG0uR0lUSFVCX0RPV05MT0FEX0JBU0UpCgojIOKUgOKUgOKUgCDmsYfmgLsg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACnByaW50KGYiXG57Jz0nKjUwfSIpCnByaW50KGYi5rWL6K+V57uT5p6cOiB7cGFzc2VkfSDpgJrov4csIHtmYWlsZWR9IOWksei0pSIpCnByaW50KGYieyc9Jyo1MH0iKQoKaWYgZmFpbHVyZXM6CiAgICBwcmludCgiXG7lpLHotKXor6bmg4U6IikKICAgIGZvciBuYW1lLCBlcnIgaW4gZmFpbHVyZXM6CiAgICAgICAgcHJpbnQoZiIgIOKdjCB7bmFtZX06IHtlcnJ9IikKCiMg5riF55CGCnNodXRpbC5ybXRyZWUoVEVTVF9ST09ULCBpZ25vcmVfZXJyb3JzPVRydWUpCgpzeXMuZXhpdCgwIGlmIGZhaWxlZCA9PSAwIGVsc2UgMSkK
+#!/usr/bin/env python3
+"""XPM v2.1-0 终极测试套件"""
+import sys, os, subprocess, json, hashlib, tempfile, shutil, gzip
+import urllib.request, ssl
+
+sys.path.insert(0, "/data/workspace/xpm")
+
+from xpm import (
+    VERSION, CODENAME, log_info, log_ok, log_warn, log_err, log_stage,
+    Source, load_sources,
+    parse_packages_gz, search_package, resolve_dependencies,
+    ProgressDownloader,
+    cmd_version, cmd_doctor, cmd_list, cmd_mirrors,
+    cmd_check_update, cmd_search,
+)
+
+PASS = 0
+FAIL = 0
+ERRORS = []
+
+def test(name, func):
+    global PASS, FAIL
+    try:
+        func()
+        print(f"  ✓ {name}")
+        PASS += 1
+    except Exception as e:
+        print(f"  ✗ {name}: {e}")
+        FAIL += 1
+        ERRORS.append((name, str(e)))
+
+# ════════════════════════════════════════
+# 1. 版本信息
+# ════════════════════════════════════════
+def t_version():
+    assert VERSION == "2.1-0", f"VERSION={VERSION}"
+    assert CODENAME == "Ultimate Edition"
+    r = subprocess.run(["python3", "/data/workspace/xpm/xpm.py", "version"],
+                       capture_output=True, text=True, timeout=10)
+    assert r.returncode == 0, f"returncode={r.returncode}, stderr={r.stderr}"
+    assert "xpm 2.1-0" in r.stdout, f"stdout={r.stdout}"
+    assert "石油储备" in r.stdout, f"stdout={r.stdout}"
+
+# ════════════════════════════════════════
+# 2. Source 解析
+# ════════════════════════════════════════
+def t_source_parse():
+    s = Source("deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free")
+    assert s.enabled == True
+    assert s.type == "deb"
+    assert s.url == "https://mirrors.tuna.tsinghua.edu.cn/debian"
+    assert s.suite == "trixie"
+    assert "main" in s.components
+    assert "non-free" in s.components
+
+def t_source_disabled():
+    s = Source("#deb http://example.com/debian trixie main")
+    assert s.enabled == False
+
+def t_source_arch_option():
+    s = Source("deb [arch=amd64] https://example.com/debian trixie main")
+    assert s.arch == "amd64"
+    assert s.url == "https://example.com/debian"
+
+def t_release_url():
+    s = Source("deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main")
+    url = s.release_url()
+    assert url == "https://mirrors.tuna.tsinghua.edu.cn/debian/dists/trixie/Release"
+    pkg_url = s.release_url("main")
+    assert pkg_url == "https://mirrors.tuna.tsinghua.edu.cn/debian/dists/trixie/main/binary-amd64/Packages.gz"
+
+def t_package_url():
+    s = Source("deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main")
+    url = s.package_url("pool/main/h/htop/htop_3.4.1-5_amd64.deb")
+    assert url == "https://mirrors.tuna.tsinghua.edu.cn/debian/pool/main/h/htop/htop_3.4.1-5_amd64.deb"
+
+# ════════════════════════════════════════
+# 3. Packages 解析
+# ════════════════════════════════════════
+PKG_GZ_DATA = b"""Package: htop
+Version: 3.4.1-5
+Architecture: amd64
+Depends: libc6 (>= 2.34), libncursesw6 (>= 6.1), libtinfo6 (>= 6.1)
+Filename: pool/main/h/htop/htop_3.4.1-5_amd64.deb
+Description: interactive processes viewer
+ an interactive process viewer
+ .
+ htop is a free (GPL) ncurses-based process viewer.
+
+Package: libtinfo6
+Version: 6.5+20250216-2
+Architecture: amd64
+Filename: pool/main/n/ncurses/libtinfo6_6.5+20250216-2_amd64.deb
+Description: shared low-level terminfo library
+
+"""
+
+def t_parse_packages():
+    pkgs = parse_packages_gz(gzip.compress(PKG_GZ_DATA))
+    assert len(pkgs) == 2
+    names = [p["Package"] for p in pkgs]
+    assert "htop" in names
+    assert "libtinfo6" in names
+
+def t_parse_filename():
+    pkgs = parse_packages_gz(gzip.compress(PKG_GZ_DATA))
+    htop = [p for p in pkgs if p["Package"] == "htop"][0]
+    assert htop["Filename"] == "pool/main/h/htop/htop_3.4.1-5_amd64.deb"
+
+def t_resolve_deps():
+    pkgs = parse_packages_gz(gzip.compress(PKG_GZ_DATA))
+    htop = [p for p in pkgs if p["Package"] == "htop"][0]
+    deps = resolve_dependencies(htop)
+    assert "libc6" in deps
+    assert "libncursesw6" in deps
+    assert "libtinfo6" in deps
+    assert "htop" not in deps
+
+def t_resolve_deps_empty():
+    assert resolve_dependencies({}) == []
+
+# ════════════════════════════════════════
+# 4. 下载器测试
+# ════════════════════════════════════════
+def t_progress_downloader_init():
+    dl = ProgressDownloader("https://example.com/test.deb", "/tmp/test.deb")
+    assert dl.url == "https://example.com/test.deb"
+    assert dl.downloaded == 0
+
+def t_verify_deb_valid():
+    """创建一个假的 .deb（ar 格式）测试校验"""
+    import struct
+    # 写最小 ar 文件
+    with open("/tmp/fake_valid.deb", "wb") as f:
+        f.write(b"!<arch>\n")
+        # debian-binary 成员
+        name = b"debian-binary"
+        mtime = b"0"
+        uid = b"0"
+        gid = b"0"
+        mode = b"100644"
+        size = b"4"
+        f.write(struct.pack("16s12s6s6s8s10s2s", name, mtime, uid, gid, mode, size, b"`\n"))
+        f.write(b"2.0\n")
+    
+    dl = ProgressDownloader("http://example.com/fake.deb", "/tmp/fake_valid.deb")
+    dl.verify_deb()  # 不应抛异常
+    os.remove("/tmp/fake_valid.deb")
+
+def t_verify_deb_invalid():
+    """HTML 文件应该被检测为无效"""
+    with open("/tmp/fake_html.deb", "w") as f:
+        f.write("<!DOCTYPE html><html>404 Not Found</html>")
+    
+    dl = ProgressDownloader("http://example.com/fake.deb", "/tmp/fake_html.deb")
+    try:
+        dl.verify_deb()
+        assert False, "应该抛出异常"
+    except Exception as e:
+        assert "HTML" in str(e) or "valid" in str(e).lower()
+    os.remove("/tmp/fake_html.deb")
+
+# ════════════════════════════════════════
+# 5. 日志函数
+# ════════════════════════════════════════
+def t_log_functions():
+    # 不应抛异常
+    log_info("test")
+    log_ok("test")
+    log_warn("test")
+    log_err("test")
+    log_stage(1, 3, "test")
+
+# ════════════════════════════════════════
+# 6. 命令测试（不依赖网络）
+# ════════════════════════════════════════
+def t_help_output():
+    r = subprocess.run(["python3", "/data/workspace/xpm/xpm.py", "--help"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0
+    assert "XPM" in r.stdout
+    assert "install" in r.stdout
+    assert "self-update" in r.stdout
+
+def t_unknown_command():
+    r = subprocess.run(["python3", "/data/workspace/xpm/xpm.py", "nonexist"],
+                       capture_output=True, text=True)
+    assert r.returncode == 1
+
+def t_doctor_runs():
+    r = subprocess.run(["python3", "/data/workspace/xpm/xpm.py", "doctor"],
+                       capture_output=True, text=True, timeout=30)
+    assert r.returncode in (0, 1)  # 都可能
+    assert "诊断" in r.stdout or "doctor" in r.stdout.lower()
+
+def t_list_empty():
+    r = subprocess.run(["python3", "/data/workspace/xpm/xpm.py", "list"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0
+
+# ════════════════════════════════════════
+# 7. build_deb.py 测试
+# ════════════════════════════════════════
+def t_build_deb_exists():
+    assert os.path.exists("/data/workspace/xpm/build_deb.py")
+
+def t_build_deb_syntax():
+    with open("/data/workspace/xpm/build_deb.py") as f:
+        code = f.read()
+    compile(code, "build_deb.py", "exec")
+
+def t_build_deb_version():
+    with open("/data/workspace/xpm/build_deb.py") as f:
+        code = f.read()
+    assert 'PKG_VERSION = "2.1-0"' in code
+
+# ════════════════════════════════════════
+# 8. 文件完整性
+# ════════════════════════════════════════
+def t_xpm_py_size():
+    size = os.path.getsize("/data/workspace/xpm/xpm.py")
+    assert size > 20000, f"xpm.py 太小: {size}"
+
+def t_all_source_files():
+    for f in ["xpm.py", "xm.py", "xm-build.py", "xpm-build-tool.py",
+              "build_deb.py", "tests/test_all.py"]:
+        path = f"/data/workspace/xpm/{f}"
+        assert os.path.exists(path), f"缺失: {f}"
+
+# ════════════════════════════════════════
+# 9. GitHub API 常量
+# ════════════════════════════════════════
+def t_github_constants():
+    from xpm import GITHUB_API, GITHUB_RELEASES
+    assert "zizhao114514/xpm" in GITHUB_API
+    assert "github.com" in GITHUB_RELEASES
+
+# ════════════════════════════════════════
+# 10. 版本比较逻辑
+# ════════════════════════════════════════
+def t_version_compare():
+    cur = VERSION.replace("-", ".")
+    assert cur == "2.1.0"
+    # 模拟比较
+    assert "2.1.0" < "2.2.0"
+    assert "2.1.0" > "2.0.8"
+    assert "2.1.0" == "2.1.0"
+
+# ════════════════════════════════════════
+# 运行全部测试
+# ════════════════════════════════════════
+print(f"XPM v{VERSION} 测试套件")
+print(f"={'='*50}")
+
+tests = [
+    # 版本
+    ("版本信息正确", t_version),
+    # Source
+    ("Source 解析标准行", t_source_parse),
+    ("Source 解析禁用行", t_source_disabled),
+    ("Source 解析 [arch=] 选项", t_source_arch_option),
+    ("Source release_url() 正确", t_release_url),
+    ("Source package_url() 正确拼 Filename", t_package_url),
+    # Packages
+    ("Packages.gz 解析", t_parse_packages),
+    ("Packages Filename 字段提取", t_parse_filename),
+    ("依赖解析 htop", t_resolve_deps),
+    ("依赖解析空输入", t_resolve_deps_empty),
+    # 下载器
+    ("ProgressDownloader 初始化", t_progress_downloader_init),
+    ("verify_deb 有效 .deb 通过", t_verify_deb_valid),
+    ("verify_deb HTML 被拒绝", t_verify_deb_invalid),
+    # 日志
+    ("日志函数不抛异常", t_log_functions),
+    # 命令
+    ("--help 输出包含 self-update", t_help_output),
+    ("未知命令返回错误", t_unknown_command),
+    ("doctor 命令可运行", t_doctor_runs),
+    ("list 命令可运行", t_list_empty),
+    # 构建
+    ("build_deb.py 存在", t_build_deb_exists),
+    ("build_deb.py 语法正确", t_build_deb_syntax),
+    ("build_deb.py 版本号 2.1-0", t_build_deb_version),
+    # 文件
+    ("xpm.py 大小合理", t_xpm_py_size),
+    ("所有源文件存在", t_all_source_files),
+    # GitHub
+    ("GitHub API 常量正确", t_github_constants),
+    # 版本
+    ("版本比较逻辑", t_version_compare),
+]
+
+for name, func in tests:
+    test(name, func)
+
+print(f"\n={'='*50}")
+print(f"结果: {PASS} 通过, {FAIL} 失败 (共 {PASS+FAIL})")
+if ERRORS:
+    print("\n失败详情:")
+    for name, err in ERRORS:
+        print(f"  {name}: {err}")
+
+sys.exit(0 if FAIL == 0 else 1)

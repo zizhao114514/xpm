@@ -1,1 +1,162 @@
-IyBYUE0g55So5oi35omL5YaMCgojIyAxLiDlhaXpl6gKCiMjIyAxLjEg5a6J6KOFIFhQTQpgYGBiYXNoCndnZXQgaHR0cHM6Ly9naXRodWIuY29tL3ppemhhbzExNDUxNC94cG0vcmVsZWFzZXMvZG93bmxvYWQvdjIuMC0wL3hwbV8yLjAtMF9hbGwuZGViCnN1ZG8gZHBrZyAtaSB4cG1fMi4wLTBfYWxsLmRlYgojIOWmguaenOaPkOekuue8uuWwkeS+nei1lu+8mgpzdWRvIGFwdC1nZXQgaW5zdGFsbCAtZiAteSAgICMg6L+Z5piv5pyA5ZCO5LiA5qyh55SoIGFwdApgYGAKCiMjIyAxLjIg6aaW5qyh6YWN572uCmBgYGJhc2gKc3VkbyAtaQp4cG0gZG9jdG9yICAgICAgICAgICMg6K+K5pat57O757ufCnhwbSBzb3VyY2VzICAgICAgICAgIyDmn6XnnIvmupAKeHBtIHVwZGF0ZSAgICAgICAgICAjIOabtOaWsOe0ouW8lQpgYGAKCiMjIDIuIOaXpeW4uOS9v+eUqAoKIyMjIDIuMSDmkJzntKIKYGBgYmFzaAp4cG0gc2VhcmNoIHZpbQojIOi+k+WHujoKIyDwn5SNIOaQnOe0oue7k+aenCAndmltJzoKIyAgIHZpbSAgICAgICAgICAgICAgICAgICAgICAgICAgMjo5LjEuMDk2NC0xICBbZWRpdG9yc10KIyAgIHZpbS1jb21tb24gICAgICAgICAgICAgICAgICAgMjo5LjEuMDk2NC0xICBbZWRpdG9yc10KYGBgCgojIyMgMi4yIOWuieijhQpgYGBiYXNoCnhwbSBpbnN0YWxsIHZpbQojIOi+k+WHujoKIyBbMS80XSDmraPlnKjpgInkuK3mnKrlronoo4XnmoTova/ku7bljIXvvJp2aW0KIyBbMi80XSDmraPlnKjpgInkuK0gdmltICgyOjkuMS4wOTY0LTEpCiMgWzIvNF0g5q2j5Zyo6YCJ5LitIGxpYnRpbmZvNiAoNi40KzIwMjMwNjI1LTIpCiMgWzMvNF0g5q2j5Zyo6Kej5Y6LIHZpbSAoMjo5LjEuMDk2NC0xKS4uLgojIFszLzRdIOato+WcqOino+WOiyBsaWJ0aW5mbzYgKDYuNCsyMDIzMDYyNS0yKS4uLgojIFs0LzRdIOato+WcqOiuvue9riB2aW0gKDI6OS4xLjA5NjQtMSkuLi4KIyDinIUg5a6J6KOF5a6M5oiQCmBgYAoKIyMjIDIuMyDljbjovb0KYGBgYmFzaAp4cG0gcmVtb3ZlIHZpbQojIOi+k+WHujoKIyBbMS8zXSDmraPlnKjlr7vmib7kuI4gdmltIOebuOWFs+eahOaWh+S7ti4uLgojIFsyLzNdIOato+WcqOWNuOi9vSB2aW0gKDI6OS4xLjA5NjQtMSkuLi4KIyBbMy8zXSDmraPlnKjmuIXpmaQgdmltICgyOjkuMS4wOTY0LTEpLi4uCiMg4pyFIOW3suW9u+W6lea4hemZpApgYGAKCiMjIyAyLjQg5Y2H57qnCmBgYGJhc2gKeHBtIHVwZ3JhZGUKIyDoh6rliqjmr5Tlr7nniYjmnKzvvIzpgJDkuKrljYfnuqcKYGBgCgojIyMgMi41IOafpeeci+S/oeaBrwpgYGBiYXNoCnhwbSBpbmZvIHZpbQp4cG0gZGVwZW5kcyB2aW0KeHBtIHJkZXBlbmRzIHZpbQpgYGAKCiMjIDMuIOmrmOe6p+WKn+iDvQoKIyMjIDMuMSDlm57mu5oKYGBgYmFzaAp4cG0gcm9sbGJhY2sgbGlzdCAgICAgICAgICAjIOafpeeci+Wbnua7mueCuQp4cG0gcm9sbGJhY2sgMTIzNDU2Nzg5MCAgICMg5Zue5rua5Yiw5oyH5a6a54K5CmBgYAoKIyMjIDMuMiDmnoTlu7rljIUKYGBgYmFzaAp4cG0gYnVpbGQgbXlwcm9ncmFtLwojIOebruW9lee7k+aehDoKIyBteXByb2dyYW0vCiMg4pSc4pSA4pSAIHVzci9iaW4vbXlwcm9nCiMg4pSU4pSA4pSAIHhwbS9jb250cm9sCmBgYAoKIyMjIDMuMyDmoKHpqowKYGBgYmFzaAp4cG0gdmVyaWZ5ICAgICAgICAgICAgICAjIOagoemqjOaJgOacieW3suWuieijheWMhQp4cG0gdmVyaWZ5IHZpbSAgICAgICAgICAjIOagoemqjOaMh+WumuWMhQpgYGAKCiMjIyAzLjQg5L+u5aSNCmBgYGJhc2gKeHBtIGZpeC1icm9rZW4gICAgICAgICAgIyDkv67lpI3kuK3mlq3nmoTlronoo4UKYGBgCgojIyA0LiBHVUkg5L2/55SoCgpgYGBiYXNoCnhwbSBndWkKYGBgCgpHVUkg5Yqf6IO977yaCi0g5pCc57Si5qGGICsg5a6J6KOFL+WNuOi9veaMiemSrgotIOWunuaXtui/m+W6puadoQotIOi/m+ihjOS4reaTjeS9nOmdouadvwotIOaXpeW/l+eql+WPo++8iOWunuaXtua7muWKqO+8iQotIOWMheWIl+ihqO+8iOWQq+WuieijheeKtuaAge+8iQoKIyMgNS4g5rqQ566h55CGCgojIyMgNS4xIOa3u+WKoCBEZWJpYW4g5rqQCmBgYGJhc2gKc3VkbyBuYW5vIC9ldGMveHBtL3NvdXJjZXMubGlzdC5kL3R1bmEubGlzdAojIOWGheWuuToKIyBkZWIgaHR0cDovL21pcnJvcnMudHVuYS50c2luZ2h1YS5lZHUuY24vZGViaWFuLyBib29rd29ybSBtYWluIGNvbnRyaWIgbm9uLWZyZWUKYGBgCgojIyMgNS4yIOa3u+WKoCBYUE0g5rqQCmBgYGJhc2gKc3VkbyBuYW5vIC9ldGMveHBtL3NvdXJjZXMubGlzdC5kL3BldHJvbGV1bS5saXN0CiMg5YaF5a65OgojIFt4cG1dCiMgbmFtZT1QZXRyb2xldW0gU3RhYmxlCiMgdXJsPWh0dHA6Ly9yZXBvLmV4YW1wbGUuY29tL2Rpc3RzL3N0YWJsZQojIHR5cGU9eHBtCiMgZW5hYmxlZD15ZXMKYGBgCgojIyMgNS4zIOabtOaWsOe0ouW8lQpgYGBiYXNoCnhwbSB1cGRhdGUKYGBgCgojIyA2LiDnjq/looPlj5jph48KCnwg5Y+Y6YePIHwg6buY6K6k5YC8IHwg6K+05piOIHwKfC0tLXwtLS18LS0tfAp8IGBYTV9CSU5gIHwgYC91c3IvbG9jYWwvYmluL3htYCB8IFB5dGhvbiDlkI7nq6/ot6/lvoQgfAp8IGBYTUNTX0JJTmAgfCBgL3Vzci9sb2NhbC9iaW4veG1jc2AgfCBDIyDlkI7nq6/ot6/lvoQgfAp8IGBYUE1fUk9PVGAgfCBgL3Zhci9saWIveHBtYCB8IOaVsOaNruW6k+ebruW9lSB8CnwgYFhQTV9DQUNIRWAgfCBgL3Zhci9jYWNoZS94cG1gIHwg57yT5a2Y55uu5b2VIHwKfCBgTEFOR2AgfCAo57O757uf6buY6K6kKSB8IOivreiogOmAieaLqSB8CgojIyA3LiDpgIDlh7rnoIEKCnwg56CBIHwg5ZCr5LmJIHwKfC0tLXwtLS18CnwgMCB8IOaIkOWKnyB8CnwgMSB8IOS4gOiIrOmUmeivryB8CnwgMTMwIHwg55So5oi35Lit5patIChDdHJsK0MpIHwKCiMjIDguIOaWh+S7tuS9jee9rgoKfCDot6/lvoQgfCDnlKjpgJQgfAp8LS0tfC0tLXwKfCBgL2V0Yy94cG0vc291cmNlcy5saXN0LmQvYCB8IOa6kOmFjee9riB8CnwgYC92YXIvbGliL3hwbS9zdGF0dXMuZGJgIHwg5bey5a6J6KOF5YyF5pWw5o2u5bqTIHwKfCBgL3Zhci9saWIveHBtL2NvZmZlZS5qc29uYCB8IOW0qea6g+iuoeaVsCB8CnwgYC92YXIvbGliL3hwbS9yb2xsYmFjay9gIHwg5Zue5rua5b+r54WnIHwKfCBgL3Zhci9jYWNoZS94cG0vYXJjaGl2ZXMvYCB8IOS4i+i9vee8k+WtmCB8CnwgYC92YXIvY2FjaGUveHBtLyotUGFja2FnZXNgIHwg5rqQ57Si5byVIHwKfCBgL3Zhci9sb2cveHBtL2AgfCDml6Xlv5cgfAo=
+# XPM 用户手册
+
+## 1. 入门
+
+### 1.1 安装 XPM
+```bash
+wget https://github.com/zizhao114514/xpm/releases/download/v2.0-0/xpm_2.0-0_all.deb
+sudo dpkg -i xpm_2.0-0_all.deb
+# 如果提示缺少依赖：
+sudo apt-get install -f -y   # 这是最后一次用 apt
+```
+
+### 1.2 首次配置
+```bash
+sudo -i
+xpm doctor          # 诊断系统
+xpm sources         # 查看源
+xpm update          # 更新索引
+```
+
+## 2. 日常使用
+
+### 2.1 搜索
+```bash
+xpm search vim
+# 输出:
+# 🔍 搜索结果 'vim':
+#   vim                          2:9.1.0964-1  [editors]
+#   vim-common                   2:9.1.0964-1  [editors]
+```
+
+### 2.2 安装
+```bash
+xpm install vim
+# 输出:
+# [1/4] 正在选中未安装的软件包：vim
+# [2/4] 正在选中 vim (2:9.1.0964-1)
+# [2/4] 正在选中 libtinfo6 (6.4+20230625-2)
+# [3/4] 正在解压 vim (2:9.1.0964-1)...
+# [3/4] 正在解压 libtinfo6 (6.4+20230625-2)...
+# [4/4] 正在设置 vim (2:9.1.0964-1)...
+# ✅ 安装完成
+```
+
+### 2.3 卸载
+```bash
+xpm remove vim
+# 输出:
+# [1/3] 正在寻找与 vim 相关的文件...
+# [2/3] 正在卸载 vim (2:9.1.0964-1)...
+# [3/3] 正在清除 vim (2:9.1.0964-1)...
+# ✅ 已彻底清除
+```
+
+### 2.4 升级
+```bash
+xpm upgrade
+# 自动比对版本，逐个升级
+```
+
+### 2.5 查看信息
+```bash
+xpm info vim
+xpm depends vim
+xpm rdepends vim
+```
+
+## 3. 高级功能
+
+### 3.1 回滚
+```bash
+xpm rollback list          # 查看回滚点
+xpm rollback 1234567890   # 回滚到指定点
+```
+
+### 3.2 构建包
+```bash
+xpm build myprogram/
+# 目录结构:
+# myprogram/
+# ├── usr/bin/myprog
+# └── xpm/control
+```
+
+### 3.3 校验
+```bash
+xpm verify              # 校验所有已安装包
+xpm verify vim          # 校验指定包
+```
+
+### 3.4 修复
+```bash
+xpm fix-broken          # 修复中断的安装
+```
+
+## 4. GUI 使用
+
+```bash
+xpm gui
+```
+
+GUI 功能：
+- 搜索框 + 安装/卸载按钮
+- 实时进度条
+- 进行中操作面板
+- 日志窗口（实时滚动）
+- 包列表（含安装状态）
+
+## 5. 源管理
+
+### 5.1 添加 Debian 源
+```bash
+sudo nano /etc/xpm/sources.list.d/tuna.list
+# 内容:
+# deb http://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free
+```
+
+### 5.2 添加 XPM 源
+```bash
+sudo nano /etc/xpm/sources.list.d/petroleum.list
+# 内容:
+# [xpm]
+# name=Petroleum Stable
+# url=http://repo.example.com/dists/stable
+# type=xpm
+# enabled=yes
+```
+
+### 5.3 更新索引
+```bash
+xpm update
+```
+
+## 6. 环境变量
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `XM_BIN` | `/usr/local/bin/xm` | Python 后端路径 |
+| `XMCS_BIN` | `/usr/local/bin/xmcs` | C# 后端路径 |
+| `XPM_ROOT` | `/var/lib/xpm` | 数据库目录 |
+| `XPM_CACHE` | `/var/cache/xpm` | 缓存目录 |
+| `LANG` | (系统默认) | 语言选择 |
+
+## 7. 退出码
+
+| 码 | 含义 |
+|---|---|
+| 0 | 成功 |
+| 1 | 一般错误 |
+| 130 | 用户中断 (Ctrl+C) |
+
+## 8. 文件位置
+
+| 路径 | 用途 |
+|---|---|
+| `/etc/xpm/sources.list.d/` | 源配置 |
+| `/var/lib/xpm/status.db` | 已安装包数据库 |
+| `/var/lib/xpm/coffee.json` | 崩溃计数 |
+| `/var/lib/xpm/rollback/` | 回滚快照 |
+| `/var/cache/xpm/archives/` | 下载缓存 |
+| `/var/cache/xpm/*-Packages` | 源索引 |
+| `/var/log/xpm/` | 日志 |

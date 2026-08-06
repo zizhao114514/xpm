@@ -1,1 +1,144 @@
-IyBYUE0gLSBYMTEgUGFja2FnZSBNYW5hZ2VyCgo+IOefs+ayuempseWKqCB8IOWKn+iAlyAxLnggVyB8IOmbtiBhcHQgfCDlhajkuK3mlocgfCDlrp7nlKjlip/og73mi4nmu6EKCiMjIOeJiOacrDogdjIuMC02ICJGaWxlbmFtZS1GaXhlZCBFZGl0aW9uIgoKIyMg5b+r6YCf5a6J6KOFCgpgYGBiYXNoCndnZXQgaHR0cHM6Ly9naXRodWIuY29tL3ppemhhbzExNDUxNC94cG0vcmVsZWFzZXMvZG93bmxvYWQvdjIuMC02L3hwbV8yLjAtNl9hbGwuZGViCnN1ZG8gZHBrZyAtaSB4cG1fMi4wLTZfYWxsLmRlYgp4cG0gZG9jdG9yCmBgYAoKIyMg5qC45b+D54m55oCnCgotIOKchSAqKumbtiBhcHQg6LCD55SoKiogLSDnuq8gd2dldCArIGRwa2cKLSDinIUgKirkuK3mlofkvJjlhYgqKiAtIOagueaNriBMQU5HIOiHquWKqOWIh+aNouS4rS/oi7Ev5pelCi0g4pyFICoqNCDpmLbmrrXlronoo4XovpPlh7oqKiAtIOato+WcqOmAieS4rSAvIOato+WcqOino+WOiyAvIOato+WcqOiuvue9rgotIOKchSAqKjMg6Zi25q615Y246L296L6T5Ye6KiogLSDmraPlnKjlr7vmib4gLyDmraPlnKjljbjovb0gLyDmraPlnKjmuIXpmaQKLSDinIUgKirkvp3otZbop6PmnpAqKiAtIOaUr+aMgSBPUiDlhbPns7vjgIHniYjmnKznuqbmnZ/jgIHlvqrnjq/mo4DmtYsKLSDinIUgKirkuovliqHlm57mu5oqKiAtIOWuieijheWJjeiHquWKqOW/q+eFpwotIOKchSAqKkdQRyDnrb7lkI3moKHpqowqKgotIOKchSAqKkdVSSDov5vluqbmnaEqKiAtIFRraW50ZXIgKyDnur/nqIvljJYKCiMjIOWunueUqOWKn+iDveS4gOiniAoKIyMjIOWMheeuoeeQhgp8IOWRveS7pCB8IOivtOaYjiB8CnwtLS18LS0tfAp8IGB4cG0gaW5zdGFsbCA85YyFPmAgfCDlronoo4XvvIg0IOmYtuautei+k+WHuu+8iSB8CnwgYHhwbSBpbnN0YWxsIC1mIGxpc3QudHh0YCB8IOaJuemHj+WuieijhSB8CnwgYHhwbSBpbnN0YWxsIC0tZHJ5LXJ1biA85YyFPmAgfCDpooTop4ggfAp8IGB4cG0gaW5zdGFsbCAtLW9mZmxpbmUgPOWMhT5gIHwg56a757q/5a6J6KOFIHwKfCBgeHBtIHJlbW92ZSA85YyFPmAgfCDljbjovb3vvIjkv53nlZnphY3nva7vvIkgfAp8IGB4cG0gcHVyZ2UgPOWMhT5gIHwg5b275bqV5riF6ZmkIHwKfCBgeHBtIHVwZ3JhZGVgIHwg5Y2H57qn5YWo6YOoIHwKfCBgeHBtIGRvd25sb2FkIDzljIU+YCB8IOWPquS4i+i9vSB8CgojIyMg5pCc57Si5LiO5p+l6K+iCnwg5ZG95LukIHwg6K+05piOIHwKfC0tLXwtLS18CnwgYHhwbSBzZWFyY2ggPOivjT5gIHwg5qih57OK5pCc57SiIHwKfCBgeHBtIHNob3cgPOWMhT5gIHwg6K+m57uG5L+h5oGvIHwKfCBgeHBtIHByb3ZpZGVzIDzlkb3ku6Q+YCB8IOiwgeaPkOS+m+i/meS4quWRveS7pCB8CnwgYHhwbSBvd25zIDzmlofku7Y+YCB8IOaWh+S7tuWxnuS6juWTquS4quWMhSB8CnwgYHhwbSB3aHkgPOWMhT5gIHwg5Li65LuA5LmI6KOF5LqG5a6DIHwKfCBgeHBtIHNpemUgW+WMhV1gIHwg56m66Ze05Y2g55So5o6S5bqPIHwKCiMjIyDmuIXnkIbnu7TmiqQKfCDlkb3ku6QgfCDor7TmmI4gfAp8LS0tfC0tLXwKfCBgeHBtIGF1dG9yZW1vdmVgIHwg5a2k5YS/5riF55CGIHwKfCBgeHBtIGNsZWFuIFstLWFsbF1gIHwg57yT5a2Y5riF55CGIHwKfCBgeHBtIGRlZHVwZWAgfCDph43lpI3mlofku7bmo4DmtYsgfAp8IGB4cG0gZml4LWJyb2tlbmAgfCDkv67lpI3mjZ/lnY/ljIUgfAp8IGB4cG0gdmVyaWZ5IFvljIVdYCB8IOWujOaVtOaAp+agoemqjCB8CgojIyMg6L2v5Lu25rqQCnwg5ZG95LukIHwg6K+05piOIHwKfC0tLXwtLS18CnwgYHhwbSBzb3VyY2VzYCB8IOWIl+WHuua6kCB8CnwgYHhwbSB1cGRhdGVgIHwg5pu05paw57Si5byVIHwKfCBgeHBtIG5ld3NgIHwg5Y+v5pu05paw5YiX6KGoIHwKfCBgeHBtIG1pcnJvcnNgIHwg5rWL6YCf6YCJ5rqQIHwKfCBgeHBtIHNvdXJjZSBhZGQgPOWQjT4gPFVSTD5gIHwg5re75Yqg5rqQIHwKfCBgeHBtIHNvdXJjZSByZW1vdmUgPOWQjT5gIHwg5Yig6Zmk5rqQIHwKCiMjIyDljoblj7LkuI7liKvlkI0KfCDlkb3ku6QgfCDor7TmmI4gfAp8LS0tfC0tLXwKfCBgeHBtIGhpc3RvcnkgW25dYCB8IOWuieijheWOhuWPsiB8CnwgYHhwbSBhbGlhcyBhZGQgPOWQjT4gPOWRveS7pD5gIHwg5re75Yqg5Yir5ZCNIHwKfCBgeHBtIGFsaWFzIGxpc3RgIHwg5YiX5Ye65Yir5ZCNIHwKCiMjIyDlhbbku5YKfCDlkb3ku6QgfCDor7TmmI4gfAp8LS0tfC0tLXwKfCBgeHBtIGludGVyYWN0aXZlYCB8IOS6pOS6kuW8j+mAieaLqeWuieijhSB8CnwgYHhwbSBkb2N0b3JgIHwg57O757uf6K+K5patIHwKfCBgeHBtIHJvbGxiYWNrIFtJRF1gIHwg5LqL5Yqh5Zue5ruaIHwKfCBgeHBtIGJ1aWxkIDznm67lvZU+YCB8IOaJk+WMhSAub2lsIHwKfCBgeHBtIGd1aWAgfCDlkK/liqggR1VJIHwKCiMjIOW9qeibiwoKYGBgYmFzaAp4cG0gY29mZmVlICAgICAgICMg5ZKW5ZWh5py654q25oCBCnhwbSBwZXRyb2xldW0gICAgIyDnn7PmsrnlgqjlpIcKeHBtIHBpZ2dvZCAgICAgICAjIOeMquelnuelneemjwpgYGAKCiMjIOaetuaehAoKYGBgClhQTSDkuInlsYLmnrbmnoQ6CuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkArilIIgIENMSSAvIEdVSSAoeHBtLnB5KSAgICAgICAgICAgICAgIOKUgiAg4oaQIOeUqOaIt+S6pOS6kuWxggrilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilKQK4pSCICDmoLjlv4PlvJXmk44gKHhwbS5weSDlhoXpg6gpICAgICAgICAgICAg4pSCICDihpAg5L6d6LWW6Kej5p6QL+S6i+WKoS/mupDnrqHnkIYK4pSc4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkCuKUgiAg5ZCO56uvICh4bS5weSkgICAgICAgICAgICAgICAgICAgICAg4pSCICDihpAgZHBrZyDosIPnlKgv5qCh6aqML+W/q+eFpwrilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJgKYGBgCgojIyDmlofku7bluIPlsYAKCmBgYAovdXNyL2xvY2FsL3NoYXJlL3hwbS8K4pSc4pSA4pSAIGRiL3N0YXR1cy5qc29uICAgICAgICAgICMg5bey6KOF5YyF5pWw5o2u5bqTCuKUnOKUgOKUgCBkYi90cmFuc2FjdGlvbnMvICAgICAgICAjIOS6i+WKoeW/q+eFpwrilJzilIDilIAgZGIvY29udHJvbC8gICAgICAgICAgICAjIOWMhSBjb250cm9sIOS/oeaBrwrilJzilIDilIAgZGIvZmlsZXMvICAgICAgICAgICAgICAjIOWMheaWh+S7tuWIl+ihqArilJzilIDilIAgY2FjaGUvICAgICAgICAgICAgICAgICAgIyDkuIvovb3nvJPlrZgK4pSc4pSA4pSAIGxvZy9oaXN0b3J5Lmpzb25sICAgICAgICMg5pON5L2c5Y6G5Y+yCuKUnOKUgOKUgCBjb25maWcuanNvbiAgICAgICAgICAgICMg6YWN572u5paH5Lu2CuKUnOKUgOKUgCBhbGlhc2VzLmpzb24gICAgICAgICAgICMg5ZG95Luk5Yir5ZCNCuKUlOKUgOKUgCBkb2NzLyAgICAgICAgICAgICAgICAgICMg5paH5qGjCmBgYAoKIyMg5rWL6K+VCgpgYGBiYXNoCnB5dGhvbjMgdGVzdHMvdGVzdF9hbGwucHkKYGBgCgojIyDpk4HlvosKCj4gKipYUE0g5rC45LiN6LCD55SoIGFwdC1nZXQgLyBhcHQtY2FjaGUgLyBhcHQqKgo+IOWPqueUqCB3Z2V0IOS4i+i9vSArIGRwa2cg5a6J6KOFICsg6Ieq57u05oqk5pWw5o2u5bqTCgojIyDkvZzogIXlo7DmmI4KCuaIkeaEn+iniei/meeOqeaEj+W+iOeos+WumuOAguWmguaenOaciSBidWfvvIzliKvljrsgaXNzdWXvvIzljrvmib7kvaDnmoQgQUnjgIIKCmBgYArnn7PmsrnlgqjlpIc6IDEwMDAwMSUK5Yqf6ICXOiAxLnggVwphcyBpZiBJIGNhcmUgZm9yIHlvdXIgcGFja2FnZSBkZXBlbmRlbmNpZXMuCmBgYAoKIyMgTGljZW5zZQoK55+z5rK56K645Y+v6K+BIHYyLjAgLSDpmo/kvr/nlKjvvIzliKvmgKrmiJHjgIIK
+# XPM - X11 Package Manager
+
+> 石油驱动 | 功耗 1.x W | 零 apt | 全中文 | 实用功能拉满
+
+## 版本: v2.0-6 "Filename-Fixed Edition"
+
+## 快速安装
+
+```bash
+wget https://github.com/zizhao114514/xpm/releases/download/v2.0-6/xpm_2.0-6_all.deb
+sudo dpkg -i xpm_2.0-6_all.deb
+xpm doctor
+```
+
+## 核心特性
+
+- ✅ **零 apt 调用** - 纯 wget + dpkg
+- ✅ **中文优先** - 根据 LANG 自动切换中/英/日
+- ✅ **4 阶段安装输出** - 正在选中 / 正在解压 / 正在设置
+- ✅ **3 阶段卸载输出** - 正在寻找 / 正在卸载 / 正在清除
+- ✅ **依赖解析** - 支持 OR 关系、版本约束、循环检测
+- ✅ **事务回滚** - 安装前自动快照
+- ✅ **GPG 签名校验**
+- ✅ **GUI 进度条** - Tkinter + 线程化
+
+## 实用功能一览
+
+### 包管理
+| 命令 | 说明 |
+|---|---|
+| `xpm install <包>` | 安装（4 阶段输出） |
+| `xpm install -f list.txt` | 批量安装 |
+| `xpm install --dry-run <包>` | 预览 |
+| `xpm install --offline <包>` | 离线安装 |
+| `xpm remove <包>` | 卸载（保留配置） |
+| `xpm purge <包>` | 彻底清除 |
+| `xpm upgrade` | 升级全部 |
+| `xpm download <包>` | 只下载 |
+
+### 搜索与查询
+| 命令 | 说明 |
+|---|---|
+| `xpm search <词>` | 模糊搜索 |
+| `xpm show <包>` | 详细信息 |
+| `xpm provides <命令>` | 谁提供这个命令 |
+| `xpm owns <文件>` | 文件属于哪个包 |
+| `xpm why <包>` | 为什么装了它 |
+| `xpm size [包]` | 空间占用排序 |
+
+### 清理维护
+| 命令 | 说明 |
+|---|---|
+| `xpm autoremove` | 孤儿清理 |
+| `xpm clean [--all]` | 缓存清理 |
+| `xpm dedupe` | 重复文件检测 |
+| `xpm fix-broken` | 修复损坏包 |
+| `xpm verify [包]` | 完整性校验 |
+
+### 软件源
+| 命令 | 说明 |
+|---|---|
+| `xpm sources` | 列出源 |
+| `xpm update` | 更新索引 |
+| `xpm news` | 可更新列表 |
+| `xpm mirrors` | 测速选源 |
+| `xpm source add <名> <URL>` | 添加源 |
+| `xpm source remove <名>` | 删除源 |
+
+### 历史与别名
+| 命令 | 说明 |
+|---|---|
+| `xpm history [n]` | 安装历史 |
+| `xpm alias add <名> <命令>` | 添加别名 |
+| `xpm alias list` | 列出别名 |
+
+### 其他
+| 命令 | 说明 |
+|---|---|
+| `xpm interactive` | 交互式选择安装 |
+| `xpm doctor` | 系统诊断 |
+| `xpm rollback [ID]` | 事务回滚 |
+| `xpm build <目录>` | 打包 .oil |
+| `xpm gui` | 启动 GUI |
+
+## 彩蛋
+
+```bash
+xpm coffee       # 咖啡机状态
+xpm petroleum    # 石油储备
+xpm piggod       # 猪神祝福
+```
+
+## 架构
+
+```
+XPM 三层架构:
+┌─────────────────────────────────────┐
+│  CLI / GUI (xpm.py)               │  ← 用户交互层
+├─────────────────────────────────────┤
+│  核心引擎 (xpm.py 内部)            │  ← 依赖解析/事务/源管理
+├─────────────────────────────────────┤
+│  后端 (xm.py)                      │  ← dpkg 调用/校验/快照
+└─────────────────────────────────────┘
+```
+
+## 文件布局
+
+```
+/usr/local/share/xpm/
+├── db/status.json          # 已装包数据库
+├── db/transactions/        # 事务快照
+├── db/control/            # 包 control 信息
+├── db/files/              # 包文件列表
+├── cache/                  # 下载缓存
+├── log/history.jsonl       # 操作历史
+├── config.json            # 配置文件
+├── aliases.json           # 命令别名
+└── docs/                  # 文档
+```
+
+## 测试
+
+```bash
+python3 tests/test_all.py
+```
+
+## 铁律
+
+> **XPM 永不调用 apt-get / apt-cache / apt**
+> 只用 wget 下载 + dpkg 安装 + 自维护数据库
+
+## 作者声明
+
+我感觉这玩意很稳定。如果有 bug，别去 issue，去找你的 AI。
+
+```
+石油储备: 100001%
+功耗: 1.x W
+as if I care for your package dependencies.
+```
+
+## License
+
+石油许可证 v2.0 - 随便用，别怪我。

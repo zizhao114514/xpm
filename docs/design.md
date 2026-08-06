@@ -1,1 +1,229 @@
-IyBYUE0g5p625p6E6K6+6K6hCgojIyAxLiDorr7orqHlk7LlraYKClhQTSDnmoTorr7orqHpgbXlvqrkuInmnaHpk4HlvovvvJoKCjEuICoq55+z5rK56amx5Yqo77yIT2lsLURyaXZlbu+8iSoq77ya6LWE5rqQ5Lul55+z5rK55YKo5aSH55m+5YiG5q+U6K6h6YeP77yM6ICM6Z2e5Lyg57uf55qE5YaF5a2YL+ejgeebmAoyLiAqKuemgeatoiBhcHQqKu+8mmBhcHQtZ2V0YCAvIGBhcHQtY2FjaGVgIOiiq+aYjuehruemgeatou+8jOS7heS9v+eUqCBgd2dldGAgKyBgZHBrZ2AgKyDoh6rnoJTlkI7nq68KMy4gKirlkI7nq6/or63oqIDml6DlhbMqKu+8muWJjeerr+aYryBQeXRob27vvIzlkI7nq6/lj6/ku6XmmK8gUHl0aG9uL0MjL1J1c3QvR2/vvIzlj6ropoHpgbXlrojljY/orq4KCiMjIDIuIOezu+e7n+aetuaehAoKYGBgCuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkArilIIgICAgICAgICAgICAgIHhwbSAoUHl0aG9uIOWJjeerrykgICAgICAgICAgICAgICDilIIK4pSCICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilJAg4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCDilIIK4pSCICDilIIgIENMSSAgICDilIIg4pSCICBHVUkgICAg4pSCIOKUgiAgRGlhZ25vc3RpY3MgIOKUgiDilIIK4pSCICDilJTilIDilIDilIDilIDilKzilIDilIDilIDilIDilJgg4pSU4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSYIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCDilIIK4pSCICAgICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUtOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCAgICAgICAg4pSCCuKUgiAg4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCAg4pSCCuKUgiAg4pSCIERlcGVuZGVuY3nilIIgIOKUgiBEYXRhYmFzZSDilIIgIOKUgiAgU291cmNlcyAg4pSCICDilIIK4pSCICDilIIgUmVzb2x2ZXIgIOKUgiAg4pSCICAoSlNPTikgIOKUgiAg4pSCICBQYXJzZXIgIOKUgiAg4pSCCuKUgiAg4pSU4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSYICDilJTilIDilIDilIDilIDilKzilIDilIDilIDilIDilIDilJggIOKUlOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUmCAg4pSCCuKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUvOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmAogICAgICAgIOKUgiAgICAgICAgICAgICAgIOKUgiAgICAgICAgICAgICDilIIKICAgICAgICDilrwgICAgICAgICAgICAgICDilrwgICAgICAgICAgICAg4pa8CuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkArilIIgICAgICAgICAgIHhtIC8geG1jcyAo5ZCO56uvKSAgICAgICAgICAgICAgICAg4pSCCuKUgiAg4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilJAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkCAg4pSCCuKUgiAg4pSCICBMb2NrICDilIIgIOKUgiAgR1BHICAg4pSCICDilIIgUm9sbGJhY2sgIOKUgiAg4pSCCuKUgiAg4pSU4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSYICDilJTilIDilIDilIDilKzilIDilIDilIDilIDilJggIOKUlOKUgOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUmCAg4pSCCuKUgiAgICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUtOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCAgICAgICAg4pSCCuKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmAogICAgICAgICAgICAgICAgICAg4pSCCiAgICAgICAgICAgICAgICAgICDilrwKICAgICAgICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJAKICAgICAgICDilIIgIGRwa2cgKOino+WMheW8leaTjikgIOKUggogICAgICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmApgYGAKCiMjIDMuIOaVsOaNrua1gQoKIyMjIDMuMSDlronoo4XmtYHnqIsKCmBgYArnlKjmiLc6IHhwbSBpbnN0YWxsIHZpbQogIOKUggogIOKWvApbMS80XSDmraPlnKjpgInkuK3mnKrlronoo4XnmoTova/ku7bljIXvvJp2aW0KICDilIIKICDilrwKRGVwZW5kZW5jeVJlc29sdmVyLnJlc29sdmUoInZpbSIpCiAg4pSc4pSA4pSAIOino+aekCBEZXBlbmRzOiB2aW0tY29tbW9uICg9IDI6OS4xKSwgbGlidGluZm82ICg+PSA2KQogIOKUnOKUgOKUgCDpgJLlvZLop6PmnpDmr4/kuKrkvp3otZYKICDilJTilIDilIAg6L+U5Zue5pyJ5bqP5YiX6KGoOiBbbGlidGluZm82LCB2aW0tY29tbW9uLCB2aW1dCiAg4pSCCiAg4pa8ClsyLzRdIOato+WcqOmAieS4rSB2aW0gKDI6OS4xLjA5NjQtMSkKICDilIIKICDilrwK5a+55q+P5Liq5YyFOgogIOKUnOKUgOKUgCB3Z2V0IOS4i+i9vSAuZGViICjov5vluqbmnaEpCiAg4pSc4pSA4pSAIOagoemqjCBTSEEyNTYKICDilJzilIDilIAgVHJhbnNhY3Rpb24uc25hcHNob3QoKSDkv53lrZjml6fmlofku7YKICDilJzilIDilIAgWzMvNF0g5q2j5Zyo6Kej5Y6LIHZpbSAoMjo5LjEuMDk2NC0xKS4uLgogIOKUgiAgICAg4pSU4pSA4pSAIHhtIGluc3RhbGwgPGZpbGUuZGViPiDihpIgZHBrZyAtaQogIOKUlOKUgOKUgCBbNC80XSDmraPlnKjorr7nva4gdmltICgyOjkuMS4wOTY0LTEpLi4uCiAgICAgICAg4pSU4pSA4pSAIOaJp+ihjCBwb3N0aW5zdCDohJrmnKwKICDilIIKICDilrwKUGFja2FnZURCLmFkZChuYW1lLCB2ZXJzaW9uLCBmaWxlcykKICDilIIKICDilrwK4pyFIOWuieijheWujOaIkApgYGAKCiMjIyAzLjIg5Y246L295rWB56iLCgpgYGAK55So5oi3OiB4cG0gcmVtb3ZlIHZpbQogIOKUggogIOKWvApbMS8zXSDmraPlnKjlr7vmib7kuI4gdmltIOebuOWFs+eahOaWh+S7ti4uLgogIOKUnOKUgOKUgCBQYWNrYWdlREIg5p+lIGZpbGVzLmxpc3QKICDilJTilIDilIAg5qOA5p+l5piv5ZCm5pyJ5YW25LuW5YyF5L6d6LWWIHZpbQogIOKUggogIOKWvApbMi8zXSDmraPlnKjljbjovb0gdmltICgyOjkuMS4wOTY0LTEpLi4uCiAg4pSU4pSA4pSAIHhtIHJlbW92ZSB2aW0g4oaSIGRwa2cgLS1yZW1vdmUgdmltCiAg4pSCCiAg4pa8ClszLzNdIOato+WcqOa4hemZpCB2aW0gKDI6OS4xLjA5NjQtMSkuLi4KICDilJTilIDilIAg5Yig6ZmkIC9ldGMveHBtL2NvbmZpZ3MvdmltLwogIOKUggogIOKWvApQYWNrYWdlREIucmVtb3ZlKCJ2aW0iKQogIOKUggogIOKWvArinIUg5Y246L295a6M5oiQCmBgYAoKIyMgNC4g5rqQ5qC85byPCgojIyMgNC4xIERlYmlhbiDmoLzlvI8KYGBgCmRlYiA8dXJsPiA8c3VpdGU+IFtjb21wb25lbnRzLi4uXQpgYGAK6Kej5p6Q5ZCO6L2s5o2i5Li65YaF6YOoIFNvdXJjZSDnu5PmnoTjgIIKCiMjIyA0LjIgWFBNIOWOn+eUn+agvOW8jwpgYGAKW3hwbV0KbmFtZT1QZXRyb2xldW0gU3RhYmxlCnVybD1odHRwOi8vcmVwby5leGFtcGxlLmNvbS9kaXN0cy9zdGFibGUKdHlwZT14cG0KZW5hYmxlZD15ZXMKZ3BnX2tleT1odHRwOi8vcmVwby5leGFtcGxlLmNvbS9rZXlzL3JlcG8ta2V5LmdwZwpgYGAKCiMjIyA0LjMg57uf5LiA5YaF6YOo6KGo56S6CmBgYHB5dGhvbgpTb3VyY2UgPSB7CiAgICAibmFtZSI6ICAgICBzdHIsCiAgICAidHlwZSI6ICAgICAiZGViIiB8ICJ4cG0iLAogICAgInVybCI6ICAgICAgc3RyLAogICAgInN1aXRlIjogICBzdHIsICAgICAgICMgZGViIG9ubHkKICAgICJjb21wb25lbnRzIjogW3N0cl0sICAgIyBkZWIgb25seQogICAgImFyY2giOiAgICAgc3RyLAogICAgImVuYWJsZWQiOiAgYm9vbCwKICAgICJncGciOiAgICAgIHN0ciB8IE5vbmUsCn0KYGBgCgojIyA1LiDljIXmoLzlvI8gKC5vaWwpCgpgYGAKcGFja2FnZS5vaWwgKHRhci5neikK4pSc4pSA4pSAIHVzci9iaW4vcHJvZ3JhbQrilJzilIDilIAgdXNyL3NoYXJlL21hbi9tYW4xL3Byb2dyYW0uMQrilJzilIDilIAgZXRjL3Byb2dyYW0uY29uZgrilJTilIDilIAgeHBtLwogICAg4pSc4pSA4pSAIGNvbnRyb2wgICAgICAgICAgIyBQYWNrYWdlL1ZlcnNpb24vRGVwZW5kcy9BcmNoaXRlY3R1cmUKICAgIOKUnOKUgOKUgCBmaWxlcy5saXN0ICAgICAgICMg5paH5Lu25riF5Y2VCiAgICDilJzilIDilIAgY2hlY2tzdW1zLnNoYTI1NiAjIFNIQTI1NiDmoKHpqowKICAgIOKUlOKUgOKUgCBwbWFkZC8gICAgICAgICAgIyDljIXnrqHnkIbohJrmnKwKICAgICAgICDilJzilIDilIAgcHJlaW5zdAogICAgICAgIOKUnOKUgOKUgCBwb3N0aW5zdAogICAgICAgIOKUnOKUgOKUgCBwcmVybQogICAgICAgIOKUlOKUgOKUgCBwb3N0cm0KYGBgCgojIyA2LiDmlbDmja7lupPorr7orqEKCiMjIyA2LjEgc3RhdHVzLmRiIChKU09OKQpgYGBqc29uCnsKICAidmltIjogewogICAgInZlcnNpb24iOiAiMjo5LjEuMDk2NC0xIiwKICAgICJpbnN0YWxsZWRfYXQiOiAiMjAyNi0wOC0wNFQxNTozMDowMCIsCiAgICAiZmlsZXMiOiBbInVzci9iaW4vdmltIiwgInVzci9zaGFyZS9tYW4vbWFuMS92aW0uMS5neiJdLAogICAgInNvdXJjZSI6ICJ0dW5hLWJvb2t3b3JtIiwKICAgICJhcmNoaXRlY3R1cmUiOiAiYXJtNjQiCiAgfQp9CmBgYAoKIyMjIDYuMiBjb2ZmZWUuanNvbgpgYGBqc29uCnsiY3Jhc2hlcyI6IDQyfQpgYGAKCiMjIyA2LjMg5Zue5rua5b+r54WnCmBgYGpzb24KewogICJwa2ciOiAidmltIiwKICAidGltZXN0YW1wIjogIjIwMjYtMDgtMDRUMTU6MzA6MDAiLAogICJmaWxlcyI6IHsKICAgICIvdXNyL2Jpbi92aW0iOiAiPGJhc2U2ND4iLAogICAgIi9ldGMvdmltL3ZpbXJjIjogIjxiYXNlNjQ+IgogIH0KfQpgYGAKCiMjIDcuIOWQjuerr+WNj+iurgoK5ZCO56uv77yIeG0veG1jc++8iemAmui/hyBzdGRpbi9zdGRvdXQg5LiO5YmN56uv6YCa5L+h77yaCgojIyMgNy4xIOWuieijhQpgYGAK5YmN56uvIOKGkiDlkI7nq686IGluc3RhbGwgPGZpbGVfcGF0aD4K5ZCO56uvIOKGkiDliY3nq686IE9LXG4g5oiWIEVSUk9SOiA8bXNnPlxuCmBgYAoKIyMjIDcuMiDljbjovb0KYGBgCuWJjeerryDihpIg5ZCO56uvOiByZW1vdmUgPHBhY2thZ2VfbmFtZT4K5ZCO56uvIOKGkiDliY3nq686IE9LXG4g5oiWIEVSUk9SOiA8bXNnPlxuCmBgYAoKIyMjIDcuMyDmoKHpqowKYGBgCuWJjeerryDihpIg5ZCO56uvOiB2ZXJpZnkgPHBhY2thZ2VfbmFtZT4K5ZCO56uvIOKGkiDliY3nq686IE9LXG4g5oiWIEZBSUw6IDxyZWFzb24+XG4KYGBgCgojIyA4LiDlronlhajmqKHlnosKCnwg5bGCIHwg5py65Yi2IHwKfC0tLXwtLS18Cnwg5LiL6L29IHwgSFRUUFMgKyBTSEEyNTYg5qCh6aqMIHwKfCDnrb7lkI0gfCBHUEcgUmVsZWFzZSDnrb7lkI0gfAp8IOWuieijhSB8IGRwa2cg5p2D6ZmQ5qOA5p+lIHwKfCDplIEgfCBmbG9jayDpmLLmraLlubblj5EgfAp8IOWbnua7miB8IOaWh+S7tuW/q+eFpyArIOS6i+WKoeaXpeW/lyB8CgojIyA5LiDmgKfog73ogIPomZEKCi0g57Si5byV57yT5a2Y77yaYC92YXIvY2FjaGUveHBtLyotUGFja2FnZXNgIOacrOWcsOe8k+WtmAotIOaVsOaNruW6k++8mkpTT07vvIjlsI/ns7vnu5/lpJ/nlKjvvIzkuIfnuqfljIXpnIDmjaIgU1FMaXRl77yJCi0g5LiL6L2977yad2dldCDmtYHlvI8gKyDov5vluqblm57osIMKLSDkvp3otZbop6PmnpDvvJrnuq/lhoXlrZjlm77pgY3ljobvvIxPKFYrRSkKCiMjIDEwLiDmnKrmnaXmianlsZUKCi0gWyBdIFJ1c3Qg5ZCO56uvICh4bXJzKQotIFsgXSDlop7ph4/mm7TmlrDvvIhic2RpZmbvvIkKLSBbIF0gUDJQIOWIhuWPkQotIFsgXSDljp/lrZDkuovliqHvvIhjb3B5LW9uLXdyaXRl77yJCi0gWyBdIOS4jiBzeXN0ZW1kL3J1bml0IOacjeWKoeeuoeeQhumbhuaIkAo=
+# XPM 架构设计
+
+## 1. 设计哲学
+
+XPM 的设计遵循三条铁律：
+
+1. **石油驱动（Oil-Driven）**：资源以石油储备百分比计量，而非传统的内存/磁盘
+2. **禁止 apt**：`apt-get` / `apt-cache` 被明确禁止，仅使用 `wget` + `dpkg` + 自研后端
+3. **后端语言无关**：前端是 Python，后端可以是 Python/C#/Rust/Go，只要遵守协议
+
+## 2. 系统架构
+
+```
+┌─────────────────────────────────────────────┐
+│              xpm (Python 前端)               │
+│  ┌─────────┐ ┌─────────┐ ┌───────────────┐ │
+│  │  CLI    │ │  GUI    │ │  Diagnostics  │ │
+│  └────┬────┘ └────┬────┘ └───────┬───────┘ │
+│       └─────────────┴──────────────┘        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │ Dependency│  │ Database │  │  Sources  │  │
+│  │ Resolver  │  │  (JSON)  │  │  Parser  │  │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  │
+└───────┼───────────────┼─────────────┼────────┘
+        │               │             │
+        ▼               ▼             ▼
+┌─────────────────────────────────────────────┐
+│           xm / xmcs (后端)                 │
+│  ┌────────┐  ┌────────┐  ┌───────────┐  │
+│  │  Lock  │  │  GPG   │  │ Rollback  │  │
+│  └───┬────┘  └───┬────┘  └─────┬─────┘  │
+│      └──────────────┴─────────────┘        │
+└──────────────────┬──────────────────────────┘
+                   │
+                   ▼
+        ┌──────────────────┐
+        │  dpkg (解包引擎)  │
+        └──────────────────┘
+```
+
+## 3. 数据流
+
+### 3.1 安装流程
+
+```
+用户: xpm install vim
+  │
+  ▼
+[1/4] 正在选中未安装的软件包：vim
+  │
+  ▼
+DependencyResolver.resolve("vim")
+  ├── 解析 Depends: vim-common (= 2:9.1), libtinfo6 (>= 6)
+  ├── 递归解析每个依赖
+  └── 返回有序列表: [libtinfo6, vim-common, vim]
+  │
+  ▼
+[2/4] 正在选中 vim (2:9.1.0964-1)
+  │
+  ▼
+对每个包:
+  ├── wget 下载 .deb (进度条)
+  ├── 校验 SHA256
+  ├── Transaction.snapshot() 保存旧文件
+  ├── [3/4] 正在解压 vim (2:9.1.0964-1)...
+  │     └── xm install <file.deb> → dpkg -i
+  └── [4/4] 正在设置 vim (2:9.1.0964-1)...
+        └── 执行 postinst 脚本
+  │
+  ▼
+PackageDB.add(name, version, files)
+  │
+  ▼
+✅ 安装完成
+```
+
+### 3.2 卸载流程
+
+```
+用户: xpm remove vim
+  │
+  ▼
+[1/3] 正在寻找与 vim 相关的文件...
+  ├── PackageDB 查 files.list
+  └── 检查是否有其他包依赖 vim
+  │
+  ▼
+[2/3] 正在卸载 vim (2:9.1.0964-1)...
+  └── xm remove vim → dpkg --remove vim
+  │
+  ▼
+[3/3] 正在清除 vim (2:9.1.0964-1)...
+  └── 删除 /etc/xpm/configs/vim/
+  │
+  ▼
+PackageDB.remove("vim")
+  │
+  ▼
+✅ 卸载完成
+```
+
+## 4. 源格式
+
+### 4.1 Debian 格式
+```
+deb <url> <suite> [components...]
+```
+解析后转换为内部 Source 结构。
+
+### 4.2 XPM 原生格式
+```
+[xpm]
+name=Petroleum Stable
+url=http://repo.example.com/dists/stable
+type=xpm
+enabled=yes
+gpg_key=http://repo.example.com/keys/repo-key.gpg
+```
+
+### 4.3 统一内部表示
+```python
+Source = {
+    "name":     str,
+    "type":     "deb" | "xpm",
+    "url":      str,
+    "suite":   str,       # deb only
+    "components": [str],   # deb only
+    "arch":     str,
+    "enabled":  bool,
+    "gpg":      str | None,
+}
+```
+
+## 5. 包格式 (.oil)
+
+```
+package.oil (tar.gz)
+├── usr/bin/program
+├── usr/share/man/man1/program.1
+├── etc/program.conf
+└── xpm/
+    ├── control          # Package/Version/Depends/Architecture
+    ├── files.list       # 文件清单
+    ├── checksums.sha256 # SHA256 校验
+    └── pmadd/          # 包管理脚本
+        ├── preinst
+        ├── postinst
+        ├── prerm
+        └── postrm
+```
+
+## 6. 数据库设计
+
+### 6.1 status.db (JSON)
+```json
+{
+  "vim": {
+    "version": "2:9.1.0964-1",
+    "installed_at": "2026-08-04T15:30:00",
+    "files": ["usr/bin/vim", "usr/share/man/man1/vim.1.gz"],
+    "source": "tuna-bookworm",
+    "architecture": "arm64"
+  }
+}
+```
+
+### 6.2 coffee.json
+```json
+{"crashes": 42}
+```
+
+### 6.3 回滚快照
+```json
+{
+  "pkg": "vim",
+  "timestamp": "2026-08-04T15:30:00",
+  "files": {
+    "/usr/bin/vim": "<base64>",
+    "/etc/vim/vimrc": "<base64>"
+  }
+}
+```
+
+## 7. 后端协议
+
+后端（xm/xmcs）通过 stdin/stdout 与前端通信：
+
+### 7.1 安装
+```
+前端 → 后端: install <file_path>
+后端 → 前端: OK\n 或 ERROR: <msg>\n
+```
+
+### 7.2 卸载
+```
+前端 → 后端: remove <package_name>
+后端 → 前端: OK\n 或 ERROR: <msg>\n
+```
+
+### 7.3 校验
+```
+前端 → 后端: verify <package_name>
+后端 → 前端: OK\n 或 FAIL: <reason>\n
+```
+
+## 8. 安全模型
+
+| 层 | 机制 |
+|---|---|
+| 下载 | HTTPS + SHA256 校验 |
+| 签名 | GPG Release 签名 |
+| 安装 | dpkg 权限检查 |
+| 锁 | flock 防止并发 |
+| 回滚 | 文件快照 + 事务日志 |
+
+## 9. 性能考虑
+
+- 索引缓存：`/var/cache/xpm/*-Packages` 本地缓存
+- 数据库：JSON（小系统够用，万级包需换 SQLite）
+- 下载：wget 流式 + 进度回调
+- 依赖解析：纯内存图遍历，O(V+E)
+
+## 10. 未来扩展
+
+- [ ] Rust 后端 (xmrs)
+- [ ] 增量更新（bsdiff）
+- [ ] P2P 分发
+- [ ] 原子事务（copy-on-write）
+- [ ] 与 systemd/runit 服务管理集成

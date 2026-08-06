@@ -1,1 +1,177 @@
-IyBYUE0g5omT5YyF5oyH5Y2XCgojIyAxLiDnm67lvZXnu5PmnoQKCmBgYApteXByb2dyYW0vCuKUnOKUgOKUgCB1c3IvCuKUgiAgIOKUnOKUgOKUgCBiaW4vCuKUgiAgIOKUgiAgIOKUlOKUgOKUgCBteXByb2cgICAgICAgICAg4oaQIOWPr+aJp+ihjOaWh+S7tgrilIIgICDilJTilIDilIAgc2hhcmUvCuKUgiAgICAgICDilJzilIDilIAgbWFuLwrilIIgICAgICAg4pSCICAg4pSU4pSA4pSAIG1hbjEvCuKUgiAgICAgICDilIIgICAgICAg4pSU4pSA4pSAIG15cHJvZy4xICDihpAgbWFuIOaJi+WGjArilIIgICAgICAg4pSU4pSA4pSAIGRvYy8K4pSCICAgICAgICAgICDilJTilIDilIAgbXlwcm9nLwrilIIgICAgICAgICAgICAgICDilJTilIDilIAgUkVBRE1FCuKUnOKUgOKUgCBldGMvCuKUgiAgIOKUlOKUgOKUgCBteXByb2cuY29uZiAgICAgICAgICDihpAg6YWN572u5paH5Lu2CuKUlOKUgOKUgCB4cG0vCiAgICDilJzilIDilIAgY29udHJvbCAgICAgICAgICAgICAg4oaQIOWMheWFg+aVsOaNru+8iOW/hemcgO+8iQogICAg4pSc4pSA4pSAIGZpbGVzLmxpc3QgICAgICAgICAgIOKGkCDmlofku7bmuIXljZXvvIjmnoTlu7rml7boh6rliqjnlJ/miJDvvIkKICAgIOKUnOKUgOKUgCBjaGVja3N1bXMuc2hhMjU2ICAgIOKGkCDmoKHpqozlkozvvIjmnoTlu7rml7boh6rliqjnlJ/miJDvvIkKICAgIOKUlOKUgOKUgCBwbWFkZC8gICAgICAgICAgICAgIOKGkCDljIXnrqHnkIbohJrmnKzvvIjlj6/pgInvvIkKICAgICAgICDilJzilIDilIAgcHJlaW5zdCAgICAgICAgICDihpAg5a6J6KOF5YmN5omn6KGMCiAgICAgICAg4pSc4pSA4pSAIHBvc3RpbnN0ICAgICAgICAg4oaQIOWuieijheWQjuaJp+ihjAogICAgICAgIOKUnOKUgOKUgCBwcmVybSAgICAgICAgICAgIOKGkCDljbjovb3liY3miafooYwKICAgICAgICDilJTilIDilIAgcG9zdHJtICAgICAgICAgICDihpAg5Y246L295ZCO5omn6KGMCmBgYAoKIyMgMi4gY29udHJvbCDmlofku7YKCmBgYApQYWNrYWdlOiBteXByb2cKVmVyc2lvbjogMS4wLTEKQXJjaGl0ZWN0dXJlOiBhbGwKRGVwZW5kczogbGliYzYgKD49IDIuMjgpLCBsaWJzc2wzClNlY3Rpb246IHV0aWxzClByaW9yaXR5OiBvcHRpb25hbApEZXNjcmlwdGlvbjog5oiR55qE56iL5bqPCiDov5nmmK/nqIvluo/nmoTplb/mj4/ov7DjgIIKIOWPr+S7peWkmuihjO+8jOavj+ihjOe8qei/m+S4gOS4quepuuagvOOAggpgYGAKCiMjIyDlrZfmrrXor7TmmI4KCnwg5a2X5q61IHwg5b+F6ZyAIHwg6K+05piOIHwKfC0tLXwtLS18LS0tfAp8IFBhY2thZ2UgfCDinIUgfCDljIXlkI3vvIjlsI/lhpnvvIzml6DnqbrmoLzvvIkgfAp8IFZlcnNpb24gfCDinIUgfCDniYjmnKzlj7fvvIjlj6/lkKsgZXBvY2g6IOWmgiBgMjoxLjBg77yJIHwKfCBBcmNoaXRlY3R1cmUgfCDinIUgfCBgYWxsYCAvIGBhbWQ2NGAgLyBgYXJtNjRgIC8gYGkzODZgIHwKfCBEZXBlbmRzIHwg4p2MIHwg5L6d6LWW5YiX6KGoIHwKfCBTZWN0aW9uIHwg4p2MIHwg5YiG57G7IHwKfCBQcmlvcml0eSB8IOKdjCB8IOS8mOWFiOe6pyB8CnwgRGVzY3JpcHRpb24gfCDinIUgfCDmj4/ov7DvvIjpppbooYznn63mj4/ov7DvvIzlkI7nu63plb/mj4/ov7DvvIkgfAoKIyMjIERlcGVuZHMg6K+t5rOVCgpgYGAKRGVwZW5kczogbGliYzYgKD49IDIuMjgpLCBsaWJzc2wzCiMg5aSa5L6d6LWW55So6YCX5Y+35YiG6ZqUCgpEZXBlbmRzOiBsaWJndGstMy0wIHwgbGliZ3RrLTQtMCwgbGliYzYKIyB8IOihqOekuiBPUiDpgInmi6kKCkRlcGVuZHM6IHB5dGhvbjM6YW55ICg+PSAzLjgpCiMgOmFueSDooajnpLrku7vmhI/mnrbmnoQKYGBgCgojIyAzLiDmnoTlu7oKCmBgYGJhc2gKeHBtIGJ1aWxkIG15cHJvZ3JhbS8KIyDovpPlh7o6IG15cHJvZ18xLjAtMV9hbGwub2lsCmBgYAoK5p6E5bu66L+H56iL77yaCjEuIOivu+WPliBgeHBtL2NvbnRyb2xgCjIuIOmBjeWOhuebruW9le+8jOeUn+aIkCBgeHBtL2ZpbGVzLmxpc3RgCjMuIOiuoeeul+avj+S4quaWh+S7tiBTSEEyNTbvvIzlhpnlhaUgYHhwbS9jaGVja3N1bXMuc2hhMjU2YAo0LiDmiZPljIXkuLogYC5vaWxg77yIdGFyLmd677yJCgojIyA0LiDljIXnrqHnkIbohJrmnKwKCiMjIyBwcmVpbnN077yI5a6J6KOF5YmN77yJCmBgYGJhc2gKIyEvYmluL3NoCnNldCAtZQojIOajgOafpeezu+e7n+imgeaxggppZiAhIGNvbW1hbmQgLXYgcHl0aG9uMyA+L2Rldi9udWxsOyB0aGVuCiAgICBlY2hvICLpnIDopoEgcHl0aG9uMyIKICAgIGV4aXQgMQpmaQojIOWkh+S7veaXp+mFjee9rgpbIC1mIC9ldGMvbXlwcm9nLmNvbmYgXSAmJiBjcCAvZXRjL215cHJvZy5jb25mIC9ldGMvbXlwcm9nLmNvbmYuYmFrCmV4aXQgMApgYGAKCiMjIyBwb3N0aW5zdO+8iOWuieijheWQju+8iQpgYGBiYXNoCiMhL2Jpbi9zaApzZXQgLWUKIyDliJvlu7rnlKjmiLcKdXNlcmFkZCAtciAtcyAvc2Jpbi9ub2xvZ2luIG15cHJvZyAyPi9kZXYvbnVsbCB8fCB0cnVlCiMg6K6+572u5p2D6ZmQCmNobW9kIDc1NSAvdXNyL2Jpbi9teXByb2cKY2hvd24gcm9vdDpyb290IC91c3IvYmluL215cHJvZwojIOabtOaWsOe8k+WtmAplY2hvICJteXByb2cgaW5zdGFsbGVkIHN1Y2Nlc3NmdWxseSIKZXhpdCAwCmBgYAoKIyMjIHByZXJt77yI5Y246L295YmN77yJCmBgYGJhc2gKIyEvYmluL3NoCnNldCAtZQojIOWBnOatouacjeWKoQpzeXN0ZW1jdGwgc3RvcCBteXByb2cgMj4vZGV2L251bGwgfHwgdHJ1ZQpleGl0IDAKYGBgCgojIyMgcG9zdHJt77yI5Y246L295ZCO77yJCmBgYGJhc2gKIyEvYmluL3NoCnNldCAtZQojIOa4heeQhgpybSAtZiAvZXRjL215cHJvZy5jb25mLmJhawojIOWIoOmZpOeUqOaItwp1c2VyZGVsIG15cHJvZyAyPi9kZXYvbnVsbCB8fCB0cnVlCmV4aXQgMApgYGAKCiMjIDUuIOWuieijheiHqueglOWMhQoKYGBgYmFzaAojIOaWueW8jyAxOiDnm7TmjqXmjIflrprmlofku7YKeHBtIGluc3RhbGwgLi9teXByb2dfMS4wLTFfYWxsLm9pbAoKIyDmlrnlvI8gMjog5pS+5Yiw5rqQ55uu5b2V5ZCOIHVwZGF0ZQpjcCBteXByb2dfMS4wLTFfYWxsLm9pbCAvdmFyL2NhY2hlL3hwbS9hcmNoaXZlcy8KeHBtIHVwZGF0ZQp4cG0gaW5zdGFsbCBteXByb2cKYGBgCgojIyA2LiDnrb7lkI0KCiMjIyDnlJ/miJDlr4bpkqUKYGBgYmFzaApncGcgLS1nZW4ta2V5CmdwZyAtLWV4cG9ydCAtLWFybW9yIHlvdXIta2V5LWlkID4gcHVibGljLmtleQpgYGAKCiMjIyDnrb7lkI3ljIUKYGBgYmFzaApncGcgLS1sb2NhbC11c2VyIHlvdXIta2V5LWlkIC0tZGV0YWNoLXNpZ24gbXlwcm9nXzEuMC0xX2FsbC5vaWwKIyDnlJ/miJAgbXlwcm9nXzEuMC0xX2FsbC5vaWwuc2lnCmBgYAoKIyMjIOWcqOa6kOS4remFjee9rgpgYGAKW3hwbV0KbmFtZT1NeSBSZXBvCnVybD1odHRwOi8vcmVwby5leGFtcGxlLmNvbS9kaXN0cy9zdGFibGUKdHlwZT14cG0KZ3BnX2tleT1odHRwOi8vcmVwby5leGFtcGxlLmNvbS9rZXlzL3B1YmxpYy5rZXkKZW5hYmxlZD15ZXMKYGBgCgojIyA3LiDmnIDkvbPlrp7ot7UKCjEuICoq5LiA5Liq5YyF5LiA5Liq5Yqf6IO9KirvvJrkuI3opoHmiZPljIUi5YWo5a625qG2IgoyLiAqKuaYvuW8j+WjsOaYjuS+nei1lioq77ya5LiN6KaB5YGH6K6+57O757uf5pyJ5p+Q5Liq5bqTCjMuICoq6YWN572u5paH5Lu25pS+IC9ldGMqKu+8mui/kOihjOaXtuaVsOaNruaUviAvdmFyCjQuICoq6ISa5pys5L+d5oyB566A5Y2VKirvvJpwcmVpbnN0L3Bvc3RpbnN0IOimgeW/q+mAn+aJp+ihjAo1LiAqKueJiOacrOWPt+mAkuWinioq77ya6YG15b6qIERlYmlhbiDniYjmnKzop4TojIMKNi4gKirmtYvor5Xlronoo4Uv5Y246L29KirvvJrlnKjlubLlh4Dnjq/looPkuK3pqozor4EKNy4gKirlhpkgbWFuIOaJi+WGjCoq77yaYC91c3Ivc2hhcmUvbWFuL21hbjEvYAo4LiAqKuetvuWQjeS9oOeahOWMhSoq77yaR1BHIOetvuWQjeaYr+S/oeS7u+eahOWfuuehgAo=
+# XPM 打包指南
+
+## 1. 目录结构
+
+```
+myprogram/
+├── usr/
+│   ├── bin/
+│   │   └── myprog          ← 可执行文件
+│   └── share/
+│       ├── man/
+│       │   └── man1/
+│       │       └── myprog.1  ← man 手册
+│       └── doc/
+│           └── myprog/
+│               └── README
+├── etc/
+│   └── myprog.conf          ← 配置文件
+└── xpm/
+    ├── control              ← 包元数据（必需）
+    ├── files.list           ← 文件清单（构建时自动生成）
+    ├── checksums.sha256    ← 校验和（构建时自动生成）
+    └── pmadd/              ← 包管理脚本（可选）
+        ├── preinst          ← 安装前执行
+        ├── postinst         ← 安装后执行
+        ├── prerm            ← 卸载前执行
+        └── postrm           ← 卸载后执行
+```
+
+## 2. control 文件
+
+```
+Package: myprog
+Version: 1.0-1
+Architecture: all
+Depends: libc6 (>= 2.28), libssl3
+Section: utils
+Priority: optional
+Description: 我的程序
+ 这是程序的长描述。
+ 可以多行，每行缩进一个空格。
+```
+
+### 字段说明
+
+| 字段 | 必需 | 说明 |
+|---|---|---|
+| Package | ✅ | 包名（小写，无空格） |
+| Version | ✅ | 版本号（可含 epoch: 如 `2:1.0`） |
+| Architecture | ✅ | `all` / `amd64` / `arm64` / `i386` |
+| Depends | ❌ | 依赖列表 |
+| Section | ❌ | 分类 |
+| Priority | ❌ | 优先级 |
+| Description | ✅ | 描述（首行短描述，后续长描述） |
+
+### Depends 语法
+
+```
+Depends: libc6 (>= 2.28), libssl3
+# 多依赖用逗号分隔
+
+Depends: libgtk-3-0 | libgtk-4-0, libc6
+# | 表示 OR 选择
+
+Depends: python3:any (>= 3.8)
+# :any 表示任意架构
+```
+
+## 3. 构建
+
+```bash
+xpm build myprogram/
+# 输出: myprog_1.0-1_all.oil
+```
+
+构建过程：
+1. 读取 `xpm/control`
+2. 遍历目录，生成 `xpm/files.list`
+3. 计算每个文件 SHA256，写入 `xpm/checksums.sha256`
+4. 打包为 `.oil`（tar.gz）
+
+## 4. 包管理脚本
+
+### preinst（安装前）
+```bash
+#!/bin/sh
+set -e
+# 检查系统要求
+if ! command -v python3 >/dev/null; then
+    echo "需要 python3"
+    exit 1
+fi
+# 备份旧配置
+[ -f /etc/myprog.conf ] && cp /etc/myprog.conf /etc/myprog.conf.bak
+exit 0
+```
+
+### postinst（安装后）
+```bash
+#!/bin/sh
+set -e
+# 创建用户
+useradd -r -s /sbin/nologin myprog 2>/dev/null || true
+# 设置权限
+chmod 755 /usr/bin/myprog
+chown root:root /usr/bin/myprog
+# 更新缓存
+echo "myprog installed successfully"
+exit 0
+```
+
+### prerm（卸载前）
+```bash
+#!/bin/sh
+set -e
+# 停止服务
+systemctl stop myprog 2>/dev/null || true
+exit 0
+```
+
+### postrm（卸载后）
+```bash
+#!/bin/sh
+set -e
+# 清理
+rm -f /etc/myprog.conf.bak
+# 删除用户
+userdel myprog 2>/dev/null || true
+exit 0
+```
+
+## 5. 安装自研包
+
+```bash
+# 方式 1: 直接指定文件
+xpm install ./myprog_1.0-1_all.oil
+
+# 方式 2: 放到源目录后 update
+cp myprog_1.0-1_all.oil /var/cache/xpm/archives/
+xpm update
+xpm install myprog
+```
+
+## 6. 签名
+
+### 生成密钥
+```bash
+gpg --gen-key
+gpg --export --armor your-key-id > public.key
+```
+
+### 签名包
+```bash
+gpg --local-user your-key-id --detach-sign myprog_1.0-1_all.oil
+# 生成 myprog_1.0-1_all.oil.sig
+```
+
+### 在源中配置
+```
+[xpm]
+name=My Repo
+url=http://repo.example.com/dists/stable
+type=xpm
+gpg_key=http://repo.example.com/keys/public.key
+enabled=yes
+```
+
+## 7. 最佳实践
+
+1. **一个包一个功能**：不要打包"全家桶"
+2. **显式声明依赖**：不要假设系统有某个库
+3. **配置文件放 /etc**：运行时数据放 /var
+4. **脚本保持简单**：preinst/postinst 要快速执行
+5. **版本号递增**：遵循 Debian 版本规范
+6. **测试安装/卸载**：在干净环境中验证
+7. **写 man 手册**：`/usr/share/man/man1/`
+8. **签名你的包**：GPG 签名是信任的基础

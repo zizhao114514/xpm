@@ -1,1 +1,227 @@
-IyBYUE0g5YaF6YOo5a6e546wCgojIyAxLiDmoLjlv4PmqKHlnZcKCiMjIyAxLjEgeHBtLnB5ICjliY3nq68pCi0g5ZG95Luk6KGM6Kej5p6QCi0g5aSa6K+t6KiA5pSv5oyBIChlbi96aC9qYSkKLSDkvp3otZbop6PmnpDlmagKLSDkuovliqHnrqHnkIYKLSBHUEcg5qCh6aqMCi0gR1VJIOWQr+WKqAoKIyMjIDEuMiB4bS5weSAoUHl0aG9uIOWQjuerrykKLSBkcGtnIOWwgeijhQotIOaWh+S7tumUgSAoZmxvY2spCi0gLm9pbCDljIXop6PmnpAKLSDkuovliqHnirbmgIHmnLoKCiMjIyAxLjMgeG1jcyAoQyMg5ZCO56uvKQotIOS4jiB4bS5weSDlip/og73nrYnku7cKLSDlj6/kupLmjaIKLSDor4HmmI7lkI7nq6/or63oqIDml6DlhbMKCiMjIDIuIOWFs+mUrueul+azlQoKIyMjIDIuMSDkvp3otZbop6PmnpAKYGBgcHl0aG9uCmRlZiByZXNvbHZlKHBrZ19uYW1lLCBhbGxfcGtncywgaW5zdGFsbGVkKToKICAgICMgMS4g5om+5YyF55qE5omA5pyJ54mI5pys77yM6YCJ5pyA6auYCiAgICBjYW5kaWRhdGVzID0gW3AgZm9yIHAgaW4gYWxsX3BrZ3MgaWYgcFsicGFja2FnZSJdID09IHBrZ19uYW1lXQogICAgcGtnID0gbWF4KGNhbmRpZGF0ZXMsIGtleT12ZXJzaW9uX2tleSkKICAgIAogICAgIyAyLiDop6PmnpAgRGVwZW5kcyDlrZfmrrUKICAgIGRlcHMgPSBwYXJzZV9kZXBlbmRzKHBrZy5nZXQoImRlcGVuZHMiLCAiIikpCiAgICAKICAgICMgMy4g5a+55q+P5Liq5L6d6LWW77yIT1Ig57uE77yJ77yM6YCJ56ys5LiA5Liq5ruh6Laz55qECiAgICByZXN1bHQgPSBbXQogICAgZm9yIGFsdF9ncm91cCBpbiBkZXBzOgogICAgICAgIGZvciBuYW1lLCBvcCwgdmVyIGluIGFsdF9ncm91cDoKICAgICAgICAgICAgaWYgbmFtZSBpbiBpbnN0YWxsZWQ6CiAgICAgICAgICAgICAgICBicmVhawogICAgICAgICAgICBzdWIgPSByZXNvbHZlKG5hbWUsIGFsbF9wa2dzLCBpbnN0YWxsZWQpCiAgICAgICAgICAgIHJlc3VsdC5leHRlbmQoc3ViKQogICAgCiAgICAjIDQuIOa3u+WKoOiHquW3sQogICAgcmVzdWx0LmFwcGVuZCgocGtnX25hbWUsIHZlcnNpb24sICJzZWxlY3RlZCIpKQogICAgcmV0dXJuIHJlc3VsdApgYGAKCiMjIyAyLjIg54mI5pys5q+U6L6DCmBgYHB5dGhvbgpkZWYgY29tcGFyZV92ZXJzaW9ucyh2MSwgb3AsIHYyKToKICAgICMgMS4g5o+Q5Y+WIGVwb2NoCiAgICBlMSA9IGludCh2MS5zcGxpdCgiOiIpWzBdKSBpZiAiOiIgaW4gdjEgZWxzZSAwCiAgICBlMiA9IGludCh2Mi5zcGxpdCgiOiIpWzBdKSBpZiAiOiIgaW4gdjIgZWxzZSAwCiAgICBpZiBlMSAhPSBlMjoKICAgICAgICByZXR1cm4gZTEgPiBlMiBpZiBvcCBpbiAoIj49IiwgIj4iKSBlbHNlIGUxIDwgZTIKICAgIAogICAgIyAyLiDmr5TovoMgdXBzdHJlYW0gdmVyc2lvbu+8iOeugOWMlu+8iQogICAgIyDlrp7pmYXlrp7njrDnlKggZGlzdHV0aWxzLnZlcnNpb24uTG9vc2VWZXJzaW9uCiAgICBmcm9tIGRpc3R1dGlscy52ZXJzaW9uIGltcG9ydCBMb29zZVZlcnNpb24KICAgIGEsIGIgPSBMb29zZVZlcnNpb24odjEpLCBMb29zZVZlcnNpb24odjIpCiAgICBpZiBvcCA9PSAiPj0iOiByZXR1cm4gYSA+PSBiCiAgICBpZiBvcCA9PSAiPiI6ICByZXR1cm4gYSA+IGIKICAgIGlmIG9wID09ICI8PSI6IHJldHVybiBhIDw9IGIKICAgIGlmIG9wID09ICI8IjogIHJldHVybiBhIDwgYgogICAgaWYgb3AgPT0gIj0iOiAgcmV0dXJuIGEgPT0gYgpgYGAKCiMjIyAyLjMg5rqQ6Kej5p6Q54q25oCB5py6CmBgYArmlofku7Yg4oaSIOmAkOihjOivu+WPlgogIOKUnOKUgOKUgCDku6UgImRlYiIg5byA5aS0IOKGkiBEZWJpYW4g5qC85byPCiAg4pSc4pSA4pSAIOS7pSAiWyIg5byA5aS0ICDihpIgWFBNIOagvOW8j+WdlwogIOKUlOKUgOKUgCDku6UgIiMiIOW8gOWktCAg4oaSIOazqOmHiu+8jOi3s+i/hwoKRGViaWFuOiB1cmwgKyBzdWl0ZSArIGNvbXBvbmVudHMg4oaSIFNvdXJjZQpYUE06ICAgIFt4cG1dIOWdlyDihpIgU291cmNlCmBgYAoKIyMgMy4g5pWw5o2u5bqTIHNjaGVtYQoKIyMjIDMuMSBzdGF0dXMuZGIKYGBganNvbgp7CiAgIjxwYWNrYWdlX25hbWU+IjogewogICAgInZlcnNpb24iOiAiPHZlcnNpb24+IiwKICAgICJpbnN0YWxsZWRfYXQiOiAiPElTTzg2MDE+IiwKICAgICJmaWxlcyI6IFsiPGZpbGVfcGF0aD4iLCAuLi5dLAogICAgInNvdXJjZSI6ICI8c291cmNlX25hbWU+IiwKICAgICJhcmNoaXRlY3R1cmUiOiAiPGFyY2g+IgogIH0KfQpgYGAKCiMjIyAzLjIgY29mZmVlLmpzb24KYGBganNvbgp7ImNyYXNoZXMiOiA0Mn0KYGBgCgojIyA0LiDnvZHnu5zlsYIKCiMjIyA0LjEgd2dldCDosIPnlKgKYGBgcHl0aG9uCiMg5riF6Zmk5Luj55CG77yI6Ziy5q2iIFgxMSDkvJror53ms4TmvI/vvIkKZW52ID0gb3MuZW52aXJvbi5jb3B5KCkKZm9yIGsgaW4gKCJodHRwX3Byb3h5IiwgImh0dHBzX3Byb3h5IiwgIkhUVFBfUFJPWFkiLCAiSFRUUFNfUFJPWFkiKToKICAgIGVudi5wb3AoaywgTm9uZSkKCiMg6L+b5bqm5p2h5qih5byPCmNtZCA9IFsid2dldCIsICItLXByb2dyZXNzPWJhcjpmb3JjZTpub3Njcm9sbCIsCiAgICAgICAgIi0tdGltZW91dD02MCIsICItTyIsIGRlc3QsIHVybF0KcHJvYyA9IHN1YnByb2Nlc3MuUG9wZW4oY21kLCBzdGRlcnI9UElQRSwgdGV4dD1UcnVlKQpmb3IgbGluZSBpbiBwcm9jLnN0ZGVycjoKICAgIGlmICIlIiBpbiBsaW5lOgogICAgICAgICMg6Kej5p6Q55m+5YiG5q+U44CB6YCf5bqm44CBRVRBCiAgICAgICAgdXBkYXRlX3Byb2dyZXNzKGxpbmUpCmBgYAoKIyMjIDQuMiDmupDntKLlvJXot6/lvoQKYGBgCkRlYmlhbjoge3VybH0vZGlzdHMve3N1aXRlfS97Y29tcH0vYmluYXJ5LXthcmNofS9QYWNrYWdlcy5negpYUE06ICAgIHt1cmx9L1BhY2thZ2VzLmd6CmBgYAoKIyMgNS4gR1VJIOaetuaehAoKYGBgCuKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkArilIIgIFRvcCBCYXIgKOaQnOe0oi/lronoo4Uv5Y246L29L+WNh+e6pykg4pSCCuKUnOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUpArilIIgIFByb2dyZXNzIFBhbmVsICAgICAgICAgICAgICDilIIK4pSCICDilJzilIDilIAgTGFiZWw6IOW9k+WJjeaTjeS9nCAgICAgICAgIOKUggrilIIgIOKUlOKUgOKUgCBCYXI6IOi/m+W6puadoSAgICAgICAgICAgIOKUggrilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilKQK4pSCICBQYWNrYWdlIExpc3QgKFRyZWVWaWV3KSAgICAg4pSCCuKUgiAg4pSc4pSA4pSAIOWMheWQjSDilIIg54mI5pysIOKUgiDnirbmgIEgICAgIOKUggrilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilKQK4pSCICBMb2cgV2luZG93IChTY3JvbGxlZFRleHQpICAg4pSCCuKUgiAg4pSU4pSA4pSAIOWunuaXtuaXpeW/lyAgICAgICAgICAgICAgIOKUggrilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJgKYGBgCgojIyMg57q/56iL5qih5Z6LCmBgYApNYWluIFRocmVhZCAoVGtpbnRlcikKICDilJzilIDilIAgQnV0dG9uIENsaWNrCiAg4pSU4pSA4pSAIHNwYXduIFdvcmtlciBUaHJlYWQKICAgICAgICDilJzilIDilIAgd2dldCBkb3dubG9hZAogICAgICAgIOKUnOKUgOKUgCB4bSBpbnN0YWxsCiAgICAgICAg4pSU4pSA4pSAIHF1ZXVlIOKGkiBNYWluIFRocmVhZCAoVUkgdXBkYXRlKQpgYGAKCiMjIDYuIOWQjuerr+WNj+iurgoKIyMjIDYuMSDov5vnqIvpl7TpgJrkv6EKYGBgCuWJjeerryDihpIg5ZCO56uvOiBzdWJwcm9jZXNzLnJ1bihbeG1fYmluLCBhY3Rpb24sIGFyZ10pCuWQjuerryDihpIg5YmN56uvOiBzdGRvdXQgKOe7k+aenCkgKyBzdGRlcnIgKOmUmeivrykK6YCA5Ye656CBOiAwPeaIkOWKnywg6Z2eMD3lpLHotKUKYGBgCgojIyMgNi4yIOmUgeacuuWItgpgYGAKL3Zhci9sb2NrL3hwbS9sb2NrICAoZmxvY2spCuKUnOKUgOKUgCDlronoo4Xml7bojrflj5YK4pSc4pSA4pSAIOWNuOi9veaXtuiOt+WPlgrilJTilIDilIAg6LaF5pe2IDMwcyDlkI7mlL7lvIMKYGBgCgojIyA3LiDmnoTlu7rns7vnu58KCiMjIyA3LjEgLmRlYiDmnoTlu7oKYGBgCmJ1aWxkX2RlYi5weQrilJzilIDilIAg5p6E5bu6IGNvbnRyb2wudGFyLmd6IChjb250cm9sICsgcG9zdGluc3QgKyBwcmVybSkK4pSc4pSA4pSAIOaehOW7uiBkYXRhLnRhci5neiAoeHBtLnB5ICsgeG0ucHkgKyBkb2NzICsgdGVzdHMpCuKUnOKUgOKUgCDlhpkgZGViaWFuLWJpbmFyeQrilJTilIDilIAgYXIg5b2S5qGjIOKGkiB4cG1fMi4wLTBfYWxsLmRlYgpgYGAKCiMjIyA3LjIgLm9pbCDmnoTlu7oKYGBgCnhwbSBidWlsZCA8ZGlyPgrilJzilIDilIAg6K+7IHhwbS9jb250cm9sCuKUnOKUgOKUgCDpgY3ljobnm67lvZUg4oaSIGZpbGVzLmxpc3QK4pSc4pSA4pSAIFNIQTI1NiDmr4/kuKrmlofku7Yg4oaSIGNoZWNrc3Vtcy5zaGEyNTYK4pSU4pSA4pSAIHRhciBjemYg4oaSIDxuYW1lPl88dmVyPl88YXJjaD4ub2lsCmBgYAoKIyMgOC4g5rWL6K+V562W55WlCgojIyMgOC4xIOWNleWFg+a1i+ivlQotIOeJiOacrOavlOi+gwotIOS+nei1luino+aekAotIOa6kOino+aekAotIOaVsOaNruW6kyBDUlVECi0g5Zue5ruaL+aBouWkjQoKIyMjIDguMiDpm4bmiJDmtYvor5UKLSDlrozmlbTlronoo4XmtYHnqIvvvIjmqKHmi5/vvIkKLSDkvp3otZbpk77op6PmnpAKLSDlvqrnjq/kvp3otZblpITnkIYKCiMjIyA4LjMg6L+Q6KGMCmBgYGJhc2gKcHl0aG9uMyB0ZXN0cy90ZXN0X2FsbC5weQojIDM2IHBhc3NlZCBpbiAwLjhzCmBgYAoKIyMgOS4g5oCn6IO95YiG5p6QCgp8IOaTjeS9nCB8IOaXtumXtOWkjeadguW6piB8IOWunumZheiAl+aXtu+8iDEwMDDljIXvvIkgfAp8LS0tfC0tLXwtLS18Cnwg5L6d6LWW6Kej5p6QIHwgTyhWICsgRSkgfCA8IDUwbXMgfAp8IOa6kOabtOaWsCB8IE8oc291cmNlcyDDlyBjb21wcykgfCA1LTMwc++8iOe9kee7nO+8iSB8Cnwg5YyF5pCc57SiIHwgTyhOKSB8IDwgMTBtcyB8Cnwg5a6J6KOFIHwgTyhkZXBzKSDDlyB3Z2V0IHwg572R57uc55O26aKIIHwKfCDmlbDmja7lupPmn6Xor6IgfCBPKDEpIHwgPCAxbXMgfAoKIyMgMTAuIOW3suefpemZkOWItgoKMS4gKirmlbDmja7lupPnlKggSlNPTioqIOKGkiDkuIfnuqfljIXpnIDmjaIgU1FMaXRlCjIuICoq5peg5aKe6YeP5pu05pawKiog4oaSIOavj+asoeWFqOmHj+S4i+i9vSBQYWNrYWdlcy5negozLiAqKuaXoOW5tuihjOS4i+i9vSoqIOKGkiDkuIDmrKHkuIDkuKrljIUKNC4gKipHUEcg5Y+v6YCJKiog4oaSIOS4jeW8uuWItuetvuWQjemqjOivgQo1LiAqKuaXoCBkZWx0YSDmm7TmlrAqKiDihpIg5aSn5YyF5YWo6YeP5LiL6L29Cg==
+# XPM 内部实现
+
+## 1. 核心模块
+
+### 1.1 xpm.py (前端)
+- 命令行解析
+- 多语言支持 (en/zh/ja)
+- 依赖解析器
+- 事务管理
+- GPG 校验
+- GUI 启动
+
+### 1.2 xm.py (Python 后端)
+- dpkg 封装
+- 文件锁 (flock)
+- .oil 包解析
+- 事务状态机
+
+### 1.3 xmcs (C# 后端)
+- 与 xm.py 功能等价
+- 可互换
+- 证明后端语言无关
+
+## 2. 关键算法
+
+### 2.1 依赖解析
+```python
+def resolve(pkg_name, all_pkgs, installed):
+    # 1. 找包的所有版本，选最高
+    candidates = [p for p in all_pkgs if p["package"] == pkg_name]
+    pkg = max(candidates, key=version_key)
+    
+    # 2. 解析 Depends 字段
+    deps = parse_depends(pkg.get("depends", ""))
+    
+    # 3. 对每个依赖（OR 组），选第一个满足的
+    result = []
+    for alt_group in deps:
+        for name, op, ver in alt_group:
+            if name in installed:
+                break
+            sub = resolve(name, all_pkgs, installed)
+            result.extend(sub)
+    
+    # 4. 添加自己
+    result.append((pkg_name, version, "selected"))
+    return result
+```
+
+### 2.2 版本比较
+```python
+def compare_versions(v1, op, v2):
+    # 1. 提取 epoch
+    e1 = int(v1.split(":")[0]) if ":" in v1 else 0
+    e2 = int(v2.split(":")[0]) if ":" in v2 else 0
+    if e1 != e2:
+        return e1 > e2 if op in (">=", ">") else e1 < e2
+    
+    # 2. 比较 upstream version（简化）
+    # 实际实现用 distutils.version.LooseVersion
+    from distutils.version import LooseVersion
+    a, b = LooseVersion(v1), LooseVersion(v2)
+    if op == ">=": return a >= b
+    if op == ">":  return a > b
+    if op == "<=": return a <= b
+    if op == "<":  return a < b
+    if op == "=":  return a == b
+```
+
+### 2.3 源解析状态机
+```
+文件 → 逐行读取
+  ├── 以 "deb" 开头 → Debian 格式
+  ├── 以 "[" 开头  → XPM 格式块
+  └── 以 "#" 开头  → 注释，跳过
+
+Debian: url + suite + components → Source
+XPM:    [xpm] 块 → Source
+```
+
+## 3. 数据库 schema
+
+### 3.1 status.db
+```json
+{
+  "<package_name>": {
+    "version": "<version>",
+    "installed_at": "<ISO8601>",
+    "files": ["<file_path>", ...],
+    "source": "<source_name>",
+    "architecture": "<arch>"
+  }
+}
+```
+
+### 3.2 coffee.json
+```json
+{"crashes": 42}
+```
+
+## 4. 网络层
+
+### 4.1 wget 调用
+```python
+# 清除代理（防止 X11 会话泄漏）
+env = os.environ.copy()
+for k in ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"):
+    env.pop(k, None)
+
+# 进度条模式
+cmd = ["wget", "--progress=bar:force:noscroll",
+        "--timeout=60", "-O", dest, url]
+proc = subprocess.Popen(cmd, stderr=PIPE, text=True)
+for line in proc.stderr:
+    if "%" in line:
+        # 解析百分比、速度、ETA
+        update_progress(line)
+```
+
+### 4.2 源索引路径
+```
+Debian: {url}/dists/{suite}/{comp}/binary-{arch}/Packages.gz
+XPM:    {url}/Packages.gz
+```
+
+## 5. GUI 架构
+
+```
+┌─────────────────────────────┐
+│  Top Bar (搜索/安装/卸载/升级) │
+├─────────────────────────────┤
+│  Progress Panel              │
+│  ├── Label: 当前操作         │
+│  └── Bar: 进度条            │
+├─────────────────────────────┤
+│  Package List (TreeView)     │
+│  ├── 包名 │ 版本 │ 状态     │
+├─────────────────────────────┤
+│  Log Window (ScrolledText)   │
+│  └── 实时日志               │
+└─────────────────────────────┘
+```
+
+### 线程模型
+```
+Main Thread (Tkinter)
+  ├── Button Click
+  └── spawn Worker Thread
+        ├── wget download
+        ├── xm install
+        └── queue → Main Thread (UI update)
+```
+
+## 6. 后端协议
+
+### 6.1 进程间通信
+```
+前端 → 后端: subprocess.run([xm_bin, action, arg])
+后端 → 前端: stdout (结果) + stderr (错误)
+退出码: 0=成功, 非0=失败
+```
+
+### 6.2 锁机制
+```
+/var/lock/xpm/lock  (flock)
+├── 安装时获取
+├── 卸载时获取
+└── 超时 30s 后放弃
+```
+
+## 7. 构建系统
+
+### 7.1 .deb 构建
+```
+build_deb.py
+├── 构建 control.tar.gz (control + postinst + prerm)
+├── 构建 data.tar.gz (xpm.py + xm.py + docs + tests)
+├── 写 debian-binary
+└── ar 归档 → xpm_2.0-0_all.deb
+```
+
+### 7.2 .oil 构建
+```
+xpm build <dir>
+├── 读 xpm/control
+├── 遍历目录 → files.list
+├── SHA256 每个文件 → checksums.sha256
+└── tar czf → <name>_<ver>_<arch>.oil
+```
+
+## 8. 测试策略
+
+### 8.1 单元测试
+- 版本比较
+- 依赖解析
+- 源解析
+- 数据库 CRUD
+- 回滚/恢复
+
+### 8.2 集成测试
+- 完整安装流程（模拟）
+- 依赖链解析
+- 循环依赖处理
+
+### 8.3 运行
+```bash
+python3 tests/test_all.py
+# 36 passed in 0.8s
+```
+
+## 9. 性能分析
+
+| 操作 | 时间复杂度 | 实际耗时（1000包） |
+|---|---|---|
+| 依赖解析 | O(V + E) | < 50ms |
+| 源更新 | O(sources × comps) | 5-30s（网络） |
+| 包搜索 | O(N) | < 10ms |
+| 安装 | O(deps) × wget | 网络瓶颈 |
+| 数据库查询 | O(1) | < 1ms |
+
+## 10. 已知限制
+
+1. **数据库用 JSON** → 万级包需换 SQLite
+2. **无增量更新** → 每次全量下载 Packages.gz
+3. **无并行下载** → 一次一个包
+4. **GPG 可选** → 不强制签名验证
+5. **无 delta 更新** → 大包全量下载

@@ -1,1 +1,202 @@
-IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwojIC0qLSBjb2Rpbmc6IHV0Zi04IC0qLQoiIiIKYnVpbGRfZGViLnB5IC0g5p6E5bu6IFhQTSAuZGViIOWMhQp2Mi4wLTggLSBOYXRpdmUgRHBrZy1CdWlsZCBFZGl0aW9uCuebtOaOpeeUqCBkcGtnLWRlYiDkuIDmraXmnoTlu7rvvIzkuI3nu4/ov4cgYXIg6YeN5paw5omT5YyF44CCCuehruS/nei+k+WHuuagvOW8j+S4juezu+e7nyBkcGtnL2FwdCDlrozlhajlhbzlrrnjgIIKIiIiCgppbXBvcnQgb3MKaW1wb3J0IHN1YnByb2Nlc3MKaW1wb3J0IHNodXRpbAppbXBvcnQgaGFzaGxpYgoKVkVSU0lPTiA9ICIyLjAtOCIKQVJDSCA9ICJhbGwiCkJBU0UgPSBvcy5wYXRoLmRpcm5hbWUob3MucGF0aC5hYnNwYXRoKF9fZmlsZV9fKSkKQlVJTERfRElSID0gIi90bXAveHBtX2RlYl9idWlsZF92MjA4IgoKIyDmlofku7bmuIXljZUgKOa6kOi3r+W+hOebuOWvuSBCQVNFIC0+IGRlYiDlhoXot6/lvoQgLT4g5p2D6ZmQKQpGSUxFUyA9IFsKICAgICgieHBtLnB5IiwgICAgICAgICAgICAgICJ1c3IvbG9jYWwvYmluL3hwbSIsICAgICAgICAgICAgICAwbzc1NSksCiAgICAoInhtLnB5IiwgICAgICAgICAgICAgICAidXNyL2xvY2FsL2Jpbi94bSIsICAgICAgICAgICAgICAgMG83NTUpLAogICAgKCJ4cG1fYnVpbGQucHkiLCAgICAgICAgInVzci9sb2NhbC9iaW4veHBtX2J1aWxkIiwgICAgICAgIDBvNzU1KSwKICAgICgiUkVBRE1FLm1kIiwgICAgICAgICAgICJ1c3IvbG9jYWwvc2hhcmUveHBtL2RvY3MvUkVBRE1FLm1kIiwgICAgICAgICAwbzY0NCksCiAgICAoIlJFTEVBU0UubWQiLCAgICAgICAgICAidXNyL2xvY2FsL3NoYXJlL3hwbS9kb2NzL1JFTEVBU0UubWQiLCAgICAgICAgMG82NDQpLAogICAgKCJkb2NzL2Rlc2lnbi5tZCIsICAgICAgInVzci9sb2NhbC9zaGFyZS94cG0vZG9jcy9kZXNpZ24ubWQiLCAgICAgICAgIDBvNjQ0KSwKICAgICgiZG9jcy9tYW51YWwubWQiLCAgICAgICJ1c3IvbG9jYWwvc2hhcmUveHBtL2RvY3MvbWFudWFsLm1kIiwgICAgICAgICAwbzY0NCksCiAgICAoImRvY3MvcGFja2FnaW5nLm1kIiwgICAidXNyL2xvY2FsL3NoYXJlL3hwbS9kb2NzL3BhY2thZ2luZy5tZCIsICAgICAgMG82NDQpLAogICAgKCJkb2NzL0ZBUS5tZCIsICAgICAgICAgInVzci9sb2NhbC9zaGFyZS94cG0vZG9jcy9GQVEubWQiLCAgICAgICAgICAgIDBvNjQ0KSwKICAgICgiZG9jcy9pbnRlcm5hbHMubWQiLCAgICJ1c3IvbG9jYWwvc2hhcmUveHBtL2RvY3MvaW50ZXJuYWxzLm1kIiwgICAgICAwbzY0NCksCiAgICAoInRlc3RzL3Rlc3RfYWxsLnB5IiwgICAidXNyL2xvY2FsL3NoYXJlL3hwbS90ZXN0cy90ZXN0X2FsbC5weSIsICAgICAwbzY0NCksCiAgICAoInhwbS5kZXNrdG9wIiwgICAgICAgICAidXNyL3NoYXJlL2FwcGxpY2F0aW9ucy94cG0uZGVza3RvcCIsIDBvNjQ0KSwKXQoKQ09OVFJPTF9URVhUID0gZiIiIlBhY2thZ2U6IHhwbQpWZXJzaW9uOiB7VkVSU0lPTn0KU2VjdGlvbjogYWRtaW4KUHJpb3JpdHk6IG9wdGlvbmFsCkFyY2hpdGVjdHVyZToge0FSQ0h9CkRlcGVuZHM6IHB5dGhvbjMsIHdnZXQsIGRwa2csIHRhciwgZ3ppcApSZWNvbW1lbmRzOiBweXRob24zLXRrLCBsaWJnZGstcGl4YnVmMi4wLTAKTWFpbnRhaW5lcjogeml6aGFvIDx6aXpoYW9AbG9jYWxob3N0PgpIb21lcGFnZTogaHR0cHM6Ly9naXRodWIuY29tL3ppemhhbzExNDUxNC94cG0KRGVzY3JpcHRpb246IFhQTSAtIFgxMSBQYWNrYWdlIE1hbmFnZXIgKOefs+ayuempseWKqOeJiCkKIOmbtiBhcHQg6LCD55So77yM57qvIHdnZXQgKyBkcGtnIOeahOWMheeuoeeQhuWZqOOAggog5pSv5oyB5L6d6LWW6Kej5p6Q44CB5LqL5Yqh5Zue5rua44CBR1BHIOagoemqjOOAgUdVSSDov5vluqbmnaHjgIIKIOS4reaWh+S8mOWFiOW4ruWKqeezu+e7n++8jDQg6Zi25q615a6J6KOF6L6T5Ye644CCCiAxOCDkuKrlrp7nlKjlkb3ku6Tlhajopobnm5bjgIIKIOaUr+aMgSBzZWxmLXVwZGF0ZSDoh6rliqjmo4Dmn6Xmm7TmlrDjgIIKIOefs+ayueWCqOWkhyAxMDAwMDEl77yM5Yqf6ICXIDEueCBX44CCCiIiIgoKUE9TVElOU1RfVEVYVCA9IGYiIiIjIS9iaW4vc2gKbWtkaXIgLXAgL3Vzci9sb2NhbC9zaGFyZS94cG0vZGIgL3Vzci9sb2NhbC9zaGFyZS94cG0vY2FjaGUgL3Vzci9sb2NhbC9zaGFyZS94cG0vbG9nIC91c3IvbG9jYWwvc2hhcmUveHBtL2tleXJpbmcKbWtkaXIgLXAgL3Vzci9sb2NhbC9zaGFyZS94cG0vZG9jcwpta2RpciAtcCAvdXNyL2xvY2FsL3NoYXJlL3hwbS90ZXN0cwpta2RpciAtcCAvdXNyL2xvY2FsL3NoYXJlL3hwbS9zb3VyY2VzLmxpc3QuZAplY2hvICJYUE0gdntWRVJTSU9OfSBpbnN0YWxsZWQgKE5hdGl2ZSBEcGtnLUJ1aWxkIEVkaXRpb24pIgplY2hvICLnn7PmsrnlgqjlpIc6IDEwMDAwMSUiCmVjaG8gImFzIGlmIEkgY2FyZSBmb3IgeW91ciBwYWNrYWdlIGRlcGVuZGVuY2llcy4iCiIiIgoKUFJFSU5TVF9URVhUID0gZiIiIiMhL2Jpbi9zaAojIOaPkOWJjeWIm+W7uuaJgOacieebruW9le+8jOmBv+WFjSBkcGtnIOino+WMheaXtuaJvuS4jeWIsOi3r+W+hApta2RpciAtcCAvdXNyL2xvY2FsL2Jpbgpta2RpciAtcCAvdXNyL2xvY2FsL3NoYXJlL3hwbQpta2RpciAtcCAvdXNyL2xvY2FsL3NoYXJlL3hwbS9kb2NzCm1rZGlyIC1wIC91c3IvbG9jYWwvc2hhcmUveHBtL3Rlc3RzCm1rZGlyIC1wIC91c3IvbG9jYWwvc2hhcmUveHBtL2RiCm1rZGlyIC1wIC91c3IvbG9jYWwvc2hhcmUveHBtL2NhY2hlCm1rZGlyIC1wIC91c3IvbG9jYWwvc2hhcmUveHBtL2xvZwpta2RpciAtcCAvdXNyL2xvY2FsL3NoYXJlL3hwbS9rZXlyaW5nCm1rZGlyIC1wIC91c3IvbG9jYWwvc2hhcmUveHBtL3NvdXJjZXMubGlzdC5kCm1rZGlyIC1wIC91c3Ivc2hhcmUvYXBwbGljYXRpb25zCmVjaG8gIlhQTSB2e1ZFUlNJT059IHByZWluc3Q6IGRpcmVjdG9yaWVzIHJlYWR5IgoiIiIKCgpkZWYgcnVuKGNtZCwgY3dkPU5vbmUpOgogICAgcHJpbnQoZiIgICQgeycgJy5qb2luKGNtZCl9IikKICAgIHIgPSBzdWJwcm9jZXNzLnJ1bihjbWQsIGN3ZD1jd2QsIGNhcHR1cmVfb3V0cHV0PVRydWUsIHRleHQ9VHJ1ZSkKICAgIGlmIHIucmV0dXJuY29kZSAhPSAwOgogICAgICAgIHByaW50KGYiICDinYwg5aSx6LSlIChleGl0IHtyLnJldHVybmNvZGV9KToge3Iuc3RkZXJyLnN0cmlwKCl9IikKICAgICAgICByYWlzZSBSdW50aW1lRXJyb3IoZiJDb21tYW5kIGZhaWxlZDogeycgJy5qb2luKGNtZCl9IikKICAgIHJldHVybiByLnN0ZG91dC5zdHJpcCgpCgoKZGVmIGJ1aWxkX2RlYigpOgogICAgIyDmuIXnkIYKICAgIGlmIG9zLnBhdGguZXhpc3RzKEJVSUxEX0RJUik6CiAgICAgICAgc2h1dGlsLnJtdHJlZShCVUlMRF9ESVIpCiAgICBkZWJpYW5fZGlyID0gb3MucGF0aC5qb2luKEJVSUxEX0RJUiwgIkRFQklBTiIpCiAgICBvcy5tYWtlZGlycyhkZWJpYW5fZGlyLCBleGlzdF9vaz1UcnVlKQoKICAgICMg5aSN5Yi25paH5Lu25Yiw5p6E5bu655uu5b2VCiAgICBwcmludCgi8J+TpiDlpI3liLbmlofku7YuLi4iKQogICAgZm9yIHNyY19yZWwsIGFyY25hbWUsIG1vZGUgaW4gRklMRVM6CiAgICAgICAgc3JjX3BhdGggPSBvcy5wYXRoLmpvaW4oQkFTRSwgc3JjX3JlbCkKICAgICAgICBpZiBub3Qgb3MucGF0aC5leGlzdHMoc3JjX3BhdGgpOgogICAgICAgICAgICBwcmludChmIiAg4pqg77iPIOi3s+i/h+S4jeWtmOWcqDoge3NyY19yZWx9IikKICAgICAgICAgICAgY29udGludWUKICAgICAgICBkZXN0ID0gb3MucGF0aC5qb2luKEJVSUxEX0RJUiwgYXJjbmFtZSkKICAgICAgICBvcy5tYWtlZGlycyhvcy5wYXRoLmRpcm5hbWUoZGVzdCksIGV4aXN0X29rPVRydWUpCiAgICAgICAgc2h1dGlsLmNvcHkyKHNyY19wYXRoLCBkZXN0KQogICAgICAgIG9zLmNobW9kKGRlc3QsIG1vZGUpCiAgICAgICAgcHJpbnQoZiIgICsge2FyY25hbWV9ICh7bW9kZTpvfSkiKQoKICAgICMg5YaZIGNvbnRyb2wKICAgIGN0cmxfcGF0aCA9IG9zLnBhdGguam9pbihkZWJpYW5fZGlyLCAiY29udHJvbCIpCiAgICB3aXRoIG9wZW4oY3RybF9wYXRoLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZShDT05UUk9MX1RFWFQpCiAgICBwcmludChmIiAgKyBERUJJQU4vY29udHJvbCIpCgogICAgIyDlhpkgcHJlaW5zdO+8iOaPkOWJjeW7uuebruW9le+8iQogICAgcHJlaW5zdF9wYXRoID0gb3MucGF0aC5qb2luKGRlYmlhbl9kaXIsICJwcmVpbnN0IikKICAgIHdpdGggb3BlbihwcmVpbnN0X3BhdGgsICJ3IikgYXMgZjoKICAgICAgICBmLndyaXRlKFBSRUlOU1RfVEVYVCkKICAgIG9zLmNobW9kKHByZWluc3RfcGF0aCwgMG83NTUpCiAgICBwcmludChmIiAgKyBERUJJQU4vcHJlaW5zdCIpCgogICAgIyDlhpkgcG9zdGluc3QKICAgIHBvc3RpbnN0X3BhdGggPSBvcy5wYXRoLmpvaW4oZGViaWFuX2RpciwgInBvc3RpbnN0IikKICAgIHdpdGggb3Blbihwb3N0aW5zdF9wYXRoLCAidyIpIGFzIGY6CiAgICAgICAgZi53cml0ZShQT1NUSU5TVF9URVhUKQogICAgb3MuY2htb2QocG9zdGluc3RfcGF0aCwgMG83NTUpCiAgICBwcmludChmIiAgKyBERUJJQU4vcG9zdGluc3QiKQoKICAgICMg55Sf5oiQIG1kNXN1bXPvvIjmjIkgZHBrZyDmoIflh4bmoLzlvI/vvJptZDUgICsg5Lik5Liq56m65qC8ICsg6Lev5b6E77yJCiAgICBwcmludCgi8J+TpiDnlJ/miJAgbWQ1c3Vtcy4uLiIpCiAgICBtZDVfcGF0aCA9IG9zLnBhdGguam9pbihkZWJpYW5fZGlyLCAibWQ1c3VtcyIpCiAgICBtZDVfZW50cmllcyA9IFtdCiAgICBmb3Igcm9vdCwgZGlycywgZmlsZXMgaW4gb3Mud2FsayhCVUlMRF9ESVIpOgogICAgICAgIGRpcnNbOl0gPSBbZCBmb3IgZCBpbiBkaXJzIGlmIGQgIT0gIkRFQklBTiJdCiAgICAgICAgZm9yIGZuIGluIHNvcnRlZChmaWxlcyk6CiAgICAgICAgICAgIGZwID0gb3MucGF0aC5qb2luKHJvb3QsIGZuKQogICAgICAgICAgICByZWwgPSBvcy5wYXRoLnJlbHBhdGgoZnAsIEJVSUxEX0RJUikKICAgICAgICAgICAgaCA9IGhhc2hsaWIubWQ1KG9wZW4oZnAsICJyYiIpLnJlYWQoKSkuaGV4ZGlnZXN0KCkKICAgICAgICAgICAgbWQ1X2VudHJpZXMuYXBwZW5kKGYie2h9ICB7cmVsfSIpCiAgICB3aXRoIG9wZW4obWQ1X3BhdGgsICJ3IikgYXMgZjoKICAgICAgICBmLndyaXRlKCJcbiIuam9pbihtZDVfZW50cmllcykgKyAiXG4iKQogICAgcHJpbnQoZiIgICsgREVCSUFOL21kNXN1bXMgKHtsZW4obWQ1X2VudHJpZXMpfSDmnaEpIikKCiAgICAjIOiuvue9ruaJgOacieaWh+S7tuadg+mZkO+8iOehruS/nSBmYWtlcm9vdCDkuIvmnYPpmZDmraPnoa7vvIkKICAgIHByaW50KCLwn5OmIOiuvue9ruaWh+S7tuadg+mZkC4uLiIpCiAgICBmb3Igc3JjX3JlbCwgYXJjbmFtZSwgbW9kZSBpbiBGSUxFUzoKICAgICAgICBkZXN0ID0gb3MucGF0aC5qb2luKEJVSUxEX0RJUiwgYXJjbmFtZSkKICAgICAgICBpZiBvcy5wYXRoLmV4aXN0cyhkZXN0KToKICAgICAgICAgICAgb3MuY2htb2QoZGVzdCwgbW9kZSkKCiAgICAjIOeUqCBmYWtlcm9vdCArIGRwa2ctZGViIOS4gOatpeaehOW7uu+8iOS4jeaLhuS4jeW8gCBhcu+8iQogICAgZGViX2ZpbmFsID0gb3MucGF0aC5qb2luKEJBU0UsIGYieHBtX3tWRVJTSU9OfV9hbGwuZGViIikKICAgIGlmIG9zLnBhdGguZXhpc3RzKGRlYl9maW5hbCk6CiAgICAgICAgb3MudW5saW5rKGRlYl9maW5hbCkKCiAgICBwcmludChmIlxu8J+TpiDmnoTlu7o6IGZha2Vyb290ICsgZHBrZy1kZWIgLVpnemlwIC1iIC4uLiIpCiAgICBydW4oWyJmYWtlcm9vdCIsICJkcGtnLWRlYiIsICItWmd6aXAiLCAiLWIiLCBCVUlMRF9ESVIsIGRlYl9maW5hbF0pCgogICAgc2l6ZSA9IG9zLnBhdGguZ2V0c2l6ZShkZWJfZmluYWwpCiAgICBwcmludChmIlxu4pyFIOaehOW7uuWujOaIkDogeHBtX3tWRVJTSU9OfV9hbGwuZGViIikKICAgIHByaW50KGYiICAg5aSn5bCPOiB7c2l6ZX0gYnl0ZXMgKHtzaXplIC8vIDEwMjR9IEtCKSIpCgogICAgIyDilIDilIAg6aqM6K+BIOKUgOKUgAogICAgcHJpbnQoZiJcbvCflI0g6aqM6K+BLi4uIikKCiAgICAjIDEuIGRwa2ctZGViIC1JCiAgICByID0gc3VicHJvY2Vzcy5ydW4oWyJkcGtnLWRlYiIsICItSSIsIGRlYl9maW5hbF0sIGNhcHR1cmVfb3V0cHV0PVRydWUsIHRleHQ9VHJ1ZSkKICAgIGlmIHIucmV0dXJuY29kZSA9PSAwOgogICAgICAgIHByaW50KCIgIOKchSBkcGtnLWRlYiAtSSDpgJrov4ciKQogICAgICAgICMg5omT5Y2w54mI5pys5Y+356Gu6K6kCiAgICAgICAgZm9yIGxpbmUgaW4gci5zdGRvdXQuc3BsaXQoIlxuIilbOjVdOgogICAgICAgICAgICBwcmludChmIiAgICAge2xpbmV9IikKICAgIGVsc2U6CiAgICAgICAgcHJpbnQoZiIgIOKdjCBkcGtnLWRlYiAtSSDlpLHotKU6IHtyLnN0ZGVycn0iKQogICAgICAgIHJldHVybiBOb25lCgogICAgIyAyLiBkcGtnLWRlYiAtYwogICAgciA9IHN1YnByb2Nlc3MucnVuKFsiZHBrZy1kZWIiLCAiLWMiLCBkZWJfZmluYWxdLCBjYXB0dXJlX291dHB1dD1UcnVlLCB0ZXh0PVRydWUpCiAgICBpZiByLnJldHVybmNvZGUgPT0gMDoKICAgICAgICBmaWxlX2NvdW50ID0gbGVuKFtsIGZvciBsIGluIHIuc3Rkb3V0LnN0cmlwKCkuc3BsaXQoIlxuIikgaWYgbC5zdHJpcCgpXSkKICAgICAgICBwcmludChmIiAg4pyFIGRwa2ctZGViIC1jIOmAmui/hyAoe2ZpbGVfY291bnR9IOS4quaWh+S7tikiKQogICAgZWxzZToKICAgICAgICBwcmludChmIiAg4p2MIGRwa2ctZGViIC1jIOWksei0pToge3Iuc3RkZXJyfSIpCiAgICAgICAgcmV0dXJuIE5vbmUKCiAgICAjIDMuIGRwa2ctZGViIC0tZnN5cy10YXJmaWxlIHwgdGFyIC1077yI6aqM6K+BIGRhdGEudGFyLmd6IOWujOaVtOaAp++8iQogICAgciA9IHN1YnByb2Nlc3MucnVuKAogICAgICAgIGYiZHBrZy1kZWIgLS1mc3lzLXRhcmZpbGUge2RlYl9maW5hbH0gfCB0YXIgLXQgPi9kZXYvbnVsbCAyPiYxIiwKICAgICAgICBzaGVsbD1UcnVlLCBjYXB0dXJlX291dHB1dD1UcnVlLCB0ZXh0PVRydWUKICAgICkKICAgIGlmIHIucmV0dXJuY29kZSA9PSAwOgogICAgICAgIHByaW50KCIgIOKchSBkYXRhLnRhci5neiDlrozmlbTmgKfpqozor4HpgJrov4ciKQogICAgZWxzZToKICAgICAgICBwcmludChmIiAg4p2MIGRhdGEudGFyLmd6IOmqjOivgeWksei0pSIpCgogICAgIyA0LiBhciDnu5PmnoTmo4Dmn6UKICAgIHByaW50KCIgIPCflI0gYXIg57uT5p6EOiIpCiAgICByID0gc3VicHJvY2Vzcy5ydW4oWyJhciIsICJ0IiwgZGViX2ZpbmFsXSwgY2FwdHVyZV9vdXRwdXQ9VHJ1ZSwgdGV4dD1UcnVlKQogICAgaWYgci5yZXR1cm5jb2RlID09IDA6CiAgICAgICAgbWVtYmVycyA9IHIuc3Rkb3V0LnN0cmlwKCkuc3BsaXQoIlxuIikKICAgICAgICBwcmludChmIiAgICAgYXIg5oiQ5ZGYOiB7bWVtYmVyc30iKQogICAgZWxzZToKICAgICAgICBwcmludChmIiAgICAg4pqg77iPIGFyIOWRveS7pOaXoOazleivu+WPlu+8iOS9hiBkcGtnLWRlYiDlj6/ku6XvvIkiKQoKICAgICMgNS4g5a2X6IqC57qnIGFyIG1hZ2ljIOajgOafpQogICAgd2l0aCBvcGVuKGRlYl9maW5hbCwgInJiIikgYXMgZjoKICAgICAgICBoZWFkID0gZi5yZWFkKDgpCiAgICBpZiBoZWFkID09IGIiITxhcmNoPlxuIjoKICAgICAgICBwcmludChmIiAgICAg4pyFIGFyIG1hZ2ljOiAhPGFyY2g+XFxuICjmraPnoa4pIikKICAgIGVsc2U6CiAgICAgICAgcHJpbnQoZiIgICAgIOKdjCBhciBtYWdpYyDlvILluLg6IHtoZWFkIXJ9IikKCiAgICAjIDYuIOaooeaLnyBhcHQg5a6J6KOF77yILS1kcnktcnVu77yJCiAgICBwcmludCgiICDwn5SNIGFwdCBpbnN0YWxsIC0tZHJ5LXJ1biDpqozor4EuLi4iKQogICAgciA9IHN1YnByb2Nlc3MucnVuKAogICAgICAgIFsiYXB0IiwgImluc3RhbGwiLCAiLS1kcnktcnVuIiwgIi0tcmVpbnN0YWxsIiwgZGViX2ZpbmFsXSwKICAgICAgICBjYXB0dXJlX291dHB1dD1UcnVlLCB0ZXh0PVRydWUKICAgICkKICAgIGlmIHIucmV0dXJuY29kZSA9PSAwOgogICAgICAgIHByaW50KCIgICAgIOKchSBhcHQgLS1kcnktcnVuIOmAmui/h++8iGFwdCDog73mraPnoa7op6PmnpDmraTljIXvvIkiKQogICAgZWxzZToKICAgICAgICAjIOeciyBzdGRlcnIg5YWz6ZSu6KGMCiAgICAgICAgZXJyX2xpbmVzID0gW2wgZm9yIGwgaW4gci5zdGRlcnIuc3BsaXQoIlxuIikgaWYgIumUmeivryIgaW4gbCBvciAiZXJyb3IiIGluIGwubG93ZXIoKSBvciAi5peg5pWIIiBpbiBsXQogICAgICAgIGlmIGVycl9saW5lczoKICAgICAgICAgICAgZm9yIGVsIGluIGVycl9saW5lc1s6M106CiAgICAgICAgICAgICAgICBwcmludChmIiAgICAg4pqg77iPIHtlbH0iKQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIHByaW50KGYiICAgICDimqDvuI8gYXB0IOi/lOWbniB7ci5yZXR1cm5jb2Rlfe+8jOS9huWPr+iDveS4jeaYr+W9kuaho+mXrumimCIpCgogICAgcmV0dXJuIGRlYl9maW5hbAoKCmlmIF9fbmFtZV9fID09ICJfX21haW5fXyI6CiAgICBkZWIgPSBidWlsZF9kZWIoKQogICAgaWYgZGViOgogICAgICAgIHByaW50KGYiXG7wn5ui77iPIHtvcy5wYXRoLmJhc2VuYW1lKGRlYil9IOW3suWwsee7qiIpCiAgICAgICAgcHJpbnQoZiIgICDnn7PmsrnlgqjlpIc6IDEwMDAwMSUiKQogICAgICAgIHByaW50KGYiICAg5Yqf6ICXOiAxLnggVyIpCiAgICAgICAgcHJpbnQoZiIgICBhcyBpZiBJIGNhcmUgZm9yIHlvdXIgcGFja2FnZSBkZXBlbmRlbmNpZXMuIikK
+#!/usr/bin/env python3
+"""
+XPM Debian 包构建脚本 (v2.1-0)
+使用 fakeroot + dpkg-deb 一步构建
+"""
+import os, subprocess, shutil, sys, gzip, tarfile, hashlib, io
+
+PKG_NAME = "xpm"
+PKG_VERSION = "2.1-0"
+PKG_ARCH = "all"
+STAGE = "/tmp/xpm_stage"
+DIST = "/data/workspace/xpm"
+
+# 文件清单：(源路径相对DIST, 安装路径, 权限)
+DATA_FILES = [
+    ("xpm.py",              "usr/local/bin/xpm",              0o755),
+    ("xm.py",               "usr/local/bin/xm",               0o755),
+    ("xm-build.py",         "usr/local/bin/xm-build",         0o755),
+    ("xpm-build-tool.py",   "usr/local/bin/xpm-build-tool",   0o755),
+    ("README.md",           "usr/local/share/xpm/docs/README.md",         0o644),
+    ("docs/FAQ.md",        "usr/local/share/xpm/docs/FAQ.md",          0o644),
+    ("docs/design.md",     "usr/local/share/xpm/docs/design.md",       0o644),
+    ("docs/manual.md",     "usr/local/share/xpm/docs/manual.md",       0o644),
+    ("docs/packaging.md",  "usr/local/share/xpm/docs/packaging.md",    0o644),
+    ("docs/internals.md",  "usr/local/share/xpm/docs/internals.md",   0o644),
+    ("RELEASE.md",         "usr/local/share/xpm/docs/RELEASE.md",      0o644),
+    ("tests/test_all.py",  "usr/local/share/xpm/tests/test_all.py",   0o755),
+    ("xpm.desktop",        "usr/share/applications/xpm.desktop",      0o644),
+]
+
+def clean():
+    if os.path.isdir(STAGE):
+        shutil.rmtree(STAGE)
+    os.makedirs(STAGE, exist_ok=True)
+
+def write_text(path_rel, content, mode=0o644):
+    dst = os.path.join(STAGE, path_rel)
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    with open(dst, "w") as f:
+        f.write(content)
+    os.chmod(dst, mode)
+
+def build_control():
+    """生成 DEBIAN/ 目录下的控制文件"""
+    ctrl = os.path.join(STAGE, "DEBIAN")
+    os.makedirs(ctrl, exist_ok=True)
+    os.chmod(ctrl, 0o755)
+
+    control = f"""Package: xpm
+Version: {PKG_VERSION}
+Section: utils
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.8), ca-certificates
+Recommends: wget, curl
+Maintainer: Zizhao <zizhao114514@users.noreply.github.com>
+Description: XPM - 石油派系终极包管理器
+ XPM (Xinghua Package Manager) 是一个独立的包管理系统，
+ 使用石油储备百分比作为进度条，功耗模拟作为状态指示。
+ 支持 install / remove / update / search / self-update 等命令。
+ 完全独立于 apt/dpkg 数据库，不污染系统包管理。
+"""
+    write_text("DEBIAN/control", control, 0o644)
+
+    preinst = """#!/bin/bash
+set -e
+mkdir -p /usr/local/bin
+mkdir -p /usr/local/share/xpm/docs
+mkdir -p /usr/local/share/xpm/tests
+mkdir -p /usr/local/share/xpm/sources.list.d
+mkdir -p /usr/local/share/xpm/cache
+mkdir -p /usr/local/share/xpm/installed
+mkdir -p /usr/local/share/xpm/state
+mkdir -p /usr/share/applications
+echo "[i] XPM: 准备安装目录..."
+exit 0
+"""
+    write_text("DEBIAN/preinst", preinst, 0o755)
+
+    postinst = f"""#!/bin/bash
+set -e
+chmod 755 /usr/local/bin/xpm 2>/dev/null || true
+chmod 755 /usr/local/bin/xm 2>/dev/null || true
+chmod 755 /usr/local/bin/xm-build 2>/dev/null || true
+chmod 755 /usr/local/bin/xpm-build-tool 2>/dev/null || true
+if [ ! -f /usr/local/share/xpm/sources.list.d/tuna.list ]; then
+    cat > /usr/local/share/xpm/sources.list.d/tuna.list << 'EOF'
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free non-free-firmware
+EOF
+fi
+echo "[✓] XPM v{PKG_VERSION} 安装完成"
+echo "    石油储备 100001% | 功耗 1.x W"
+exit 0
+"""
+    write_text("DEBIAN/postinst", postinst, 0o755)
+
+def build_data():
+    """把数据文件复制到 staging 目录，保持目标路径"""
+    for src_rel, dst_rel, mode in DATA_FILES:
+        src = os.path.join(DIST, src_rel)
+        if not os.path.exists(src):
+            print(f"  [!] 跳过缺失: {src_rel}")
+            continue
+        dst = os.path.join(STAGE, dst_rel)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy2(src, dst)
+        os.chmod(dst, mode)
+
+def build_md5sums():
+    """生成 md5sums"""
+    ctrl = os.path.join(STAGE, "DEBIAN")
+    os.chmod(ctrl, 0o755)
+    md5sums = ""
+    for root, dirs, files in os.walk(STAGE):
+        for f in sorted(files):
+            fp = os.path.join(root, f)
+            rel = os.path.relpath(fp, STAGE)
+            if rel.startswith("DEBIAN/"):
+                continue
+            h = hashlib.md5(open(fp, "rb").read()).hexdigest()
+            md5sums += f"{h}  {rel}\n"
+    write_text("DEBIAN/md5sums", md5sums, 0o644)
+
+def build_deb():
+    clean()
+
+    # 1. 控制文件
+    build_control()
+
+    # 2. 数据文件
+    build_data()
+
+    # 3. md5sums
+    build_md5sums()
+
+    # 4. 修复权限（fakeroot 下 chmod 可能不生效）
+    ctrl_dir = os.path.join(STAGE, "DEBIAN")
+    os.chmod(ctrl_dir, 0o755)
+    for root, dirs, files in os.walk(STAGE):
+        for d in dirs:
+            os.chmod(os.path.join(root, d), 0o755)
+        for f in files:
+            fp = os.path.join(root, f)
+            if fp.endswith(("preinst", "postinst")):
+                os.chmod(fp, 0o755)
+            else:
+                os.chmod(fp, 0o644)
+
+    # 4. 用 fakeroot + dpkg-deb 构建
+    output = os.path.join(DIST, f"{PKG_NAME}_{PKG_VERSION}_{PKG_ARCH}.deb")
+    if os.path.exists(output):
+        os.remove(output)
+
+    cmd = f"fakeroot dpkg-deb -Zgzip -b {STAGE} {output}"
+    print(f"[i] {cmd}")
+    ret = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if ret.returncode != 0:
+        print(f"[✗] dpkg-deb 失败:")
+        print(ret.stdout)
+        print(ret.stderr)
+        sys.exit(1)
+
+    size = os.path.getsize(output)
+    print(f"[✓] 构建完成: {output} ({size} bytes)")
+
+    verify_deb(output)
+
+def verify_deb(path):
+    print("\n[i] 验证 .deb ...")
+
+    with open(path, "rb") as f:
+        magic = f.read(8)
+    assert magic == b"!<arch>\n", f"ar magic 错误: {magic!r}"
+    print("  [✓] ar magic 正确")
+
+    r = subprocess.run(["dpkg-deb", "-I", path], capture_output=True, text=True)
+    assert r.returncode == 0, f"dpkg-deb -I: {r.stderr}"
+    print("  [✓] dpkg-deb -I 通过")
+
+    r = subprocess.run(["dpkg-deb", "-c", path], capture_output=True, text=True)
+    assert r.returncode == 0, f"dpkg-deb -c: {r.stderr}"
+    lines = r.stdout.strip().split("\n")
+    print(f"  [✓] dpkg-deb -c 通过 ({len(lines)} 个文件)")
+
+    # 验证是 gz 压缩
+    r = subprocess.run(["ar", "t", path], capture_output=True, text=True)
+    for m in r.stdout.strip().split("\n"):
+        if m.endswith(".tar.gz"):
+            extract_dir = "/tmp/xpm_verify_" + str(os.getpid())
+            os.makedirs(extract_dir, exist_ok=True)
+            subprocess.run(["ar", "x", path, m, "--output", extract_dir], check=True)
+            gz_path = os.path.join(extract_dir, m)
+            with open(gz_path, "rb") as f:
+                header = f.read(2)
+            assert header == b"\x1f\x8b", f"gzip magic 错误: {header!r}"
+            print(f"  [✓] {m} gzip 头正确")
+            shutil.rmtree(extract_dir, ignore_errors=True)
+
+    print("\n[✓] 全部验证通过！")
+
+if __name__ == "__main__":
+    build_deb()
