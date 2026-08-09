@@ -4,7 +4,7 @@ XPM Suite 统一版本管理
 """
 
 VERSION_MAJOR = 3
-VERSION_MINOR = 0
+VERSION_MINOR = 1
 VERSION_PATCH = 0
 VERSION_SUFFIX = "Add Gui Store Edition"
 
@@ -41,13 +41,16 @@ def version_compare(vstr):
 
 # 各组件版本（独立但配合主版本）
 COMPONENTS = {
-    "xpm":        {"version": "3.0.0", "name": "XPM 包管理器"},
-    "xstore":     {"version": "3.0.0", "name": "X-Store 应用商店 CLI"},
-    "xstore-gui": {"version": "3.0.0", "name": "X-Store 图形界面"},
-    "downloader": {"version": "3.0.0", "name": "多线程下载器"},
-    "formats":    {"version": "3.0.0", "name": "包格式引擎(deb/oil)"},
-    "triggers":   {"version": "3.0.0", "name": "触发器引擎"},
-    "transaction":{"version": "3.0.0", "name": "事务安装引擎"},
+    "xpm":        {"version": "3.1.0", "name": "XPM 包管理器"},
+    "xstore":     {"version": "3.1.0", "name": "X-Store 应用商店 CLI"},
+    "xstore-gui": {"version": "3.1.0", "name": "X-Store 图形界面"},
+    "downloader": {"version": "3.1.0", "name": "多线程下载器"},
+    "formats":    {"version": "3.1.0", "name": "包格式引擎(deb/oil)"},
+    "triggers":   {"version": "3.1.0", "name": "触发器引擎"},
+    "transaction":{"version": "3.1.0", "name": "事务安装引擎"},
+    "auth":       {"version": "3.1.0", "name": "PAM 认证模块"},
+    "self_update":{"version": "3.1.0", "name": "自更新引擎"},
+    "elevate":    {"version": "3.1.0", "name": "提权包装器"},
 }
 
 def get_component_version(name):
@@ -61,6 +64,9 @@ def get_banner():
 ║  │ xpm        │ 包管理器 v{COMPONENTS['xpm']['version']}           │  ║
 ║  │ xstore     │ 应用商店 v{COMPONENTS['xstore']['version']}           │  ║
 ║  │ xstore-gui │ 图形界面 v{COMPONENTS['xstore-gui']['version']}           │  ║
+║  │ auth       │ PAM 认证 v{COMPONENTS['auth']['version']}           │  ║
+║  │ self-update│ 自更新   v{COMPONENTS['self_update']['version']}           │  ║
+║  │ elevate    │ 提权包装 v{COMPONENTS['elevate']['version']}           │  ║
 ║  └────────────┴────────────────────────────┘  ║
 ╚════════════════════════════════════════════╝"""
 
