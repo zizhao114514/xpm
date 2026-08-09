@@ -1,6 +1,6 @@
 """
 XPM Suite 主命令行入口 (xpm)
-整合: 包管理 + 系统诊断 + 版本管理 + 功能开关
+整合: 包管理 + 系统诊断 + 版本管理 + 功能开关 + PAM 认证 + 自更新 + 提权
 """
 
 import sys, os, json, time
@@ -23,6 +23,16 @@ from ..core.downloader import (
     get_mirror_manager, measure_all_mirrors, speedtest,
 )
 from ..core.transaction import Transaction
+from ..core import auth, elevate
+from ..core.auth import (
+    AuthAction, verify_action, AuthSession,
+    install_pam_config, get_auth_log, auth_status,
+)
+from ..core.self_update import (
+    check_update, perform_update, rollback, list_backups,
+    format_update_status, compare_versions, get_current_version,
+    VersionInfo,
+)
 from ..store import (
     get_categories, get_apps_by_category, get_top_apps,
     search_apps, get_app_detail, get_all_apps,
@@ -35,17 +45,44 @@ def _err(msg): print(f"  ❌ {msg}")
 def _warn(msg): print(f"  ⚠️  {msg}")
 def _info(msg): print(f"  ℹ️  {msg}")
 def _bar(pct, w=20): return "█"*int(w*pct/100)+"░"*(w-int(w*pct/100))
-def _format_size(n): 
+def _format_size(n):
     for u in ["B","KB","MB","GB"]:
         if n<1024: return f"{n:.1f}{u}"
         n/=1024
     return f"{n:.1f}TB"
+
+# === 权限检查辅助 ===
+
+def _ensure_privilege(action: auth.AuthAction, target: str = "") -> int:
+    """
+    检查并确保有权限执行操作。
+    返回 0 = 通过, 1 = 拒绝/失败
+    """
+    # 先检查授权
+    ok, msg = verify_action(action, target)
+    if ok:
+        return 0
+
+    if msg == "NEED_ELEVATE":
+        # 需要提权，尝试 re-exec
+        _info("尝试自动提权...")
+        # re_exec 会替换当前进程，不会返回
+        elevate.re_exec(prefer_gui=None)
+        # 如果返回了，说明提权失败
+        _err("自动提权失败，请手动以 root 运行")
+        return 1
+
+    _err(f"操作未授权: {msg}")
+    return 1
 
 # === 命令: 版本/信息 ===
 
 def cmd_version(args=None):
     from ..version import get_banner
     print(get_banner())
+    # 显示权限状态
+    print()
+    print(auth_status())
 
 def cmd_features(args=None):
     """列出所有功能及状态"""
@@ -76,10 +113,53 @@ def cmd_arch(args=None):
     print(f"  可用: xpm arch set <arch> 切换")
     return 0
 
+# === 命令: 认证 ===
+
+def cmd_auth(args=None):
+    """管理 PAM 认证"""
+    if not args:
+        print("  用法:")
+        print("    xpm auth status      - 显示认证状态")
+        print("    xpm auth install-pam - 安装 PAM 配置")
+        print("    xpm auth log [N]     - 查看认证日志")
+        print("    xpm auth clear       - 清除会话")
+        return 0
+
+    sub = args[0]
+    if sub == "status":
+        print(auth_status())
+        # 提权状态
+        print()
+        print(elevate.status_string())
+    elif sub == "install-pam":
+        install_pam_config()
+    elif sub == "log":
+        n = int(args[1]) if len(args) > 1 else 20
+        entries = get_auth_log(n)
+        if not entries:
+            _info("暂无认证日志")
+            return 0
+        for e in entries:
+            ts = time.strftime("%m-%d %H:%M", time.localtime(e.get("timestamp", 0)))
+            action = e.get("action", "?")
+            result = e.get("result", "?")
+            icon = "✅" if result in ("authenticated", "confirmed", "session_reused", "privileged", "root") else "❌"
+            print(f"  {icon} {ts} {action:<12} {result}")
+    elif sub == "clear":
+        AuthSession.clear()
+        _ok("会话已清除，下次操作需重新认证")
+    else:
+        _err(f"未知子命令: {sub}")
+        return 1
+    return 0
+
 # === 命令: 索引/搜索 ===
 
 def cmd_update(args=None):
     """更新索引"""
+    rc = _ensure_privilege(AuthAction.UPDATE)
+    if rc: return rc
+
     require("update_index")
     eng = get_engine()
     _info("正在更新索引...")
@@ -142,6 +222,12 @@ def cmd_install(args):
     if not args:
         _err("用法: xpm install <包名> [包名2 ...]")
         return 1
+
+    # 逐个包认证（因为可能不同包安全级别不同）
+    for name in args:
+        rc = _ensure_privilege(AuthAction.INSTALL, name)
+        if rc: return rc
+
     eng = get_engine()
     for name in args:
         _info(f"安装 {name}...")
@@ -161,8 +247,15 @@ def cmd_remove(args):
     if not args:
         _err("用法: xpm remove <包名> [--purge]")
         return 1
+
     purge = "--purge" in args
     names = [a for a in args if not a.startswith("--")]
+
+    for name in names:
+        action = AuthAction.PURGE if purge else AuthAction.REMOVE
+        rc = _ensure_privilege(action, name)
+        if rc: return rc
+
     eng = get_engine()
     for name in names:
         _info(f"卸载 {name}{' (purge)' if purge else ''}...")
@@ -172,6 +265,9 @@ def cmd_remove(args):
 
 def cmd_autoremove(args=None):
     """自动移除不再需要的依赖"""
+    rc = _ensure_privilege(AuthAction.REMOVE)
+    if rc: return rc
+
     eng = get_engine()
     to_remove = eng.autoremove()
     if not to_remove:
@@ -196,7 +292,6 @@ def cmd_list(args=None):
         _info("尚未安装任何包")
         return 0
     print(f"\n  📦 已安装 ({len(pkgs)} 个)\n")
-    # 按格式分组
     by_fmt = {}
     for p in sorted(pkgs, key=lambda x: x.name):
         by_fmt.setdefault(p.source_format, []).append(p)
@@ -228,13 +323,12 @@ def cmd_files(args):
 def cmd_verify(args):
     """验证包完整性"""
     if not args:
-        # 验证所有
         db = get_db()
         pkgs = db.installed_packages()
         ok_count = 0
         for p in pkgs:
             missing = 0
-            for f in p.files[:20]:  # 抽样
+            for f in p.files[:20]:
                 full = "/" + f
                 if not os.path.exists(full):
                     missing += 1
@@ -273,6 +367,11 @@ def cmd_lock(args):
         for p in locked:
             print(f"    {p.name} {p.version}")
         return 0
+
+    for name in args:
+        rc = _ensure_privilege(AuthAction.LOCK, name)
+        if rc: return rc
+
     db = get_db()
     for name in args:
         db.lock(name)
@@ -283,6 +382,11 @@ def cmd_unlock(args):
     if not args:
         _err("用法: xpm unlock <包名>")
         return 1
+
+    for name in args:
+        rc = _ensure_privilege(AuthAction.UNLOCK, name)
+        if rc: return rc
+
     db = get_db()
     for name in args:
         db.unlock(name)
@@ -294,6 +398,8 @@ def cmd_unlock(args):
 def cmd_snapshot(args):
     """创建/列出/恢复快照"""
     if args and args[0] == "list":
+        rc = _ensure_privilege(AuthAction.SNAPSHOT)
+        if rc: return rc
         snaps = list_snapshots()
         if not snaps:
             _info("没有快照")
@@ -302,16 +408,22 @@ def cmd_snapshot(args):
             ts = time.strftime("%Y-%m-%d %H:%M", time.localtime(s.get("time",0)))
             print(f"  📸 {s['id']:<25} {ts} ({s.get('packages',0)} 包)")
         return 0
+
     if args and args[0] == "restore":
         if len(args) < 2:
             _err("用法: xpm snapshot restore <id>")
             return 1
+        rc = _ensure_privilege(AuthAction.RESTORE, args[1])
+        if rc: return rc
         if restore_snapshot(args[1]):
             _ok(f"已恢复快照: {args[1]}")
             return 0
         _err(f"快照不存在: {args[1]}")
         return 1
+
     # 创建
+    rc = _ensure_privilege(AuthAction.SNAPSHOT)
+    if rc: return rc
     tag = args[0] if args else ""
     sid = create_snapshot(tag)
     _ok(f"快照已创建: {sid}")
@@ -321,6 +433,9 @@ def cmd_snapshot(args):
 
 def cmd_clean(args=None):
     """清理缓存"""
+    rc = _ensure_privilege(AuthAction.REMOVE)
+    if rc: return rc
+
     cache = "/var/cache/xpm"
     if not os.path.exists(cache):
         _info("缓存目录为空")
@@ -379,6 +494,9 @@ def cmd_doctor(args=None):
     arch = get_arch()
     print(f"  🏗️  架构: {arch}")
 
+    # 权限
+    print(f"  🔑 {auth_status()}")
+
     # 目录
     from ..core.config import CONFIG_DIR, CACHE_DIR, STATE_DIR
     for d, label in [(CONFIG_DIR,"配置"), (CACHE_DIR,"缓存"), (STATE_DIR,"状态")]:
@@ -388,10 +506,17 @@ def cmd_doctor(args=None):
 
     # 依赖工具
     import shutil
-    for tool in ["dpkg","gzip","tar","curl"]:
+    for tool in ["dpkg","gzip","tar","curl","sudo","gksu","pkexec"]:
         path = shutil.which(tool)
         icon = "✅" if path else "⚠️"
-        print(f"  {icon} {tool:<12} {path or '未找到(可选)'}")
+        extra = ""
+        if tool == "sudo" and path:
+            try:
+                r = subprocess.run(["sudo","-n","true"], capture_output=True, timeout=2)
+                if r.returncode == 0:
+                    extra = " (免密)"
+            except: pass
+        print(f"  {icon} {tool:<12} {path or '未找到'}{extra}")
 
     # 网络
     print(f"\n  🌐 网络测试:")
@@ -413,6 +538,12 @@ def cmd_doctor(args=None):
     db = get_db()
     cnt = db.count()
     _ok(f"已安装 {cnt} 个包")
+
+    # PAM
+    pam_file = "/etc/pam.d/xpm"
+    pam_ok = os.path.exists(pam_file)
+    icon = "✅" if pam_ok else "⚠️"
+    print(f"  {icon} PAM 配置: {pam_file} {'存在' if pam_ok else '(运行 xpm auth install-pam 安装)'}")
 
     return 0
 
@@ -445,33 +576,92 @@ def cmd_speedtest(args):
 # === 命令: 自更新 ===
 
 def cmd_self_update(args=None):
-    """从 GitHub 下载最新版本"""
-    require("self_update")
-    import urllib.request
-    _info("检查最新版本...")
-    url = "https://api.github.com/repos/zizhao114514/xpm/releases/latest"
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent":"XPM"})
-        with urllib.request.urlopen(req, timeout=10) as r:
-            data = json.loads(r.read())
-        latest = data.get("tag_name","?")
-        print(f"  最新版本: {latest}")
-        # 下载 .deb
-        assets = data.get("assets", [])
-        for a in assets:
-            if a["name"].endswith(".deb"):
-                dl_url = a["browser_download_url"]
-                _info(f"下载 {a['name']}...")
-                dest = f"/var/cache/xpm/{a['name']}"
-                urllib.request.urlretrieve(dl_url, dest)
-                _ok(f"已下载: {dest}")
-                _info("安装: dpkg -i " + dest)
-                os.system(f"dpkg -i {dest}")
-                return 0
-        _warn("Release 中没有 .deb 文件")
+    """
+    检查并安装 XPM Suite 自身更新
+    支持: check / install / rollback / backups
+    """
+    if args and args[0] == "check":
+        # 只检查，不安装
+        print(format_update_status())
+        return 0
+
+    if args and args[0] == "backups":
+        # 列出备份
+        backups = list_backups()
+        if not backups:
+            _info("没有可用备份")
+            return 0
+        print("  📁 可用备份:\n")
+        for b in backups:
+            print(f"  📸 {b['name']:<40} {b['date']}")
+        return 0
+
+    if args and args[0] == "rollback":
+        if len(args) < 2:
+            _err("用法: xpm self-update rollback <备份名>")
+            return 1
+        rc = _ensure_privilege(AuthAction.SELF_UPGRADE, "rollback")
+        if rc: return rc
+        ok, msg = rollback(args[1])
+        if ok: _ok(msg)
+        else: _err(msg)
+        return 0 if ok else 1
+
+    # 默认: 检查 + 安装
+    rc = _ensure_privilege(AuthAction.SELF_UPGRADE, "XPM Suite")
+    if rc: return rc
+
+    print("  🔍 检查更新...")
+    update_info = check_update()
+
+    print(f"  📦 当前: v{update_info['current']}")
+    if update_info.get("latest"):
+        print(f"  🌐 最新: v{update_info['latest']}")
+    else:
+        _warn("无法获取最新版本信息")
         return 1
-    except Exception as e:
-        _err(f"更新失败: {e}")
+
+    if not update_info["update_available"]:
+        _ok("已经是最新版本!")
+        return 0
+
+    # 显示 changelog
+    if update_info.get("changelog"):
+        print(f"\n  📝 更新日志:")
+        for line in update_info["changelog"].splitlines()[:8]:
+            line = line.strip()
+            if line:
+                print(f"     {line}")
+
+    if update_info.get("size"):
+        print(f"\n  📊 大小: {_format_size(update_info['size'])}")
+
+    # 确认
+    try:
+        ans = input("\n  确认更新? [y/N] ").strip().lower()
+    except (KeyboardInterrupt, EOFError):
+        print("\n  取消")
+        return 130
+
+    if ans not in ("y", "yes"):
+        _info("已取消")
+        return 0
+
+    # 执行更新
+    print()
+    ok, msg = perform_update(
+        download_url=update_info["download_url"],
+        expected_sha256="",  # GitHub API 不直接给 SHA256
+        progress_cb=lambda c,t,n: print(f"  [{c}%] {n}"),
+    )
+
+    if ok:
+        _ok(msg)
+        print("\n  🔄 请重启终端或重新登录使更改生效")
+        return 0
+    else:
+        _err(msg)
+        _info("尝试手动更新: xpm self-update check")
         return 1
 
 # === 命令: 触发器 ===
@@ -518,12 +708,36 @@ def cmd_set_priority(args):
     _info("当前可通过 xpm lock <pkg> 锁定版本")
     return 0
 
+# === 命令: 提权 ===
+
+def cmd_elevate(args=None):
+    """提权相关命令"""
+    if not args:
+        print(elevate.status_string())
+        return 0
+
+    sub = args[0]
+    if sub == "status":
+        print(elevate.status_string())
+    elif sub == "re-exec":
+        # 重新以 root 运行
+        elevate.re_exec(args[1:] if len(args) > 1 else None)
+    elif sub == "menu":
+        elevate.prompt_elevation("选择提权方式")
+    elif sub == "install-helper":
+        elevate.install_elevation_helpers()
+    else:
+        _err(f"未知子命令: {sub}")
+        return 1
+    return 0
+
 # === 主路由 ===
 
 COMMANDS = {
-    "version":      (cmd_version,      "显示版本信息"),
+    "version":      (cmd_version,      "显示版本信息 + 权限状态"),
     "features":     (cmd_features,     "列出所有功能及状态"),
     "arch":         (cmd_arch,         "显示/切换架构"),
+    "auth":         (cmd_auth,         "PAM 认证管理"),
     "update":       (cmd_update,       "更新软件源索引"),
     "search":       (cmd_search,       "搜索软件包"),
     "info":         (cmd_info,         "包详情"),
@@ -541,13 +755,14 @@ COMMANDS = {
     "clean":        (cmd_clean,        "清理缓存"),
     "orphan":       (cmd_orphan,       "查找孤儿包"),
     "duplicate":    (cmd_duplicate,    "查找重复文件"),
-    "doctor":       (cmd_doctor,       "系统诊断"),
+    "doctor":       (cmd_doctor,       "系统诊断（含权限/PAM检测）"),
     "mirrors":      (cmd_mirrors,      "镜像测速"),
     "speedtest":    (cmd_speedtest,    "网络测速"),
     "self-update":  (cmd_self_update,  "更新 XPM 自身"),
     "triggers":     (cmd_triggers,     "触发器状态"),
     "history":      (cmd_history,      "下载历史"),
     "priority":     (cmd_set_priority, "设置包优先级"),
+    "elevate":      (cmd_elevate,      "提权管理"),
 }
 
 def main(argv=None):
@@ -576,6 +791,10 @@ def main(argv=None):
     except KeyboardInterrupt:
         print("\n  ⏹️  已取消")
         return 130
+    except PermissionError as e:
+        _err(f"权限不足: {e}")
+        _info("尝试: sudo xpm {' '.join(argv)}")
+        return 1
     except Exception as e:
         _err(f"内部错误: {e}")
         if os.environ.get("XPM_DEBUG"):
@@ -586,10 +805,10 @@ def main(argv=None):
 def _print_help():
     print(f"\n  🏪 XPM Suite {get_version_string()}\n")
     print(f"  用法: xpm <命令> [参数...]\n")
-    # 分组显示
     groups = [
         ("信息查询", ["version","features","arch","info","search","list","files","owns","history"]),
         ("包管理",   ["update","install","remove","autoremove","verify"]),
+        ("认证/权限", ["auth","elevate"]),
         ("锁定/快照", ["lock","unlock","locks","snapshot","priority"]),
         ("清理",     ["clean","orphan","duplicate"]),
         ("网络",     ["mirrors","speedtest","self-update"]),
