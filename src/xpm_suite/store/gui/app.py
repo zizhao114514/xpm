@@ -414,7 +414,7 @@ class XStoreApp:
                 bg=self.bg, fg=self.text_dim,
                 font=(self.font_main, 14)).pack(pady=40)
 
-    def _create_card(self, parent, app: dict) -> tk.Frame:
+    def _create_card(self, parent, app: dict) -> "tk.Frame":
         """创建单个应用卡片"""
         theme = self.state.theme
         card = tk.Frame(parent, bg=theme["bg_card"],
@@ -674,7 +674,7 @@ class XStoreApp:
                        ]).pack(
                 side="right", padx=4)
 
-    def _check_root_and_run(self, name: str, action: str, win: tk.Toplevel):
+    def _check_root_and_run(self, name: str, action: str, win: "tk.Toplevel"):
         """检查 root 权限 + PAM 认证后执行安装/卸载"""
         if os.geteuid() != 0:
             messagebox.showwarning(
@@ -724,7 +724,7 @@ class XStoreApp:
         except Exception:
             pass
 
-    def _submit_rating(self, name: str, stars: int, win: tk.Toplevel):
+    def _submit_rating(self, name: str, stars: int, win: "tk.Toplevel"):
         comment = self.comment_var.get().strip()
         self.state.rate_app(name, stars, comment)
         messagebox.showinfo("感谢!", f"已提交 {stars} 星评分")
