@@ -23,7 +23,7 @@ class TestXPMCLI:
         rc = main(["version"])
         out = capsys.readouterr().out
         assert "XPM Suite" in out
-        assert "3.0" in out
+        assert "3.1" in out
 
     def test_cmd_arch(self, capsys):
         from xpm_suite.cli.xpm_main import main
