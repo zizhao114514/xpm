@@ -1,9 +1,12 @@
 """
 X-Store CLI - 应用商店命令行
+集成 PAM 认证 + 提权 + 版本检测
 """
 
 import sys, os
 from .. import check, require, get_version_string
+from ..core import auth, elevate
+from ..core.auth import AuthAction, verify_action
 from ..store import (
     get_categories, get_apps_by_category, get_top_apps,
     search_apps, get_app_detail, rate_app, get_rating,
@@ -27,6 +30,21 @@ def _format_size(n: int) -> str:
         if n < 1024: return f"{n:.1f}{unit}"
         n /= 1024
     return f"{n:.1f}TB"
+
+# === 权限检查 ===
+
+def _ensure_auth(action: auth.AuthAction, target: str = "") -> int:
+    """检查并确保有权限，返回 0=通过"""
+    ok, msg = verify_action(action, target)
+    if ok:
+        return 0
+    if msg == "NEED_ELEVATE":
+        print("  🔐 尝试提权...")
+        elevate.re_exec(prefer_gui=None)
+        print("  ❌ 提权失败")
+        return 1
+    print(f"  ❌ 未授权: {msg}")
+    return 1
 
 # === 命令 ===
 
@@ -134,12 +152,16 @@ def cmd_info(args):
             print(f"    {_stars(r['stars'])} {r.get('comment','')[:40]}")
 
 def cmd_install(args):
-    """安装应用（调用 xpm）"""
+    """安装应用（调用 xpm，带 PAM 认证）"""
     check("xstore_catalog", silent=True)
     if not args:
         print("用法: xstore install <应用名>")
         return
     name = args[0]
+
+    # 认证
+    rc = _ensure_auth(AuthAction.INSTALL, name)
+    if rc: return rc
 
     # 查应用
     detail = get_app_detail(name)
@@ -150,7 +172,7 @@ def cmd_install(args):
     # 获取依赖包列表
     deps = detail.get("deps", detail.get("packages", []))
     if not deps:
-        deps = [name]  # 单包
+        deps = [name]
 
     print(f"  📦 安装 {detail.get('display', name)}")
     print(f"  包含: {', '.join(deps)}")
@@ -162,7 +184,7 @@ def cmd_install(args):
             eng.install(pkg)
         except Exception as e:
             print(f"  ❌ {pkg} 安装失败: {e}")
-            return
+            return 1
 
     print(f"  ✅ {detail.get('display', name)} 安装完成！")
 
@@ -173,6 +195,11 @@ def cmd_remove(args):
         print("用法: xstore remove <应用名>")
         return
     name = args[0]
+
+    # 认证
+    rc = _ensure_auth(AuthAction.REMOVE, name)
+    if rc: return rc
+
     detail = get_app_detail(name)
     deps = detail.get("deps", detail.get("packages", [])) if detail else [name]
 
@@ -198,7 +225,7 @@ def cmd_rate(args):
     comment = " ".join(args[2:]) if len(args) > 2 else ""
     try:
         avg = rate_app(name, stars, comment)
-        print(f"  ✅ 已评分 {_stars(stars)}  {name} 当前均分: {avg}")
+        print(f"  ✅ 已评分 {_stars(stars)} {name} 当前均分: {avg}")
     except ValueError as e:
         print(f"  ❌ {e}")
         return 1
@@ -213,7 +240,7 @@ def cmd_installed(args):
     if not installed:
         print("  📭 尚未安装任何应用")
         return
-    print(f"\n  📦 已安装 ({len(installed)} 个)\n")
+    print(f"\n  📦 已安装 ({len(installed)}个)\n")
     for p in sorted(installed, key=lambda x: x.name):
         print(f"  • {p.name:<25} {p.version:<15} [{p.arch}] {p.source_format}")
 
@@ -247,30 +274,46 @@ def cmd_history(args):
     if not os.path.exists(hist_file):
         print("  📭 暂无历史记录")
         return
-    import json
+    import json, time
     with open(hist_file) as f:
         history = json.load(f)
     print(f"\n  📋 最近下载 ({len(history)} 条)\n")
     for h in history[-10:]:
-        import time
         ts = time.strftime("%m-%d %H:%M", time.localtime(h.get("time", 0)))
         print(f"  {ts}  {h.get('mirror',''):<12} {os.path.basename(h.get('dest',''))}")
+
+# === 命令: 版本 ===
+
+def cmd_version(args=None):
+    """显示版本信息"""
+    from ..core.self_update import format_update_status
+    print(f"  📦 X-Store (xstore) - XPM Suite {get_version_string()}")
+    print()
+    # 检查更新
+    info = check("xstore_cli", silent=True)
+    if info:
+        print("  ✅ xstore CLI 可用")
+    # 权限状态
+    from ..core.auth import auth_status
+    print()
+    print(auth_status())
 
 # === 主入口 ===
 
 COMMANDS = {
-    "browse":    (cmd_browse,     "浏览应用分类"),
-    "list":      (cmd_list,       "列出分类下的应用"),
-    "search":    (cmd_search,     "搜索应用"),
-    "top":       (cmd_top,        "热门排行"),
-    "info":      (cmd_info,       "应用详情"),
-    "install":   (cmd_install,    "安装应用"),
-    "remove":    (cmd_remove,     "卸载应用"),
-    "rate":      (cmd_rate,       "评分(1-5星)"),
-    "installed": (cmd_installed,  "已安装应用"),
-    "add":       (cmd_add,        "添加自定义应用集"),
-    "remove-custom": (cmd_remove_custom, "删除自定义应用集"),
-    "history":   (cmd_history,    "下载历史"),
+    "browse":       (cmd_browse,      "浏览应用分类"),
+    "list":         (cmd_list,        "列出分类下的应用"),
+    "search":       (cmd_search,      "搜索应用"),
+    "top":          (cmd_top,         "热门排行"),
+    "info":         (cmd_info,        "应用详情"),
+    "install":      (cmd_install,     "安装应用（需认证）"),
+    "remove":       (cmd_remove,      "卸载应用（需认证）"),
+    "rate":         (cmd_rate,        "评分(1-5星)"),
+    "installed":    (cmd_installed,   "已安装应用"),
+    "add":          (cmd_add,         "添加自定义应用集"),
+    "remove-custom":(cmd_remove_custom,"删除自定义应用集"),
+    "history":      (cmd_history,     "下载历史"),
+    "version":      (cmd_version,      "显示版本+权限状态"),
 }
 
 def main(argv=None):
@@ -285,7 +328,7 @@ def main(argv=None):
     args = argv[1:]
 
     if cmd == "version":
-        print(f"X-Store (xstore) - XPM Suite {get_version_string()}")
+        cmd_version()
         return 0
 
     if cmd not in COMMANDS:
@@ -296,17 +339,26 @@ def main(argv=None):
     func, _ = COMMANDS[cmd]
     try:
         rc = func(args)
+    except KeyboardInterrupt:
+        print("\n  ⏹️ 已取消")
+        return 130
+    except PermissionError as e:
+        print(f"  ❌ 权限不足: {e}")
+        print(f"     尝试: sudo xstore {' '.join(argv)}")
+        return 1
     except Exception as e:
         print(f"  ❌ 错误: {e}")
+        if os.environ.get("XSTORE_DEBUG"):
+            import traceback
+            traceback.print_exc()
         return 1
     return rc if rc is not None else 0
 
 def _print_help():
-    print(f"\n  🏪 X-Store - XPM Suite 应用商店\n")
+    print(f"\n  🏪 X-Store - XPM Suite 应用商店 {get_version_string()}\n")
     print(f"  用法: xstore <命令> [参数...]\n")
     for name, (_, desc) in COMMANDS.items():
         print(f"  {name:<15} {desc}")
-    print(f"  {'version':<15} 显示版本")
     print(f"\n  示例:")
     print(f"    xstore browse")
     print(f"    xstore search htop")
