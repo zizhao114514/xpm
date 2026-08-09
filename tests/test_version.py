@@ -15,7 +15,7 @@ from xpm_suite import (
 class TestVersion:
     def test_version_string(self):
         v = get_version_string()
-        assert "3.0.0" in v
+        assert "3.1.0" in v
         assert "Add Gui Store Edition" in v
 
     def test_version_tuple(self):
@@ -34,7 +34,7 @@ class TestVersion:
         from xpm_suite.version import get_banner
         b = get_banner()
         assert "XPM Suite" in b
-        assert "3.0" in b
+        assert "3.1" in b
 
 
 class TestFeatureFlags:
