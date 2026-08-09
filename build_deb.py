@@ -323,8 +323,18 @@ def tar_gz_from_dir(src_dir: Path) -> bytes:
                 arcname = os.path.relpath(full, src_dir)
                 ti = tarfile.TarInfo(name=arcname)
                 ti.size = os.path.getsize(full)
-                ti.mode = 0o644
+                # 保留可执行权限：检查文件自身的 mode 位
+                file_mode = os.stat(full).st_mode
+                if file_mode & 0o111:  # 任意执行位被设置
+                    ti.mode = 0o755
+                else:
+                    ti.mode = 0o644
                 ti.mtime = int(time.time())
+                # 设置 tar 内的 owner/组为 root
+                ti.uid = 0
+                ti.gid = 0
+                ti.uname = "root"
+                ti.gname = "root"
                 with open(full, 'rb') as fh:
                     tar.addfile(ti, fh)
     return buf.getvalue()
