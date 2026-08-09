@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-构建 XPM Suite .deb 安装包
-包含: xpm + xstore + xstore-gui + 配置 + 文档
-
+构建 XPM Suite v3.1.0 .deb 安装包
+包含: xpm + xstore + xstore-gui + PAM认证 + 自更新 + 提权
 使用纯 Python 构建（不依赖 dpkg-deb），兼容受限环境。
 """
 
@@ -12,15 +11,18 @@ from pathlib import Path
 # === 配置 ===
 
 PKG_NAME = "xpm-suite"
-VERSION = "3.0.0"
+VERSION = "3.1.0"
 ARCH = "all"
 MAINTAINER = "Zizhao <zizhao@example.com>"
 DESCRIPTION = (
-    "XPM Suite - 统一包管理器 + 应用商店\n"
+    "XPM Suite v3.1.0 - 统一包管理器 + 应用商店\n"
     " 包含:\n"
     "  - xpm: 包管理器（索引/依赖/下载/安装/回滚/触发器）\n"
     "  - xstore: 应用商店命令行\n"
     "  - xstore-gui: 图形化应用商店（深色主题/卡片布局）\n"
+    "  - PAM 认证模块（密码验证/会话管理/授权日志）\n"
+    "  - 自更新引擎（远程版本检查/自动下载/回滚）\n"
+    "  - 提权包装器（sudo/gksu/pkexec 自动选择）\n"
     "  - 支持 .deb 和 .oil 双格式\n"
     "  - 多线程下载/断点续传/镜像切换\n"
     "  - 纯 Python 实现，零外部依赖"
@@ -35,7 +37,6 @@ DEB_ROOT = BUILD_DIR / f"{PKG_NAME}_{VERSION}_all"
 # === 工具函数 ===
 
 def set_mode(path, mode):
-    """设置文件/目录权限（兼容 overlayfs）"""
     try:
         os.chmod(str(path), mode)
     except OSError:
@@ -63,10 +64,9 @@ def write_bytes(path, data, mode=0o644):
         f.write(data)
     set_mode(path, mode)
 
-# === 构建步骤 ===
+# === DEBIAN 控制文件 ===
 
 def create_debian_control():
-    """创建 DEBIAN/control + postinst + prerm"""
     deb_dir = DEB_ROOT / "DEBIAN"
     deb_dir.mkdir(parents=True, exist_ok=True)
     set_mode(deb_dir, 0o755)
@@ -77,8 +77,8 @@ Section: admin
 Priority: optional
 Architecture: {ARCH}
 Depends: python3 (>=3.8), python3-tk (>=3.8) | tk, dpkg (>=1.16)
-Recommends: curl, wget
-Suggests: python3-requests
+Recommends: curl, wget, sudo, policykit-1
+Suggests: python3-requests, gksu
 Maintainer: {MAINTAINER}
 Homepage: https://github.com/zizhao114514/xpm
 Description: {DESCRIPTION}
@@ -87,21 +87,26 @@ Description: {DESCRIPTION}
 
     postinst = """#!/bin/bash
 set -e
-echo "🏪 XPM Suite 安装完成"
-echo "   版本: 3.0.0 Add Gui Store Edition"
+echo "🏪 XPM Suite v{VERSION} 安装完成"
 echo ""
 echo "快速开始:"
-echo "  xpm version          # 查看版本"
-echo "  xpm arch             # 查看架构"
+echo "  xpm version          # 查看版本+权限状态"
+echo "  xpm auth status      # 查看认证状态"
 echo "  xpm update           # 更新索引"
 echo "  xpm install htop     # 安装包"
 echo "  xstore               # 应用商店 CLI"
 echo "  xstore-gui           # 图形应用商店"
+echo "  xpm self-update check # 检查更新"
+echo ""
+echo "首次使用建议:"
+echo "  sudo xpm auth install-pam  # 安装 PAM 配置"
+echo "  sudo xpm doctor           # 系统诊断"
 echo ""
 mkdir -p /etc/xpm/sources.list.d
 mkdir -p /var/cache/xpm
 mkdir -p /var/lib/xpm/info
-mkdir -p /var/lib/xstore
+mkdir -p /var/lib/xpm/backups
+mkdir -p /etc/xpm/auth
 if [ ! -f /etc/xpm/sources.list.d/tuna.list ]; then
     cat > /etc/xpm/sources.list.d/tuna.list << 'EOF'
 # XPM Suite 默认软件源 - 清华大学镜像
@@ -109,7 +114,7 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main
 EOF
 fi
-echo "✅ 初始化完成"
+echo "✅ XPM Suite v{VERSION} 初始化完成"
 """
     write_text(deb_dir / "postinst", postinst, 0o755)
 
@@ -119,8 +124,9 @@ echo "🗑️  正在卸载 XPM Suite..."
 """
     write_text(deb_dir / "prerm", prerm, 0o755)
 
+# === Python 模块 ===
+
 def install_python_module():
-    """安装 Python 模块到 /usr/local/share/xpm-suite/"""
     dest = DEB_ROOT / "usr" / "local" / "share" / "xpm-suite" / "xpm_suite"
     if dest.exists():
         shutil.rmtree(dest)
@@ -139,8 +145,15 @@ def install_python_module():
         if d.is_dir():
             set_mode(d, 0o755)
 
+    # 验证新模块存在
+    assert (dest / "core" / "auth.py").exists(), "auth.py missing!"
+    assert (dest / "core" / "self_update.py").exists(), "self_update.py missing!"
+    assert (dest / "core" / "elevate.py").exists(), "elevate.py missing!"
+    print("  ✅ 新模块: auth.py / self_update.py / elevate.py")
+
+# === 可执行脚本 ===
+
 def install_binaries():
-    """安装可执行脚本到 /usr/local/bin/"""
     bin_dir = DEB_ROOT / "usr" / "local" / "bin"
     bin_dir.mkdir(parents=True, exist_ok=True)
     set_mode(bin_dir, 0o755)
@@ -170,8 +183,9 @@ sys.exit(run_gui())
         path = bin_dir / name
         write_text(path, content, 0o755)
 
+# === .desktop 文件 ===
+
 def install_desktop():
-    """安装 .desktop 文件"""
     app_dir = DEB_ROOT / "usr" / "share" / "applications"
     app_dir.mkdir(parents=True, exist_ok=True)
     set_mode(app_dir, 0o755)
@@ -180,38 +194,71 @@ def install_desktop():
         shutil.copy2(str(src_desktop), str(app_dir / "xstore-gui.desktop"))
         set_mode(app_dir / "xstore-gui.desktop", 0o644)
 
+# === PAM 配置 ===
+
+def install_pam_config():
+    """安装 PAM 服务配置到 .deb 中"""
+    pam_dir = DEB_ROOT / "etc" / "pam.d"
+    pam_dir.mkdir(parents=True, exist_ok=True)
+    set_mode(pam_dir, 0o755)
+
+    pam_config = """# XPM Suite PAM 配置
+# 允许本地用户通过密码认证执行包管理操作
+
+auth    required    pam_unix.so
+auth    optional    pam_permit.so
+
+account required    pam_unix.so
+account optional    pam_permit.so
+
+password required   pam_unix.so
+
+session required    pam_limits.so
+session optional    pam_unix.so
+"""
+    write_text(pam_dir / "xpm", pam_config, 0o644)
+    print("  ✅ PAM 配置: /etc/pam.d/xpm")
+
+# === 文档 ===
+
 def install_docs():
-    """安装文档"""
     doc_dir = DEB_ROOT / "usr" / "share" / "doc" / PKG_NAME
     doc_dir.mkdir(parents=True, exist_ok=True)
     set_mode(doc_dir, 0o755)
 
-    readme = """XPM Suite v3.0.0 "Add Gui Store Edition"
+    readme = f"""XPM Suite v{VERSION} "Add Gui Store Edition"
 ============================================
 
-统一包管理器 + 应用商店
+统一包管理器 + 应用商店（PAM 认证 + 自更新 + 提权）
 
 快速开始:
-  xpm version          # 查看版本
-  xpm arch             # 架构信息
-  xpm update           # 更新索引
-  xpm install htop     # 安装包
-  xpm search curl      # 搜索
-  xpm list             # 已安装
-  xpm doctor           # 系统诊断
+  xpm version              # 查看版本 + 权限状态
+  xpm auth status          # 查看认证状态
+  xpm auth install-pam     # 安装 PAM 配置（首次）
+  xpm update               # 更新索引
+  xpm install htop         # 安装包（需认证）
+  xpm search curl          # 搜索
+  xpm list                 # 已安装
+  xpm doctor               # 系统诊断
+  xpm self-update check    # 检查 XPM 自身更新
 
-  xstore               # 应用商店 CLI
-  xstore browse        # 浏览分类
-  xstore top           # 热门排行
-  xstore search git    # 搜索
-  xstore info htop     # 详情
-  xstore install htop  # 安装
-  xstore rate htop 5   # 评分
+  xstore                   # 应用商店 CLI
+  xstore browse            # 浏览分类
+  xstore top               # 热门排行
+  xstore search git        # 搜索
+  xstore info htop         # 详情
+  xstore install htop      # 安装（需认证）
+  xstore rate htop 5       # 评分
 
-  xstore-gui           # 图形界面
+  xstore-gui               # 图形界面（需 sudo/gksu）
+  sudo xstore-gui           # 推荐启动方式
 
 功能特性:
-  ✅ 纯 Python 实现，零外部依赖
+  ✅ PAM 密码认证（安装/卸载/更新前验证）
+  ✅ 会话缓存（避免重复输入密码）
+  ✅ 授权日志（/etc/xpm/auth/auth.log）
+  ✅ 自更新引擎（远程版本检查 + 自动下载 + 回滚）
+  ✅ 提权包装器（sudo/gksu/pkexec 自动选择）
   ✅ 支持 .deb 和 .oil 双格式
   ✅ 多线程分块下载 + 断点续传
   ✅ 镜像自动切换 + 指数退避
@@ -219,14 +266,21 @@ def install_docs():
   ✅ 触发器引擎（纯 Python）
   ✅ 版本锁定/快照/恢复
   ✅ 智能架构探测（三源兜底）
-  ✅ 应用商店 GUI（深色主题）
+  ✅ 应用商店 GUI（深色主题 + 卡片布局）
   ✅ 功能按版本解锁
+
+安全设计:
+  🔐 安装/卸载/更新 → 需要 PAM 认证
+  🔐 自更新 → critical 级别（最严格）
+  🔐 会话有效期：low=5min, medium=3min, high=2min, critical=1min
+  🔐 认证失败 3 次锁定
+  🔐 所有提权操作记录日志
 
 版本策略:
   v1.x - 基础安装
   v2.x - 架构探测 + 下载器 + xstore CLI
   v3.0 - 事务 + 触发器 + .oil + GUI
-  v3.1 - 并行安装 + 主题系统
+  v3.1 - PAM 认证 + 自更新 + 提权（当前）
   v4.0 - 插件系统
 
 GitHub: https://github.com/zizhao114514/xpm
@@ -235,29 +289,24 @@ GitHub: https://github.com/zizhao114514/xpm
 
     changelog = f"""xpm-suite ({VERSION}) stable; urgency=medium
 
-  * XPM + X-Store 合并为统一项目
-  * 新增事务安装引擎（全成/全回滚）
-  * 新增触发器引擎（纯 Python）
-  * 新增 .oil 原生包格式
-  * 新增 X-Store GUI（深色主题/卡片布局）
-  * 新增功能开关（版本不达标自动禁用）
-  * 架构探测三源兜底（dpkg/uname/cpuinfo）
-  * 多线程分块下载 + 断点续传
-  * 镜像自动切换 + 指数退避
-  * maintainer scripts 完整 DPKG_ 环境
+  * 新增 PAM 认证模块（密码验证/会话管理/授权日志）
+  * 新增自更新引擎（远程版本检查/自动下载/回滚）
+  * 新增提权包装器（sudo/gksu/pkexec 自动选择）
+  * 所有安装/卸载/更新操作强制 PAM 认证
+  * 新增 xpm auth 命令（status/install-pam/log/clear）
+  * 新增 xpm self-update 命令（check/install/rollback/backups）
+  * 新增 xpm elevate 命令（status/re-exec/menu）
+  * GUI 启动时自动检查更新
+  * GUI 安装/卸载前检查 root 权限
+  * 版本号升级到 3.1.0
 
- -- Zizhao <zizhao@example.com>  Sat, 08 Aug 2026 12:00:00 +0000
+ -- Zizhao <zizhao@example.com>  Mon, 10 Aug 2026 12:00:00 +0000
 """
     write_text(doc_dir / "changelog", changelog, 0o644)
 
 # === 纯 Python .deb 构建 ===
-# .deb = ar 归档:
-#   debian-binary (文本 "2.0\n")
-#   control.tar.gz (DEBIAN/ 内容)
-#   data.tar.gz  (usr/ etc/ var/ 内容)
 
 def tar_gz_from_dir(src_dir: Path) -> bytes:
-    """将目录打包为 tar.gz 字节"""
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as tar:
         for root, dirs, files in os.walk(src_dir):
@@ -281,12 +330,10 @@ def tar_gz_from_dir(src_dir: Path) -> bytes:
     return buf.getvalue()
 
 def build_ar_archive(debian_binary: bytes, control_tar: bytes, data_tar: bytes) -> bytes:
-    """构建 ar 归档 (Debian .deb 格式)"""
     out = io.BytesIO()
     out.write(b"!<arch>\n")
 
     def write_ar_member(name: str, content: bytes):
-        # ar header: name(16) mtime(12) uid(6) gid(6) mode(8) size(10) magic(2)
         name_b = name.encode('ascii').ljust(16, b' ')
         mtime_b = str(int(time.time())).encode().rjust(12, b'0')
         uid_b = b'0     '
@@ -297,7 +344,6 @@ def build_ar_archive(debian_binary: bytes, control_tar: bytes, data_tar: bytes) 
         header = name_b + mtime_b + uid_b + gid_b + mode_b + size_b + magic
         out.write(header)
         out.write(content)
-        # 2-byte padding
         if len(content) % 2 != 0:
             out.write(b'\n')
 
@@ -307,12 +353,11 @@ def build_ar_archive(debian_binary: bytes, control_tar: bytes, data_tar: bytes) 
     return out.getvalue()
 
 def build_deb():
-    """构建 .deb 文件（纯 Python，不依赖 dpkg-deb）"""
     clean()
-    print("📦 构建 XPM Suite .deb 包...")
-    print(f"   版本: {VERSION}")
-    print(f"   架构: {ARCH}")
+    print(f"📦 构建 XPM Suite v{VERSION} .deb 包...")
     print(f"   代号: Add Gui Store Edition")
+    print(f"   架构: {ARCH}")
+    print(f"   新增: PAM 认证 + 自更新 + 提权\n")
 
     # 1. 准备文件
     create_debian_control()
@@ -327,6 +372,8 @@ def build_deb():
     install_desktop()
     print("  ✅ .desktop → /usr/share/applications/")
 
+    install_pam_config()
+
     install_docs()
     print("  ✅ 文档 → /usr/share/doc/xpm-suite/")
 
@@ -340,15 +387,11 @@ def build_deb():
             file_count += 1
     print(f"\n  📊 统计: {file_count} 个文件, {total_size/1024:.1f} KB")
 
-    # 3. 构建 tar.gz 成员
+    # 3. 构建 tar.gz
     control_dir = DEB_ROOT / "DEBIAN"
-    # data 部分 = DEB_ROOT 去掉 DEBIAN/
-    data_root = DEB_ROOT  # tar 会包含 DEBIAN 也要去掉... 不对，data.tar 不含 DEBIAN
-    # 我们重新组织：把非 DEBIAN 内容放到临时目录
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp)
-        # data 内容
         data_tmp = tmp_path / "data"
         for item in DEB_ROOT.iterdir():
             if item.name == "DEBIAN":
@@ -365,7 +408,6 @@ def build_deb():
         data_tar = tar_gz_from_dir(data_tmp)
 
     debian_binary = b"2.0\n"
-
     print("  📦 组装 .deb (ar 归档) ...")
     deb_data = build_ar_archive(debian_binary, control_tar, data_tar)
 
@@ -385,7 +427,6 @@ def build_deb():
         print("  ❌ ar magic 错误")
         return None
 
-    # 验证内含文件
     import struct
     pos = 8
     members = []
@@ -411,7 +452,17 @@ def build_deb():
         missing = expected - found
         print(f"  ⚠️ 缺少: {missing}")
 
+    # 6. 计算 SHA256
+    h = hashlib.sha256()
+    with open(output, 'rb') as f:
+        while True:
+            chunk = f.read(64*1024)
+            if not chunk: break
+            h.update(chunk)
+    print(f"  🔐 SHA256: {h.hexdigest()}")
+
     print(f"\n  安装: sudo dpkg -i {output.name}")
+    print(f"  然后: sudo xpm auth install-pam")
     return output
 
 if __name__ == "__main__":
