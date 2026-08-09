@@ -28,6 +28,11 @@ from ...store.gui.store_gui import (
 from ...store.gui.theme import get_theme, list_themes, lighten, darken
 from ...core.statusdb import get_db
 
+# PAM / auth 延迟导入（避免无 tkinter 环境时报错）
+def _lazy_auth():
+    from ...core.auth import verify_action, AuthAction
+    return verify_action, AuthAction
+
 # === 常量 ===
 
 WINDOW_TITLE = "X-Store - 应用商店"
@@ -44,7 +49,7 @@ TOPBAR_H = 56
 class XStoreApp:
     """X-Store 主窗口"""
 
-    def __init__(self, root: tk.Tk):
+    def __init__(self, root: "tk.Tk"):
         self.root = root
         self.state = get_state()
         self.tracker = ProgressTracker()
@@ -56,6 +61,9 @@ class XStoreApp:
         # 订阅状态变化
         self.state.subscribe(self._refresh_all)
         self.tracker.subscribe(self._refresh_downloads)
+
+        # 后台检查更新
+        threading.Thread(target=self._check_for_updates, daemon=True).start()
 
     def _init_window(self):
         self.root.title(WINDOW_TITLE)
@@ -250,8 +258,13 @@ class XStoreApp:
             font=(self.font_main, 9))
         self.theme_label.pack(side="bottom", fill="x", padx=10, pady=8)
 
-        # 版本
-        tk.Label(self.sidebar, text="v3.0-0 Suite", bg=self.bg_sidebar,
+        # 版本 + 更新提示
+        from ....core.self_update import check_update
+        update_info = check_update()
+        ver_text = f"v{update_info.get('current', '3.1.0')} Suite"
+        if update_info.get("update_available"):
+            ver_text += " 🟢有更新"
+        tk.Label(self.sidebar, text=ver_text, bg=self.bg_sidebar,
                 fg=self.text_dim, font=(self.font_main, 9)).pack(
             side="bottom", fill="x", padx=10)
 
@@ -499,8 +512,26 @@ class XStoreApp:
     def _install_or_remove(self, name: str, is_installed: bool):
         if is_installed:
             if messagebox.askyesno("确认卸载", f"确定要卸载 {name} 吗？"):
+                # 检查权限
+                if os.geteuid() != 0:
+                    messagebox.showwarning(
+                        "需要权限",
+                        f"卸载 {name} 需要管理员权限。\n\n"
+                        f"请通过 sudo/gksu 重新启动 X-Store GUI:\n"
+                        f"  sudo xstore-gui\n或\n  gksu xstore-gui"
+                    )
+                    return
                 threading.Thread(target=self._do_remove, args=(name,), daemon=True).start()
         else:
+            # 安装需要认证
+            if os.geteuid() != 0:
+                messagebox.showwarning(
+                    "需要权限",
+                    f"安装 {name} 需要管理员权限。\n\n"
+                    f"请通过 sudo/gksu 重新启动 X-Store GUI:\n"
+                    f"  sudo xstore-gui\n或\n  gksu xstore-gui"
+                )
+                return
             threading.Thread(target=self._do_install, args=(name,), daemon=True).start()
 
     def _do_install(self, name: str):
@@ -632,12 +663,66 @@ class XStoreApp:
         is_inst = self.state.is_installed(name)
         if is_inst:
             ttk.Button(btn_frame, text="卸载", style="InstalledBtn.TButton",
-                       command=lambda: [self._do_remove(name), win.destroy()]).pack(
+                       command=lambda: [
+                           self._check_root_and_run(name, "remove", win)
+                       ]).pack(
                 side="right", padx=4)
         else:
             ttk.Button(btn_frame, text="安装", style="CardBtn.TButton",
-                       command=lambda: [self._do_install(name), win.destroy()]).pack(
+                       command=lambda: [
+                           self._check_root_and_run(name, "install", win)
+                       ]).pack(
                 side="right", padx=4)
+
+    def _check_root_and_run(self, name: str, action: str, win: tk.Toplevel):
+        """检查 root 权限 + PAM 认证后执行安装/卸载"""
+        if os.geteuid() != 0:
+            messagebox.showwarning(
+                "需要管理员权限",
+                f"{'安装' if action == 'install' else '卸载'} {name} "
+                f"需要管理员权限。\n\n请通过以下方式重新启动:\n"
+                f"  sudo xstore-gui\n或\n  gksu xstore-gui",
+                parent=win,
+            )
+            win.destroy()
+            return
+
+        # PAM 认证（GUI 已 root，但若通过 sudo/gksu/pkexec 提权则自动放行；
+        # 若是直接 root 登录，会要求密码验证）
+        _verify_action, _AuthAction = _lazy_auth()
+        auth_action = _AuthAction.INSTALL if action == "install" else _AuthAction.REMOVE
+        ok, msg = _verify_action(auth_action, name)
+        if not ok:
+            messagebox.showerror(
+                "认证失败",
+                f"🔐 PAM 认证未通过: {msg}\n\n"
+                f"无法{'安装' if action == 'install' else '卸载'} {name}",
+                parent=win,
+            )
+            win.destroy()
+            return
+
+        if action == "install":
+            threading.Thread(target=self._do_install, args=(name,), daemon=True).start()
+        else:
+            self._do_remove(name)
+        win.destroy()
+
+    def _check_for_updates(self):
+        """后台检查更新"""
+        try:
+            from ....core.self_update import check_update
+            info = check_update()
+            if info.get("update_available"):
+                self.root.after(0, lambda: messagebox.showinfo(
+                    "发现更新",
+                    f"XPM Suite 有新版本!\n\n"
+                    f"当前: v{info['current']}\n"
+                    f"最新: v{info['latest']}\n\n"
+                    f"请在终端运行:\n  xpm self-update"
+                ))
+        except Exception:
+            pass
 
     def _submit_rating(self, name: str, stars: int, win: tk.Toplevel):
         comment = self.comment_var.get().strip()
@@ -659,8 +744,32 @@ def run_gui():
         print("  在 Debian/Ubuntu 上安装: apt install python3-tk")
         return 1
 
+    # 1. 检查 root 权限
+    if os.geteuid() != 0:
+        print("🔐 X-Store GUI 需要管理员权限")
+        print("  请通过以下方式启动:")
+        print("    sudo xstore-gui")
+        print("    gksu xstore-gui")
+        print("    pkexec xstore-gui")
+        return 1
+
+    # 2. PAM 认证（防止脚本自动调用 GUI 搞破坏）
+    _verify_action, _AuthAction = _lazy_auth()
+    ok, msg = _verify_action(_AuthAction.UPDATE, "X-Store GUI 启动")
+    if not ok:
+        print(f"❌ PAM 认证失败: {msg}")
+        print("  GUI 已拒绝启动")
+        return 1
+
+    print(f"✅ 认证通过 ({msg})，启动 X-Store GUI...")
+
+    # 3. 启动 GUI
     root = tk.Tk()
     app = XStoreApp(root)
+
+    # 4. 后台检查更新（每天一次，由 self_update 内部缓存控制）
+    threading.Thread(target=app._check_for_updates, daemon=True).start()
+
     root.mainloop()
     return 0
 
