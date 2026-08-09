@@ -1,0 +1,26 @@
+[project]
+name = "xpm-suite"
+version = "3.0.0"
+description = "XPM Suite - 统一包管理器 + 应用商店 (xpm + xstore + GUI)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+
+dependencies = [
+    "urllib3>=1.26",
+]
+
+[project.optional-dependencies]
+gui = ["tk"]
+dev = ["pytest"]
+
+[project.scripts]
+xpm = "xpm_suite.cli.xpm_main:main"
+xstore = "xpm_suite.store.cli:main"
+xstore-gui = "xpm_suite.store.gui.app:run_gui"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.txt"]
