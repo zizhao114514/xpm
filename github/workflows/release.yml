@@ -1,0 +1,137 @@
+name: XPM Suite CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 3.0-0)'
+        required: false
+        default: ''
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run version tests
+        run: python -m pytest tests/test_version.py -v
+
+      - name: Run core tests
+        run: python -m pytest tests/test_core.py -v
+
+      - name: Run format tests
+        run: python -m pytest tests/test_formats.py -v
+
+      - name: Run store tests
+        run: python -m pytest tests/test_store.py -v
+
+      - name: Run integration tests
+        run: python -m pytest tests/test_integration.py -v
+
+      - name: Run all tests with coverage
+        run: |
+          pip install pytest-cov
+          python -m pytest tests/ --cov=src/xpm_suite --cov-report=term-missing -v
+
+  build-deb:
+    needs: test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dpkg-dev
+          python -m pip install --upgrade pip
+
+      - name: Build .deb package
+        run: |
+          python build_deb.py
+          ls -la *.deb
+
+      - name: Verify .deb
+        run: |
+          dpkg-deb -I *.deb
+          dpkg-deb -c *.deb | head -30
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xpm-suite-deb
+          path: "*.deb"
+
+  release:
+    needs: [test, build-deb]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: xpm-suite-deb
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.deb"
+          generate_release_notes: true
+          body: |
+            ## XPM Suite v${{ github.ref_name }}
+
+            ### 🏪 X-Store 应用商店
+            - 深色主题 GUI（卡片瀑布流 + 侧边栏分类）
+            - 6 大应用分类 + 自定义应用集
+            - 评分/评论系统
+            - 一键安装/卸载
+
+            ### 📦 包管理器 (xpm)
+            - 事务安装（全成/全回滚）
+            - 触发器引擎（纯 Python）
+            - .oil 原生格式 + .deb 支持
+            - 多线程分块下载 + 断点续传
+            - 镜像自动切换 + 指数退避
+            - 智能架构探测（三源兜底）
+            - 版本锁定/快照/恢复
+
+            ### 🔧 安装
+            ```bash
+            sudo dpkg -i xpm-suite_*.deb
+            xpm version
+            xpm update
+            xstore-gui
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
