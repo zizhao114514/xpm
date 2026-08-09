@@ -43,6 +43,25 @@ FEATURES = {
     # === 诊断 ===
     "doctor":           {"min": "2.0", "name": "系统诊断",      "essential": False},
     "speedtest":        {"min": "2.2", "name": "网络测速",      "essential": False},
+
+    # === PAM 认证 ===
+    "pam_auth":         {"min": "3.1", "name": "PAM 密码认证",  "essential": True},
+    "session_auth":     {"min": "3.1", "name": "会话授权缓存",  "essential": True},
+    "auth_log":         {"min": "3.1", "name": "授权日志记录",  "essential": False},
+    "action_verify":    {"min": "3.1", "name": "操作前授权验证","essential": True},
+
+    # === 自更新 ===
+    "self_update":      {"min": "3.1", "name": "XPM 自更新",    "essential": False},
+    "version_check":    {"min": "3.1", "name": "远程版本检查",  "essential": False},
+    "auto_rollback":    {"min": "3.1", "name": "更新失败回滚",  "essential": False},
+    "update_cache":     {"min": "3.1", "name": "更新缓存(TTL)", "essential": False},
+
+    # === 提权 ===
+    "elevate_auto":     {"min": "3.1", "name": "自动提权(re-exec)","essential": True},
+    "elevate_sudo":     {"min": "3.1", "name": "sudo 提权",     "essential": True},
+    "elevate_gksu":     {"min": "3.1", "name": "gksu 图形提权", "essential": False},
+    "elevate_pkexec":   {"min": "3.1", "name": "pkexec 提权",   "essential": False},
+    "elevate_menu":     {"min": "3.1", "name": "提权方式选择菜单","essential": False},
 }
 
 class FeatureError(Exception):
