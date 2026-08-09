@@ -266,3 +266,4 @@ MIT License
 ---
 
 **🛢️ 石油储备 100001% | 功耗 0.9 W | XPM Suite — 一个项目搞定一切**
+<!-- ci: workflow added -->
