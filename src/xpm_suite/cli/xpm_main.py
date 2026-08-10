@@ -534,6 +534,24 @@ def cmd_doctor(args=None):
     else:
         _warn("索引为空，建议运行: xpm update")
 
+    # 软件源
+    try:
+        from ..core.sources import load_all_sources, validate_sources
+        srcs = load_all_sources()
+        if srcs:
+            _ok(f"软件源: {len(srcs)} 条 (sources.list.d/)")
+            for issue in validate_sources():
+                level, msg = issue
+                if level == "error":
+                    _err(f"源: {msg}")
+                else:
+                    _warn(f"源: {msg}")
+        else:
+            _warn("软件源: sources.list.d/ 下没有有效源")
+            _info("运行: xpm source add tuna \"deb [arch=arm64] https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main\"")
+    except Exception:
+        pass
+
     # 已安装
     db = get_db()
     cnt = db.count()
@@ -708,6 +726,97 @@ def cmd_set_priority(args):
     _info("当前可通过 xpm lock <pkg> 锁定版本")
     return 0
 
+# === 命令: 软件源管理 ===
+
+def cmd_source(args=None):
+    """
+    管理软件源 (/etc/xpm/sources.list.d/*.list)
+    子命令: list / add / remove / edit
+    """
+    import glob, tempfile, subprocess
+
+    sources_dir = "/etc/xpm/sources.list.d"
+    os.makedirs(sources_dir, exist_ok=True)
+
+    if not args or args[0] == "list":
+        files = sorted(glob.glob(f"{sources_dir}/*.list"))
+        if not files:
+            _info(f"{sources_dir}/ 下没有 .list 文件")
+            _info("运行: xpm source add <name> <deb [arch=...] url suite comp...>")
+            return 0
+        print(f"  📁 {sources_dir}/\n")
+        for f in files:
+            print(f"  📄 {os.path.basename(f)}:")
+            with open(f) as fh:
+                for line in fh:
+                    line = line.rstrip()
+                    if line.strip():
+                        prefix = "    " if line.startswith("#") else "    ✅ "
+                        print(f"{prefix}{line}")
+            print()
+        return 0
+
+    if args[0] == "add":
+        # xpm source add tuna "deb [arch=arm64] https://... trixie main"
+        if len(args) < 3:
+            _err('用法: xpm source add <文件名(不含路径)> "<deb 源行>"')
+            _info('示例: xpm source add tuna "deb [arch=arm64] https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main"')
+            return 1
+        fname = args[1]
+        if not fname.endswith(".list"):
+            fname += ".list"
+        # 安全：禁止路径穿越
+        if "/" in args[1] or ".." in args[1]:
+            _err("文件名不能包含路径分隔符")
+            return 1
+        content = " ".join(args[2:])
+        fpath = os.path.join(sources_dir, fname)
+        with open(fpath, "w") as f:
+            f.write(f"# XPM Suite 软件源 - {fname}\n")
+            f.write(content.strip() + "\n")
+        _ok(f"已添加: {fpath}")
+        return 0
+
+    if args[0] == "remove":
+        if len(args) < 2:
+            _err("用法: xpm source remove <文件名>")
+            return 1
+        fname = args[1]
+        if not fname.endswith(".list"):
+            fname += ".list"
+        fpath = os.path.join(sources_dir, fname)
+        if not os.path.exists(fpath):
+            _err(f"文件不存在: {fpath}")
+            return 1
+        os.remove(fpath)
+        _ok(f"已删除: {fpath}")
+        return 0
+
+    if args[0] == "edit":
+        # 用默认编辑器打开第一个 .list 文件
+        files = sorted(glob.glob(f"{sources_dir}/*.list"))
+        if not files:
+            _err(f"{sources_dir}/ 下没有 .list 文件")
+            return 1
+        editor = os.environ.get("EDITOR", "nano")
+        target = files[0]
+        if len(args) >= 2:
+            for f in files:
+                if os.path.basename(f) == args[1] or f == f"{sources_dir}/{args[1]}":
+                    target = f
+                    break
+        try:
+            subprocess.run([editor, target], check=True)
+            _ok(f"已编辑: {target}")
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            _err(f"编辑失败: {e}")
+            return 1
+        return 0
+
+    _err(f"未知子命令: {args[0]}")
+    print("  用法: xpm source <list|add|remove|edit>")
+    return 1
+
 # === 命令: 提权 ===
 
 def cmd_elevate(args=None):
@@ -762,6 +871,7 @@ COMMANDS = {
     "triggers":     (cmd_triggers,     "触发器状态"),
     "history":      (cmd_history,      "下载历史"),
     "priority":     (cmd_set_priority, "设置包优先级"),
+    "source":       (cmd_source,       "管理软件源 (/etc/xpm/sources.list.d/)"),
     "elevate":      (cmd_elevate,      "提权管理"),
 }
 
@@ -812,6 +922,7 @@ def _print_help():
         ("锁定/快照", ["lock","unlock","locks","snapshot","priority"]),
         ("清理",     ["clean","orphan","duplicate"]),
         ("网络",     ["mirrors","speedtest","self-update"]),
+        ("软件源",   ["source"]),
         ("系统",     ["doctor","triggers"]),
     ]
     for gname, cmds in groups:

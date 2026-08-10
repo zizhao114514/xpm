@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-构建 XPM Suite v3.1.0 .deb 安装包
-包含: xpm + xstore + xstore-gui + PAM认证 + 自更新 + 提权
+构建 XPM Suite v3.1.1 .deb 安装包
+包含: xpm + xstore + xstore-gui + PAM认证 + 自更新 + 提权 + 软件源管理
 使用纯 Python 构建（不依赖 dpkg-deb），兼容受限环境。
 """
 
@@ -11,11 +11,11 @@ from pathlib import Path
 # === 配置 ===
 
 PKG_NAME = "xpm-suite"
-VERSION = "3.1.0"
+VERSION = "3.1.1"
 ARCH = "all"
 MAINTAINER = "Zizhao <zizhao@example.com>"
 DESCRIPTION = (
-    "XPM Suite v3.1.0 - 统一包管理器 + 应用商店\n"
+    "XPM Suite v3.1.1 - 统一包管理器 + 应用商店\n"
     " 包含:\n"
     "  - xpm: 包管理器（索引/依赖/下载/安装/回滚/触发器）\n"
     "  - xstore: 应用商店命令行\n"
@@ -23,6 +23,7 @@ DESCRIPTION = (
     "  - PAM 认证模块（密码验证/会话管理/授权日志）\n"
     "  - 自更新引擎（远程版本检查/自动下载/回滚）\n"
     "  - 提权包装器（sudo/gksu/pkexec 自动选择）\n"
+    "  - 软件源管理（sources.list.d/ 标准目录结构）\n"
     "  - 支持 .deb 和 .oil 双格式\n"
     "  - 多线程下载/断点续传/镜像切换\n"
     "  - 纯 Python 实现，零外部依赖"
@@ -107,12 +108,34 @@ mkdir -p /var/cache/xpm
 mkdir -p /var/lib/xpm/info
 mkdir -p /var/lib/xpm/backups
 mkdir -p /etc/xpm/auth
+
+# 自动探测架构，写入带 [arch=xxx] 的源
 if [ ! -f /etc/xpm/sources.list.d/tuna.list ]; then
-    cat > /etc/xpm/sources.list.d/tuna.list << 'EOF'
+    # 探测架构
+    ARCH="amd64"
+    if command -v dpkg >/dev/null 2>&1; then
+        ARCH=$(dpkg --print-architecture 2>/dev/null || echo "amd64")
+    elif command -v uname >/dev/null 2>&1; then
+        case "$(uname -m)" in
+            x86_64)  ARCH="amd64" ;;
+            aarch64)  ARCH="arm64" ;;
+            armv7l)   ARCH="armhf" ;;
+            armv6l)   ARCH="armel" ;;
+            i686)     ARCH="i386"  ;;
+            loongarch64) ARCH="loong64" ;;
+            riscv64)  ARCH="riscv64" ;;
+            ppc64le)  ARCH="ppc64el" ;;
+            s390x)    ARCH="s390x" ;;
+        esac
+    fi
+
+    cat > /etc/xpm/sources.list.d/tuna.list << EOF
 # XPM Suite 默认软件源 - 清华大学镜像
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main
+# 架构自动探测: $ARCH
+deb [arch=$ARCH] https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free non-free-firmware
+deb [arch=$ARCH] https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main contrib non-free non-free-firmware
 EOF
+    echo "  ✅ 默认源已写入 (arch=$ARCH)"
 fi
 echo "✅ XPM Suite v{VERSION} 初始化完成"
 """

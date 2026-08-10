@@ -32,7 +32,7 @@ DEFAULT_UPDATE_URL = "https://api.github.com/repos/zizhao114514/xpm/releases/lat
 FALLBACK_UPDATE_URL = "https://raw.githubusercontent.com/zizhao114514/xpm/main/VERSION"
 
 # 当前版本（与 version.py 保持一致）
-CURRENT_VERSION = "3.1.0"
+CURRENT_VERSION = "3.1.1"
 CURRENT_CODENAME = "Add Gui Store Edition"
 
 # 更新缓存

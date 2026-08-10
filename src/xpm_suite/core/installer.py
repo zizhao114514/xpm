@@ -13,6 +13,7 @@ from .transaction import Transaction, atomic_write, atomic_remove
 from .triggers import TriggerEngine, get_engine as get_trigger_engine
 from .downloader import get_downloader, get_mirror_manager
 from . import scripts_env
+from .sources import load_all_sources, get_arch_for_source, validate_sources
 from ..formats.deb import DebPackage, parse_deb_file, _split_depends
 from ..formats.oil import OilPackage, parse_package
 
@@ -149,42 +150,43 @@ class SourceIndex:
         self._sources = []
 
     def load_sources(self):
-        """从 /etc/xpm/sources.list.d/ 加载源"""
-        import glob
-        sources_dir = "/etc/xpm/sources.list.d"
-        self._sources = []
-        for f in glob.glob(f"{sources_dir}/*.list"):
-            try:
-                with open(f) as fh:
-                    for line in fh:
-                        line = line.strip()
-                        if line and not line.startswith("#"):
-                            self._sources.append(line)
-            except (PermissionError, FileNotFoundError):
-                pass
+        """从 /etc/xpm/sources.list.d/ 加载源（使用 sources.py 模块）"""
+        from .sources import load_all_sources
+        self._sources = load_all_sources()
         return self._sources
 
     def update(self, progress_cb: Optional[ProgressCb] = None):
         """
         更新索引：下载 Packages.gz 并解析。
-        支持 mirror:// 语法和 http/https。
+        每条源可指定 [arch=xxx] 覆盖默认架构。
         """
         self.load_sources()
         self.packages.clear()
 
         dl = get_downloader()
-        arch = self._arch
+        default_arch = self._arch
 
         total = len(self._sources)
-        for i, src in enumerate(self._sources):
+        for i, entry in enumerate(self._sources):
+            label = entry.to_line() if hasattr(entry, 'to_line') else str(entry)
             if progress_cb:
-                progress_cb(i, total, src)
+                progress_cb(i, total, label)
 
-            parsed = self._parse_source_line(src)
-            if not parsed:
-                continue
+            # 支持新旧两种格式（SourceEntry 对象 或 旧式字符串）
+            if hasattr(entry, 'arch'):
+                arch = entry.arch or default_arch
+                url = entry.url.rstrip("/")
+                suite = entry.suite
+                comps = entry.components
+            else:
+                # 旧式字符串回退
+                parsed = self._parse_source_line(entry)
+                if not parsed:
+                    continue
+                suite, comps, options = parsed
+                arch = options.get("arch", default_arch)
+                url = ""
 
-            suite, comps, options = parsed
             for comp in comps:
                 url_path = f"dists/{suite}/{comp}/binary-{arch}/Packages.gz"
                 try:
@@ -193,29 +195,55 @@ class SourceIndex:
                     dl.download_with_failover(url_path, tmp)
                     self._parse_packages_file(tmp, arch)
                 except Exception as e:
-                    print(f"  ⚠️ 索引更新失败 [{comp}]: {e}")
+                    print(f"  ⚠️ 索引更新失败 [{comp}/{arch}]: {e}")
 
         if progress_cb:
             progress_cb(total, total, "完成")
 
     def _parse_source_line(self, line: str) -> Optional[tuple]:
-        """解析 deb http://url suite comp1 comp2 [arch=...]"""
+        """
+        解析 deb [options] url suite comp1 comp2
+        支持 Debian 标准方括号语法: deb [arch=arm64] https://mirror suite main
+        也支持旧式空格分隔: deb https://mirror suite main arch=arm64
+        """
         parts = line.split()
         if len(parts) < 4:
             return None
-        if parts[0] not in ("deb", "deb-src"):
-            return None
-        url = parts[1]
-        suite = parts[2]
-        comps = parts[3:]
+
+        # 处理 [arch=arm64 lang=en_US] 方括号选项块
         options = {}
-        # 处理 arch= 选项
+        idx = 1  # 默认 url 在第 1 位
+        if parts[1].startswith("[") and not parts[1].startswith("http"):
+            # 找到闭合的 ]
+            opt_str = ""
+            j = 1
+            while j < len(parts) and "]" not in parts[j]:
+                opt_str += parts[j] + " "
+                j += 1
+            if j < len(parts):
+                opt_str += parts[j]  # 包含 ]
+            opt_str = opt_str.strip("[]").strip()
+            for kv in opt_str.split():
+                if "=" in kv:
+                    k, v = kv.split("=", 1)
+                    options[k.strip()] = v.strip()
+            idx = j + 1  # url 在 ] 之后
+
+        if idx + 1 >= len(parts):
+            return None
+
+        url = parts[idx]
+        suite = parts[idx + 1]
+        comps = parts[idx + 2:]
+
+        # 也处理尾部遗留的 arch= 写法
         filtered_comps = []
         for c in comps:
             if c.startswith("arch="):
-                options["arch"] = c.split("=")[1]
+                options.setdefault("arch", c.split("=")[1])
             else:
                 filtered_comps.append(c)
+
         return (suite, filtered_comps, options)
 
     def _parse_packages_file(self, path: str, arch: str):
