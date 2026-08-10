@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-构建 XPM Suite v3.1.1 .deb 安装包
+构建 XPM Suite v3.1.3 .deb 安装包
 包含: xpm + xstore + xstore-gui + PAM认证 + 自更新 + 提权 + 软件源管理
 使用纯 Python 构建（不依赖 dpkg-deb），兼容受限环境。
 """
@@ -11,11 +11,11 @@ from pathlib import Path
 # === 配置 ===
 
 PKG_NAME = "xpm-suite"
-VERSION = "3.1.1"
+VERSION = "3.1.3"
 ARCH = "all"
 MAINTAINER = "Zizhao <zizhao@example.com>"
 DESCRIPTION = (
-    "XPM Suite v3.1.1 - 统一包管理器 + 应用商店\n"
+    "XPM Suite v3.1.3 - 统一包管理器 + 应用商店\n"
     " 包含:\n"
     "  - xpm: 包管理器（索引/依赖/下载/安装/回滚/触发器）\n"
     "  - xstore: 应用商店命令行\n"
@@ -24,6 +24,7 @@ DESCRIPTION = (
     "  - 自更新引擎（远程版本检查/自动下载/回滚）\n"
     "  - 提权包装器（sudo/gksu/pkexec 自动选择）\n"
     "  - 软件源管理（sources.list.d/ 标准目录结构）\n"
+    "  - Bugfix: GUI版本号硬编码/remove变量名/断点续传/User-Agent\n"
     "  - 支持 .deb 和 .oil 双格式\n"
     "  - 多线程下载/断点续传/镜像切换\n"
     "  - 纯 Python 实现，零外部依赖"
@@ -249,7 +250,7 @@ def install_docs():
     doc_dir.mkdir(parents=True, exist_ok=True)
     set_mode(doc_dir, 0o755)
 
-    readme = f"""XPM Suite v{VERSION} "Add Gui Store Edition"
+    readme = f"""XPM Suite v{VERSION} "Gui-Import-Fixed Edition"
 ============================================
 
 统一包管理器 + 应用商店（PAM 认证 + 自更新 + 提权）
@@ -312,6 +313,9 @@ GitHub: https://github.com/zizhao114514/xpm
 
     changelog = f"""xpm-suite ({VERSION}) stable; urgency=medium
 
+  * 修复: GUI 越级相对导入 (ImportError: beyond top-level package)
+  * 改用绝对导入 + try/except 兼容两种运行方式
+  * 新增 test_gui_imports.py 防止回归
   * 新增 PAM 认证模块（密码验证/会话管理/授权日志）
   * 新增自更新引擎（远程版本检查/自动下载/回滚）
   * 新增提权包装器（sudo/gksu/pkexec 自动选择）

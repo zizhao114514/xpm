@@ -322,25 +322,26 @@ def _try_pam_auth(service: str, username: str, password: str) -> bool:
                       appdata_ptr=ctypes.c_void_p(0))
 
         # 启动 PAM
-        rc = libpam.pam_start(
+        _rc = 0
+        _rc = libpam.pam_start(
             ctypes.c_char_p(service.encode("utf-8")),
             ctypes.c_char_p(username.encode("utf-8")),
             ctypes.cast(ctypes.byref(pc), ctypes.c_void_p),
             ctypes.byref(pamh)
         )
-        if rc != 0:
+        if _rc != 0:
             return False
 
         try:
             # 认证
-            rc = libpam.pam_authenticate(pamh, 0)
-            if rc != 0:
+            _rc = libpam.pam_authenticate(pamh, 0)
+            if _rc != 0:
                 return False
             # 账户管理
-            rc = libpam.pam_acct_mgmt(pamh, 0)
-            return (rc == 0)
+            _rc = libpam.pam_acct_mgmt(pamh, 0)
+            return (_rc == 0)
         finally:
-            libpam.pam_end(pamh, rc if 'rc' in dir() else 0)
+            libpam.pam_end(pamh, _rc)
 
     except Exception as e:
         logger.debug(f"PAM ctypes 调用失败: {e}")

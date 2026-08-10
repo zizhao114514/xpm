@@ -654,12 +654,18 @@ def cmd_self_update(args=None):
     if update_info.get("size"):
         print(f"\n  📊 大小: {_format_size(update_info['size'])}")
 
-    # 确认
-    try:
-        ans = input("\n  确认更新? [y/N] ").strip().lower()
-    except (KeyboardInterrupt, EOFError):
-        print("\n  取消")
-        return 130
+    # 确认（GUI 环境无 tty 时跳过确认）
+    ans = ""
+    if sys.stdin.isatty():
+        try:
+            ans = input("\n  确认更新? [y/N] ").strip().lower()
+        except (KeyboardInterrupt, EOFError):
+            print("\n  取消")
+            return 130
+    else:
+        # 非交互环境（如 GUI 调用），默认不自动更新
+        _info("非交互环境，跳过确认。请手动运行: xpm self-update")
+        return 0
 
     if ans not in ("y", "yes"):
         _info("已取消")

@@ -17,7 +17,7 @@ try:
     from ...store.catalog import load_ratings, save_ratings
     from ...core.installer import get_engine
     from ...core.statusdb import get_db
-except ValueError:
+except (ValueError, ImportError):
     from xpm_suite.store import (
         get_categories, get_apps_by_category, get_top_apps,
         search_apps, get_app_detail, rate_app, get_rating,
@@ -29,7 +29,7 @@ except ValueError:
 
 try:
     from .theme import get_theme, THEMES, DEFAULT_THEME
-except ImportError:
+except (ImportError, ValueError):
     from xpm_suite.store.gui.theme import get_theme, THEMES, DEFAULT_THEME
 
 # === 全局状态 ===
@@ -147,9 +147,9 @@ class StoreState:
         deps = detail.get("deps", detail.get("packages", []))
         if not deps:
             deps = [name]
-        for pkg in deps:
+        for dep_name in deps:
             try:
-                self._engine.remove(pkg)
+                self._engine.remove(dep_name)
             except Exception:
                 pass
         self._notify()

@@ -450,15 +450,15 @@ class TestCliIntegration:
 # ============================================================
 
 class TestVersionBump:
-    def test_version_is_311(self):
+    def test_version_is_313(self):
         from xpm_suite import version
-        assert version.get_short_version() == "3.1.1"
-        assert "Sources-Fixed Edition" in version.get_version_string()
+        assert version.get_short_version() == "3.1.3"
+        assert "Bugfix Edition" in version.get_version_string()
 
-    def test_components_311(self):
+    def test_components_313(self):
         from xpm_suite import version
         for name, info in version.COMPONENTS.items():
-            assert info["version"] == "3.1.1", f"{name} not 3.1.1"
+            assert info["version"] == "3.1.3", f"{name} not 3.1.3"
 
     def test_feature_flags_have_new_entries(self):
         from xpm_suite import feature_flags

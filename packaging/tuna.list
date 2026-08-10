@@ -1,4 +1,0 @@
-# XPM Suite 默认软件源 - 清华大学镜像
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-backports main

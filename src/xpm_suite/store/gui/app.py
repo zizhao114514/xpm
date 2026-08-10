@@ -16,21 +16,40 @@ try:
 except ImportError:
     HAS_TK = False
 
-from ...store import (
-    get_categories, get_apps_by_category, get_top_apps,
-    search_apps, get_app_detail, rate_app, get_rating,
-    add_custom, remove_custom,
-)
-from ...store.gui.store_gui import (
-    StoreState, get_state, format_stars, format_popularity_bar,
-    get_app_icon, get_format_badge, ProgressTracker,
-)
-from ...store.gui.theme import get_theme, list_themes, lighten, darken
-from ...core.statusdb import get_db
+# 兼容直接运行和包内导入
+try:
+    from ...store import (
+        get_categories, get_apps_by_category, get_top_apps,
+        search_apps, get_app_detail, rate_app, get_rating,
+        add_custom, remove_custom,
+    )
+    from ...store.gui.store_gui import (
+        StoreState, get_state, format_stars, format_popularity_bar,
+        get_app_icon, get_format_badge, ProgressTracker,
+    )
+    from ...store.gui.theme import get_theme, list_themes, lighten, darken
+    from ...core.statusdb import get_db
+    _USE_RELATIVE = True
+except (ValueError, ImportError):
+    from xpm_suite.store import (
+        get_categories, get_apps_by_category, get_top_apps,
+        search_apps, get_app_detail, rate_app, get_rating,
+        add_custom, remove_custom,
+    )
+    from xpm_suite.store.gui.store_gui import (
+        StoreState, get_state, format_stars, format_popularity_bar,
+        get_app_icon, get_format_badge, ProgressTracker,
+    )
+    from xpm_suite.store.gui.theme import get_theme, list_themes, lighten, darken
+    from xpm_suite.core.statusdb import get_db
+    _USE_RELATIVE = False
 
 # PAM / auth 延迟导入（避免无 tkinter 环境时报错）
 def _lazy_auth():
-    from ...core.auth import verify_action, AuthAction
+    if _USE_RELATIVE:
+        from ...core.auth import verify_action, AuthAction
+    else:
+        from xpm_suite.core.auth import verify_action, AuthAction
     return verify_action, AuthAction
 
 # === 常量 ===
@@ -259,9 +278,14 @@ class XStoreApp:
         self.theme_label.pack(side="bottom", fill="x", padx=10, pady=8)
 
         # 版本 + 更新提示
-        from ....core.self_update import check_update
+        try:
+            from ...core.self_update import check_update
+            from ...version import get_short_version, get_codename
+        except ValueError:
+            from xpm_suite.core.self_update import check_update
+            from xpm_suite.version import get_short_version, get_codename
         update_info = check_update()
-        ver_text = f"v{update_info.get('current', '3.1.0')} Suite"
+        ver_text = f"v{get_short_version()} {get_codename()}"
         if update_info.get("update_available"):
             ver_text += " 🟢有更新"
         tk.Label(self.sidebar, text=ver_text, bg=self.bg_sidebar,
@@ -711,7 +735,10 @@ class XStoreApp:
     def _check_for_updates(self):
         """后台检查更新"""
         try:
-            from ....core.self_update import check_update
+            try:
+                from ...core.self_update import check_update
+            except ValueError:
+                from xpm_suite.core.self_update import check_update
             info = check_update()
             if info.get("update_available"):
                 self.root.after(0, lambda: messagebox.showinfo(

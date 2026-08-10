@@ -70,13 +70,16 @@ class DependencyResolver:
             stack.append(name)
             pkg_info = self.index[name]
 
-            # 取最新版本
+            # 取最新版本（按语义化版本排序）
             versions = list(pkg_info.keys())
             if not versions:
                 stack.pop()
                 return
-            # 简单取第一个（索引里通常只有一个）
-            info = pkg_info[versions[0]]
+            def _ver_key(v):
+                parts = str(v).split(".")
+                return [int(x) if x.isdigit() else 0 for x in parts]
+            latest_ver = sorted(versions, key=_ver_key)[-1]
+            info = pkg_info[latest_ver]
 
             # 解析 depends
             depends_str = info.get("Depends", "")
@@ -264,7 +267,7 @@ class SourceIndex:
                     name = current["Package"]
                     ver = current.get("Version", "0")
                     # 只保留匹配架构的
-                    pkg_arch = current.get("Architecture", "all")
+                    pkg_arch = current.get("Architecture", current.get("architecture", "all"))
                     if pkg_arch in (arch, "all"):
                         if name not in self.packages:
                             self.packages[name] = {}
@@ -280,7 +283,7 @@ class SourceIndex:
         if current.get("Package"):
             name = current["Package"]
             ver = current.get("Version", "0")
-            pkg_arch = current.get("Architecture", "all")
+            pkg_arch = current.get("Architecture", current.get("architecture", "all"))
             if pkg_arch in (arch, "all"):
                 if name not in self.packages:
                     self.packages[name] = {}

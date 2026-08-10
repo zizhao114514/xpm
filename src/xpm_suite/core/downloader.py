@@ -104,11 +104,16 @@ class ChunkDownloader:
                         mirror: Mirror) -> bytes:
         """下载指定字节范围，带重试和指数退避"""
         last_err = None
+        try:
+            from .version import get_short_version
+            ua = f"XPM-Suite/{get_short_version()}"
+        except ImportError:
+            ua = "XPM-Suite/3.1"
         for attempt in range(self.retry):
             try:
                 req = Request(url)
                 req.add_header("Range", f"bytes={start}-{end}")
-                req.add_header("User-Agent", "XPM-Suite/3.0")
+                req.add_header("User-Agent", ua)
                 with urlopen(req, timeout=self.timeout) as resp:
                     return resp.read()
             except HTTPError as e:
@@ -128,10 +133,15 @@ class ChunkDownloader:
 
     def _probe_size(self, url: str, mirror: Mirror) -> int:
         """探测文件总大小"""
+        try:
+            from .version import get_short_version
+            ua = f"XPM-Suite/{get_short_version()}"
+        except ImportError:
+            ua = "XPM-Suite/3.1"
         for attempt in range(self.retry):
             try:
                 req = Request(url)
-                req.add_header("User-Agent", "XPM-Suite/3.0")
+                req.add_header("User-Agent", ua)
                 req.add_method("HEAD")
                 with urlopen(req, timeout=self.timeout) as resp:
                     return int(resp.headers.get("Content-Length", 0))
@@ -157,25 +167,35 @@ class ChunkDownloader:
 
         # 断点续传：检查已有 .part 文件
         part_file = dest + ".part"
-        existing_size = os.path.getsize(part_file) if os.path.exists(part_file) else 0
+        existing_size = 0
+        if os.path.exists(part_file):
+            existing_size = os.path.getsize(part_file)
 
         # 探测总大小
         total_size = self._probe_size(url, mirror)
         if total_size <= 0:
             raise RuntimeError(f"无法获取文件大小: {url}")
 
+        # 如果已下载完成，直接重命名
+        if existing_size >= total_size and total_size > 0:
+            os.replace(part_file, dest)
+            return dest
+
         # 计算分块
         if total_size <= self.chunk_size * 2:
             self.threads = 1  # 小文件不分块
 
+        # 分块：每块大小均匀，最后一块补齐
+        chunk_size = total_size // self.threads if self.threads > 0 else total_size
         chunks = []
         for i in range(self.threads):
-            start = i * (total_size // self.threads)
-            end = (i + 1) * (total_size // self.threads) - 1
+            start = i * chunk_size
+            end = (i + 1) * chunk_size - 1
             if i == self.threads - 1:
                 end = total_size - 1
+            # 跳过已下载的部分
             if start < existing_size:
-                start = existing_size  # 跳过已下载
+                start = max(start, existing_size)
             if start <= end:
                 chunks.append((start, end, i))
 
@@ -195,30 +215,40 @@ class ChunkDownloader:
                 if self._progress_cb:
                     self._progress_cb(downloaded, total_size, f"chunk {idx}")
                 # 带宽限制
-                if self.bandwidth_limit > 0:
+                if self.bandwidth_limit > 0 and len(data) > 0:
                     expected_time = len(data) / self.bandwidth_limit
-                    actual_time = 0  # 简化处理
                     if expected_time > 0.1:
                         time.sleep(min(expected_time, 1.0))
             results[idx] = data
 
-        threads = []
+        threads_list = []
         for start, end, idx in chunks:
             t = threading.Thread(target=worker, args=(start, end, idx))
-            threads.append(t)
+            threads_list.append(t)
             t.start()
 
-        for t in threads:
+        for t in threads_list:
             t.join()
 
-        # 合并写入
+        # 合并写入：先复制已有数据，再追加新数据
         with open(part_file, "wb") as f:
+            # 写入已有的部分（断点续传）
             if existing_size > 0:
-                with open(part_file + ".old", "rb") as fo:
-                    f.write(fo.read())
+                with open(part_file, "rb") as fo:
+                    f.write(fo.read(existing_size))
+            # 按块顺序写入新下载的数据
             for i in range(self.threads):
-                if i in results:
+                if i in results and results[i]:
                     f.write(results[i])
+
+        # 验证大小
+        final_size = os.path.getsize(part_file)
+        if final_size != total_size:
+            # 大小不匹配，删除并失败
+            os.remove(part_file)
+            raise RuntimeError(
+                f"下载大小不匹配: 期望 {total_size}, 实际 {final_size}"
+            )
 
         # 重命名
         os.replace(part_file, dest)
@@ -333,7 +363,8 @@ def speedtest(url_path: str = "dists/trixie/Release",
     start = time.time()
     try:
         req = Request(url)
-        req.add_header("User-Agent", "XPM-Suite/3.0")
+        from ..version import get_version_string
+        req.add_header("User-Agent", f"XPM-Suite/{get_version_string()}")
         with urlopen(req, timeout=10) as resp:
             data = resp.read(1024*256)  # 读 256KB
         elapsed = time.time() - start

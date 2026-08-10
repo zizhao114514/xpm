@@ -15,7 +15,7 @@ import sys
 import subprocess
 import shutil
 import logging
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
 logger = logging.getLogger("xpm.elevate")
 

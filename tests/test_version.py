@@ -15,8 +15,8 @@ from xpm_suite import (
 class TestVersion:
     def test_version_string(self):
         v = get_version_string()
-        assert "3.1.1" in v
-        assert "Sources-Fixed Edition" in v
+        assert "3.1.3" in v
+        assert "Bugfix Edition" in v
 
     def test_version_tuple(self):
         t = get_version_tuple()

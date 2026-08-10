@@ -32,8 +32,8 @@ DEFAULT_UPDATE_URL = "https://api.github.com/repos/zizhao114514/xpm/releases/lat
 FALLBACK_UPDATE_URL = "https://raw.githubusercontent.com/zizhao114514/xpm/main/VERSION"
 
 # 当前版本（与 version.py 保持一致）
-CURRENT_VERSION = "3.1.1"
-CURRENT_CODENAME = "Add Gui Store Edition"
+CURRENT_VERSION = "3.1.3"
+CURRENT_CODENAME = "Bugfix Edition"
 
 # 更新缓存
 UPDATE_CACHE_DIR = "/var/cache/xpm/updates"
@@ -157,7 +157,9 @@ def _fetch_url(url: str, timeout: int = 10) -> Optional[str]:
     """简单的 URL 获取（不依赖外部库）"""
     try:
         import urllib.request
-        req = urllib.request.Request(url, headers={"User-Agent": "XPM-Suite/3.0"})
+        from ..version import get_short_version
+        ua = f"XPM-Suite/{get_short_version()}"
+        req = urllib.request.Request(url, headers={"User-Agent": ua})
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return resp.read().decode("utf-8", errors="replace")
     except Exception as e:
@@ -323,7 +325,12 @@ def _download_file(url: str, dest: str, progress_cb=None) -> bool:
     """下载文件到指定路径"""
     import urllib.request
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "XPM-Suite/3.0"})
+        from ..version import get_short_version
+        ua = f"XPM-Suite/{get_short_version()}"
+    except ImportError:
+        ua = "XPM-Suite/3.1"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": ua})
         with urllib.request.urlopen(req, timeout=60) as resp:
             total = int(resp.headers.get("Content-Length", "0"))
             downloaded = 0
